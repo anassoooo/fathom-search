@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  sessions         Session[]
+  cartItems        CartItem[]
+  assistantHistory AssistantHistory[]
+  events           Event[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String   // Qdrant point ID
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, productId])
+}
+
+model AssistantHistory {
+  id                String   @id @default(cuid())
+  userId            String
+  prompt            String?
+  imageHash         String?
+  returnedProductIds String  // JSON array of product IDs
+  createdAt         DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  userId    String?
+  eventType String   // product_impression, product_click, add_to_cart, assistant_open, assistant_recommend
+  metadata  String   // JSON string with event-specific data
+  createdAt DateTime @default(now())
+  
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+// Cache table for product pagination
+model ProductCache {
+  id        String   @id @default(cuid())
+  pointId   String   @unique // Qdrant point ID
+  productId String   // Product ID from payload
+  name      String
+  category  String?
+  price     Float?
+  rating    Float?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([category])
+  @@index([price])
+}

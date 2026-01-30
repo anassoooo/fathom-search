@@ -1,0 +1,25 @@
+import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
+
+export const metadata: Metadata = {
+  title: "vio-shop",
+  description: "Qdrant-powered e-commerce",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster />
+      </body>
+    </html>
+  );
+}
+export default function HomePage() {
+  return <main style={{ padding: 24 }}>Home OK</main>;
+}

@@ -1,0 +1,226 @@
+'use client'
+
+import React from "react"
+
+import useSWR from 'swr'
+import { Header } from '@/components/header'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Eye, MousePointer, ShoppingCart, Sparkles, MessageSquare } from 'lucide-react'
+
+interface MetricsData {
+  totals: {
+    impressions: number
+    clicks: number
+    addToCarts: number
+    assistantOpens: number
+    assistantRecommends: number
+  }
+  rates: {
+    ctr: string
+    addToCartRate: string
+  }
+  recentEvents: Array<{
+    id: string
+    eventType: string
+    createdAt: string
+    hasUser: boolean
+  }>
+  dailyBreakdown: Array<{
+    eventType: string
+    count: number
+  }>
+}
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
+const eventTypeIcons: Record<string, React.ReactNode> = {
+  product_impression: <Eye className="h-4 w-4" />,
+  product_click: <MousePointer className="h-4 w-4" />,
+  add_to_cart: <ShoppingCart className="h-4 w-4" />,
+  assistant_open: <Sparkles className="h-4 w-4" />,
+  assistant_recommend: <MessageSquare className="h-4 w-4" />,
+}
+
+const eventTypeLabels: Record<string, string> = {
+  product_impression: 'Impression',
+  product_click: 'Click',
+  add_to_cart: 'Add to Cart',
+  assistant_open: 'Assistant Open',
+  assistant_recommend: 'Assistant Query',
+}
+
+export default function MetricsPage() {
+  const { data, isLoading } = useSWR<MetricsData>('/api/metrics', fetcher, {
+    refreshInterval: 30000, // Refresh every 30 seconds
+  })
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-muted/30">
+      <Header>
+        <h1 className="font-bold text-sm tracking-[0.15em] text-foreground/90 uppercase">Analytics Dashboard</h1>
+      </Header>
+      <main className="flex-1 container py-8">
+        <div className="space-y-6">
+          <div className="hidden">
+            <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
+              Monitor user engagement and conversion metrics
+            </p>
+          </div>
+
+          {/* Key Metrics */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <MetricCard
+              title="Impressions"
+              value={data?.totals.impressions}
+              icon={<Eye className="h-5 w-5" />}
+              isLoading={isLoading}
+            />
+            <MetricCard
+              title="Clicks"
+              value={data?.totals.clicks}
+              icon={<MousePointer className="h-5 w-5" />}
+              isLoading={isLoading}
+            />
+            <MetricCard
+              title="Add to Cart"
+              value={data?.totals.addToCarts}
+              icon={<ShoppingCart className="h-5 w-5" />}
+              isLoading={isLoading}
+            />
+            <MetricCard
+              title="Assistant Opens"
+              value={data?.totals.assistantOpens}
+              icon={<Sparkles className="h-5 w-5" />}
+              isLoading={isLoading}
+            />
+            <MetricCard
+              title="Assistant Queries"
+              value={data?.totals.assistantRecommends}
+              icon={<MessageSquare className="h-5 w-5" />}
+              isLoading={isLoading}
+            />
+          </div>
+
+          {/* Conversion Rates */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Click-Through Rate (CTR)</CardTitle>
+                <CardDescription>Clicks / Impressions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-12 w-24" />
+                ) : (
+                  <p className="text-4xl font-bold">{data?.rates.ctr || '0%'}</p>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Add to Cart Rate</CardTitle>
+                <CardDescription>Add to Cart / Impressions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-12 w-24" />
+                ) : (
+                  <p className="text-4xl font-bold">{data?.rates.addToCartRate || '0%'}</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Events */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Latest 50 events (auto-refreshes every 30s)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Skeleton key={i} className="h-10 w-full" />
+                  ))}
+                </div>
+              ) : (
+                <ScrollArea className="h-[400px]">
+                  <div className="space-y-2">
+                    {data?.recentEvents.map((event) => (
+                      <div
+                        key={event.id}
+                        className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-background">
+                            {eventTypeIcons[event.eventType] || <Eye className="h-4 w-4" />}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">
+                              {eventTypeLabels[event.eventType] || event.eventType}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {formatDate(event.createdAt)}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge variant={event.hasUser ? 'default' : 'secondary'}>
+                          {event.hasUser ? 'Logged In' : 'Anonymous'}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  )
+}
+
+function MetricCard({
+  title,
+  value,
+  icon,
+  isLoading,
+}: {
+  title: string
+  value?: number
+  icon: React.ReactNode
+  isLoading: boolean
+}) {
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">{title}</p>
+            {isLoading ? (
+              <Skeleton className="h-8 w-16 mt-1" />
+            ) : (
+              <p className="text-2xl font-bold">{value?.toLocaleString() || 0}</p>
+            )}
+          </div>
+          <div className="p-3 rounded-full bg-primary/10 text-primary">{icon}</div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
