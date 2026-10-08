@@ -1,0 +1,25 @@
+,Product ID,Product Category,Product Subcategory,price_bucket,Product Name,Product Price ($),Product Rating,Total Ratings,Product Bayes_rating,Product Value_score,Product Image
+0,0,Electronics,Smartphones,premium,"SAMSUNG Galaxy S25 Ultra Cell Phone, 512GB, Titanium Black",1219.99,4.5,1520,4.47,0.37,https://m.media-amazon.com/images/I/s25.jpg
+1,1,Electronics,Smartphones,mid,"SAMSUNG Galaxy A16 5G Cell Phone, Unlocked, 128GB",174.99,4.3,2210,4.28,2.45,https://m.media-amazon.com/images/I/a16.jpg
+2,2,Electronics,Smartphones,cheap,Tracfone Motorola Moto g Play 2024 Locked Prepaid Smartphone,39.88,4.0,980,3.98,9.98,https://m.media-amazon.com/images/I/motog.jpg
+3,3,Electronics,Headphones,premium,Sony WH-1000XM5 Wireless Noise Canceling Over-Ear Headphones,329.99,4.6,8800,4.59,1.39,https://m.media-amazon.com/images/I/xm5.jpg
+4,4,Electronics,Headphones,mid,"Anker Soundcore Life Q20 Hybrid Active Noise Cancelling Headphones, Bluetooth",49.99,4.5,61000,4.5,9.0,https://m.media-amazon.com/images/I/q20.jpg
+5,5,Electronics,Headphones,cheap,JLab Go Air Pop True Wireless Earbuds,19.88,4.2,30500,4.2,21.13,https://m.media-amazon.com/images/I/jlab.jpg
+6,6,Computers,Laptops,premium,"Apple MacBook Air 13-inch Laptop, M3 chip, 16GB RAM, 512GB SSD",1299.0,4.8,3400,4.77,0.37,https://m.media-amazon.com/images/I/mba.jpg
+7,7,Computers,Laptops,mid,"ASUS TUF Gaming A15 Gaming Laptop, 15.6"" 144Hz, RTX 4050",899.99,4.4,1200,4.36,0.48,https://m.media-amazon.com/images/I/tuf.jpg
+8,8,Computers,Laptops,cheap,"Lenovo IdeaPad 1 Student Laptop, 14"" HD, 4GB RAM, 64GB eMMC",179.99,4.0,640,3.95,2.19,https://m.media-amazon.com/images/I/ideapad.jpg
+9,9,Computers,Keyboards,mid,Logitech MX Keys S Wireless Keyboard Low Profile Quiet Typing,99.99,4.6,5100,4.58,4.58,https://m.media-amazon.com/images/I/mxkeys.jpg
+10,10,Computers,Keyboards,cheap,Amazon Basics Wired USB Keyboard Quiet Full Size,15.99,4.4,90000,4.4,27.52,https://m.media-amazon.com/images/I/basickb.jpg
+11,11,Computers,Mice,mid,Logitech MX Master 3S Wireless Performance Mouse Ergonomic,99.99,4.7,12000,4.69,4.69,
+12,12,Sports & Outdoors,Running Shoes,premium,"Brooks Women's Adrenaline GTS 23 Supportive Running Shoe",139.95,4.7,15000,4.69,3.35,https://m.media-amazon.com/images/I/gts.jpg
+13,13,Sports & Outdoors,Running Shoes,mid,"ASICS Men's Gel-Contend 8 Running Shoes",64.95,4.5,22000,4.5,6.93,https://m.media-amazon.com/images/I/contend.jpg
+14,14,Sports & Outdoors,Running Shoes,cheap,"Skechers Men's Go Run Consistent Sneaker",44.99,4.4,18000,4.4,9.78,https://m.media-amazon.com/images/I/gorun.jpg
+15,15,Sports & Outdoors,Yoga,mid,"Gaiam Yoga Mat Premium 6mm Print Extra Thick Non Slip",29.98,4.6,40000,4.6,15.34,https://m.media-amazon.com/images/I/gaiam.jpg
+16,16,Home & Kitchen,Coffee Makers,premium,"Breville Barista Express Espresso Machine, Brushed Stainless Steel",699.95,4.6,21000,4.6,0.66,https://m.media-amazon.com/images/I/breville.jpg
+17,17,Home & Kitchen,Coffee Makers,mid,"Keurig K-Classic Coffee Maker, Single Serve K-Cup Pod",89.99,4.6,95000,4.6,5.11,https://m.media-amazon.com/images/I/keurig.jpg
+18,18,Home & Kitchen,Coffee Makers,cheap,"Mr. Coffee 5-Cup Mini Brew Switch Coffee Maker, Black",19.99,4.3,26000,4.3,21.51,https://m.media-amazon.com/images/I/mrcoffee.jpg
+19,19,Home & Kitchen,Cookware,mid,"Lodge Cast Iron Skillet, Pre-Seasoned, 10.25 inch",19.9,4.7,150000,4.7,23.62,https://m.media-amazon.com/images/I/lodge.jpg
+20,20,Groceries,Noodles,cheap,"Maruchan Instant Lunch, Chicken, 2.25 oz",0.5,4.7,40000,4.7,94.0,https://m.media-amazon.com/images/I/maruchan.jpg
+21,21,Groceries,Coffee,mid,"Starbucks Ground Coffee, Pike Place Roast, Medium Roast, 28 oz",17.99,4.7,52000,4.7,26.13,https://m.media-amazon.com/images/I/pike.jpg
+22,22,Toys & Games,Building Toys,mid,LEGO Classic Large Creative Brick Box 10698,47.99,4.8,30000,4.8,10.0,https://m.media-amazon.com/images/I/lego.jpg
+23,23,Toys & Games,Board Games,cheap,Hasbro Gaming Monopoly Classic Board Game,19.97,4.6,11000,4.6,23.04,nan
