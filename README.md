@@ -38,7 +38,7 @@ recommendations from an AI assistant.
 - Catalog endpoints: browse with filters, product detail, similar products, taxonomy.
 - Structured JSON logs with request IDs and per-stage timings.
 - All models run on CPU through ONNX (fastembed); no PyTorch.
-- Tests: about 90 unit tests (in-memory Qdrant, fake encoders) plus
+- Tests: 86 unit tests (in-memory Qdrant, fake encoders) plus
   integration tests against a real Qdrant and the real models.
 
 **Notebooks (`notebooks/`)**: the Colab notebooks that preprocessed the
