@@ -1,4 +1,4 @@
-# Local development stack. Backend and web services are added in T021 / M4.
+# Local development stack. The web service is added in M4.
 name: vio
 
 services:
@@ -30,6 +30,20 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-vio_products_v2}
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:11434/v1}
+      LLM_API_KEY: ${LLM_API_KEY:-ollama}
+      CORS_ORIGINS: '["http://localhost:3000"]'
+    ports:
+      - "8000:8000"
+    depends_on:
+      qdrant:
+        condition: service_healthy
 
 volumes:
   qdrant_data:
