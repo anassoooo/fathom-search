@@ -33,6 +33,18 @@ def config() -> None:
 
 
 @app.command()
+def serve(
+    host: Annotated[str, typer.Option()] = "127.0.0.1",
+    port: Annotated[int, typer.Option()] = 8000,
+    reload: Annotated[bool, typer.Option(help="Auto-reload on code changes (dev only).")] = False,
+) -> None:
+    """Run the HTTP API with uvicorn."""
+    import uvicorn
+
+    uvicorn.run("vio.api.main:app", host=host, port=port, reload=reload, log_config=None)
+
+
+@app.command()
 def ingest(
     csv_path: Annotated[
         Path | None, typer.Option("--csv", help="Processed catalog CSV (vio_EDA.csv format).")
