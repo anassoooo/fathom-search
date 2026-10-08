@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Header } from '@/components/header'
+import { Suspense } from 'react'
 import { Catalog } from '@/components/catalog'
 import { AssistantButton } from '@/components/assistant-button'
 import { Button } from '@/components/ui/button'
@@ -31,7 +32,7 @@ export default function HomePage() {
               </h1>
 
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-                Experience the world's most advanced e-commerce engine.
+                Experience the world&apos;s most advanced e-commerce engine.
                 Our AI understands your vibe, not just your keywords.
               </p>
 
@@ -101,7 +102,9 @@ export default function HomePage() {
               <p className="text-muted-foreground max-w-xl">Discover over 42,000 premium products curated for quality and style.</p>
             </div>
 
-            <Catalog />
+            <Suspense fallback={null}>
+              <Catalog />
+            </Suspense>
           </div>
         </section>
       </main>
@@ -114,7 +117,7 @@ export default function HomePage() {
               <span className="text-premium-label opacity-60">© 2026</span>
             </div>
             <p className="max-w-xs text-center md:text-left text-premium-title !text-[0.7rem] !font-medium leading-relaxed opacity-70 uppercase tracking-wider">
-              The world's most advanced AI-curated boutique, powered by vector-search technology.
+              The world&apos;s most advanced AI-curated boutique, powered by vector-search technology.
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-10">

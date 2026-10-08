@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid event type' }, { status: 400 })
     }
 
-    const meta: any = metadata ?? {}
+    const meta: Record<string, unknown> = { ...(metadata ?? {}) }
 
     // Normalize common key variants
     if (meta.productId && !meta.product_id) meta.product_id = meta.productId

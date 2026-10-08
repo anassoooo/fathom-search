@@ -22,20 +22,17 @@ export function Catalog() {
   const router = useRouter()
   const pathname = usePathname()
 
-  const initialCategory = searchParams.get('category') || ''
+  const category = searchParams.get('category') || ''
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(24)
-  const [category, setCategory] = useState<string>(initialCategory)
+  const [prevCategory, setPrevCategory] = useState(category)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Sync state with URL when category changes
-  useEffect(() => {
-    const current = searchParams.get('category') || ''
-    if (current !== category) {
-      setCategory(current)
-      setPage(1)
-    }
-  }, [searchParams, category])
+  // Reset to page 1 whenever the URL category changes
+  if (prevCategory !== category) {
+    setPrevCategory(category)
+    setPage(1)
+  }
 
   const updateUrl = (newCategory: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -109,7 +106,6 @@ export function Catalog() {
 
   const handleCategoryChange = (newCategory: string) => {
     const value = newCategory === 'all' ? '' : newCategory
-    setCategory(value)
     setPage(1)
     updateUrl(value)
   }

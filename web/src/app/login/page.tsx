@@ -27,13 +27,6 @@ function LoginForm() {
   const action = searchParams.get('action')
   const payload = searchParams.get('payload')
 
-  useEffect(() => {
-    if (!isLoading && user) {
-      handlePostAuthAction()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isLoading])
-
   const handlePostAuthAction = () => {
     // Handle pending actions after authentication
     if (action === 'open_assistant') {
@@ -52,6 +45,13 @@ function LoginForm() {
       router.push(next)
     }
   }
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      handlePostAuthAction()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isLoading])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

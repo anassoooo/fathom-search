@@ -37,6 +37,8 @@ export function ProductCarousel({ products, className, title, analytics }: Produ
 
     useEffect(() => {
         if (!emblaApi) return
+        // Initial read of the carousel's state (external system), then subscribe.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         onSelect()
         emblaApi.on('select', onSelect)
         emblaApi.on('reInit', onSelect)

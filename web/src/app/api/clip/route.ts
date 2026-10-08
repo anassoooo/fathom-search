@@ -8,25 +8,29 @@ env.useBrowserCache = false
 env.allowLocalModels = false
 
 // Singleton pipelines
-let textPipeline: Awaited<ReturnType<typeof pipeline>> | null = null
-let imagePipeline: Awaited<ReturnType<typeof pipeline>> | null = null
+// Legacy route: removed in T051 when CLIP moves to the Python backend.
+// The library's pipeline union type is too broad, so narrow it to what we use.
+type FeaturePipeline = (input: string, options?: Record<string, unknown>) => Promise<{ data: Float32Array }>
+
+let textPipeline: FeaturePipeline | null = null
+let imagePipeline: FeaturePipeline | null = null
 
 const MODEL_NAME = 'Xenova/clip-vit-base-patch32'
 
 async function getTextPipeline() {
   if (!textPipeline) {
-    textPipeline = await pipeline('feature-extraction', MODEL_NAME, {
+    textPipeline = (await pipeline('feature-extraction', MODEL_NAME, {
       quantized: false,
-    })
+    })) as unknown as FeaturePipeline
   }
   return textPipeline
 }
 
 async function getImagePipeline() {
   if (!imagePipeline) {
-    imagePipeline = await pipeline('image-feature-extraction', MODEL_NAME, {
+    imagePipeline = (await pipeline('image-feature-extraction', MODEL_NAME, {
       quantized: false,
-    })
+    })) as unknown as FeaturePipeline
   }
   return imagePipeline
 }
@@ -48,7 +52,7 @@ export async function POST(request: Request) {
     if (text) {
       const extractor = await getTextPipeline()
       const output = await extractor(text, { pooling: 'mean', normalize: true })
-      textVector = l2Normalize(Array.from(output.data as Float32Array))
+      textVector = l2Normalize(Array.from(output.data))
     }
 
     // Generate image embedding
@@ -63,7 +67,7 @@ export async function POST(request: Request) {
       const dataUrl = `data:image/jpeg;base64,${imageData}`
 
       const output = await extractor(dataUrl)
-      imageVector = l2Normalize(Array.from(output.data as Float32Array))
+      imageVector = l2Normalize(Array.from(output.data))
     }
 
     return Response.json({ textVector, imageVector })

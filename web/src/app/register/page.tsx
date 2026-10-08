@@ -29,13 +29,6 @@ function RegisterForm() {
   const action = searchParams.get('action')
   const payload = searchParams.get('payload')
 
-  useEffect(() => {
-    if (!isLoading && user) {
-      handlePostAuthAction()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isLoading])
-
   const handlePostAuthAction = () => {
     if (action === 'open_assistant') {
       // Navigate to assistant in the same tab, passing next as a query param
@@ -52,6 +45,13 @@ function RegisterForm() {
       router.push(next)
     }
   }
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      handlePostAuthAction()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isLoading])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

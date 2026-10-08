@@ -82,6 +82,8 @@ function AssistantContent() {
     const savedImage = sessionStorage.getItem('assistant_image')
     const savedImagePreview = sessionStorage.getItem('assistant_image_preview')
 
+    // sessionStorage is client-only, so restoring must happen after mount. Rewritten in T055.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedResults) setResults(JSON.parse(savedResults))
     if (savedPrompt) setPrompt(savedPrompt)
     if (savedImage) setImage(savedImage)
