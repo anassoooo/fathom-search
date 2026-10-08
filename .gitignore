@@ -1,4 +1,4 @@
-# Node modules
+# Node
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -11,16 +11,15 @@ out/
 build/
 dist/
 
-# Environment files
+# Environment files (examples are committed)
 .env
-.env.local
-.env.*.local
+.env.*
 *.env
+!.env.example
 
-# Database
+# Local databases
 *.db
 *.db-journal
-prisma/migrations/
 
 # IDE
 .vscode/
@@ -41,26 +40,24 @@ __pycache__/
 .Python
 .venv/
 venv/
-ENV/
-env/
 *.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .ipynb_checkpoints/
 
-# Data files (too large for git)
-data-pipeline/data/raw/*.csv
-data-pipeline/data/processed/*.csv
-data-pipeline/data/images/
+# Data: only the committed sample and eval sets are tracked
+data/raw/
+data/processed/
+data/images/
 *.parquet
 
-# Keep sample data
-!data-pipeline/data/sample/*.csv
-
-# ML models
+# Model weights / caches
 *.pth
 *.pt
 *.onnx
-models/
+.cache/
+models_cache/
 
 # Logs
 logs/
@@ -70,3 +67,6 @@ logs/
 coverage/
 .coverage
 htmlcov/
+
+# Local tool runner
+powershell.cmd
