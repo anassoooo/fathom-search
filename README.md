@@ -1,179 +1,85 @@
-# VIO Shop - AI-Powered E-Commerce Platform
+# VIO — multimodal product search
 
-> **Vectors In Orbit**: An intelligent e-commerce platform using vector embeddings for semantic product search and recommendations.
+> **Status: under active rebuild.** This README describes only what exists
+> today. The target system and roadmap are in [PLAN.md](PLAN.md), the
+> engineering rules in [CONSTITUTION.md](CONSTITUTION.md), and progress in
+> [TASKS.md](TASKS.md).
 
-## 🚀 Project Overview
+VIO is a product-discovery app over a catalog of about 42K Amazon products.
+Shoppers can browse, search with natural language or a photo, and get
+recommendations from an AI assistant.
 
-**VIO Shop** is a next-generation "FinCommerce" discovery engine designed to bridge the gap between vague user intent and strict financial reality. 
+## What works today
 
-Existing e-commerce search is broken: it fails at vague queries ("summer wedding guest") and ignores financial context (budget, value constraint). VIO Shop solves this with an **AI-First capabilities layer**:
+**Web app (`web/`, Next.js 16, TypeScript)**
+- Catalog browsing with category filter and pagination, product pages, and
+  "similar products" (Qdrant vector similarity).
+- Assistant: a text and/or image query goes to a local LLM (Ollama,
+  `qwen2.5:3b-instruct`), which rewrites the query and extracts price/category
+  filters as JSON. The query is then embedded with CLIP ViT-B/32
+  (`@xenova/transformers`) and searched in Qdrant. If CLIP fails, it falls back
+  to keyword matching.
+- Email/password accounts, cart, assistant history.
+- Interaction event logging (impressions, clicks, add-to-cart) and a `/metrics`
+  page with CTR and add-to-cart rate.
 
-- **Context-Aware Assistant**: Detects vague queries and proactively asks for clarification (e.g., "What is your budget?" or "Which product type?").
-- **Hybrid Semantic Search**: Combines **Text Embeddings (Ollama)** and **Visual Embeddings (CLIP)** to find "vibes" that keyword search misses.
-- **Strict Constraint Filtering**: Respects hard financial constraints (Price < $X) while maintaining fuzzy semantic relevance.
-- **Premium Discovery UI**: Features horizontal momentum carousels, glassmorphism aesthetics, and "boutique" curation layouts.
+**Backend (`backend/`, Python 3.12)**: a skeleton only so far: typed config,
+the `vio` CLI, and the lint/type/test toolchain. The search service is being
+built in milestone M1.
 
-### Key Features
+**Notebooks (`notebooks/`)**: the Colab notebooks that preprocessed the
+catalog, computed Bayesian ratings and value scores, and uploaded CLIP text and
+image embeddings to Qdrant.
 
-1.  **Smart Clarification Loop**
-    *   *Problem*: Users often search vaguley ("I want a laptop").
-    *   *Solution*: Our LLM-based intent classifier identifies missing entities (Price, Category) and halts the search to request specific details, ensuring higher-quality results.
+## Limitations (known, being addressed)
 
-2.  **Visual & Text Compatibility**
-    *   Uses **CLIP** to project text and images into the same 512-dimensional vector space.
-    *   Allows searching for images using text descriptions (e.g., "red floral dress" matches an image of a red floral dress even without text tags).
+- Product text is title-only (`name | category | subcategory | price bucket | price`); there are no descriptions.
+- Search quality has **not been measured** yet. The evaluation harness arrives in M2.
+- The LLM endpoint is hardcoded to `localhost:11434`, so the assistant needs local Ollama.
+- Passwords are hashed with SHA-256 and one shared secret (no per-user salt), not bcrypt (fixed in T053). `/metrics` is not access-controlled.
+- The web app uses SQLite through Prisma. Postgres is available in docker compose but not wired up yet (T052).
+- The full dataset and images are not in the repo. A committed sample is pending (T002).
 
-3.  **Financial Value Scoring**
-    *   Calculates `value_score` and `bayes_rating` to surface "Great Value" items, not just cheap ones.
-
-### Tech Stack
-
-**Frontend & Backend**:
-- Next.js 16.0 with TypeScript
-- Radix UI + Tailwind CSS (Glassmorphism UI)
-- Prisma ORM with SQLite (dev) / PostgreSQL (production)
-- Vercel AI SDK
-
-**AI & Data Pipeline**:
-- **Ollama (Llama 3 / Qwen)**: Intent extraction & entity recognition
-- **OpenAI CLIP**: Multimodal embeddings
-- **Qdrant**: Vector Similarity Search + Payload Filtering
-- Python 3.x with PyTorch & Jupyter Notebooks
-
-## 📂 Repository Structure
+## Repository layout
 
 ```
-vio-shop-organized/
-├── app/                    # Next.js web application
-│   ├── src/               # Application source code
-│   ├── public/            # Static assets
-│   ├── prisma/            # Database schema
-│   └── package.json       # App dependencies
-│
-├── data-pipeline/         # Product data processing & embeddings
-│   ├── notebooks/         # Jupyter notebooks (01-03)
-│   ├── scripts/           # Production Python scripts
-│   ├── data/              # Data storage (gitignored)
-│   │   ├── sample/        # Sample dataset (500 products)
-│   │   ├── raw/           # Raw product data
-│   │   └── processed/     # Processed datasets
-│   └── docs/              # Pipeline documentation
-│
-├── docs/                  # Project-wide documentation
-└── .github/               # CI/CD workflows (optional)
+backend/     Python package `vio` (FastAPI service, ingestion, eval; in progress)
+web/         Next.js app
+notebooks/   Colab notebooks for preprocessing, EDA, and legacy embedding upload
+docs/        Architecture notes, ADRs (docs/adr/), original project report
+docker-compose.yml   Local Qdrant + Postgres
 ```
 
-## 🛠️ Quick Start
+## Running locally
 
-### Prerequisites
-
-- Node.js 18+ and npm/yarn
-- Python 3.8+
-- Qdrant Cloud account (or local instance)
-
-### 1. Web Application Setup
+Prerequisites: Node 22+, Docker, [uv](https://docs.astral.sh/uv/), and
+optionally Ollama for the assistant.
 
 ```bash
-cd app
-npm install
-cp .env.example .env.local
-# Edit .env.local with your credentials
-npx prisma generate
-npm run dev
+# Infrastructure
+docker compose up -d qdrant postgres
+
+# Web app
+cd web
+npm ci                         # also runs `prisma generate`
+echo 'DATABASE_URL="file:./dev.db"' > .env
+echo 'QDRANT_URL=http://localhost:6333' >> .env
+echo 'QDRANT_API_KEY=local' >> .env       # required by web; ignored by local Qdrant
+echo 'QDRANT_COLLECTION=vio_products' >> .env
+npx prisma db push
+npm run dev                    # http://localhost:3000
+
+# Backend toolchain
+cd ../backend
+uv sync
+uv run vio --help
+uv run pytest
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+The Qdrant collection must be populated before the catalog shows products. For
+now that means running the notebooks in `notebooks/`. `vio ingest` replaces
+this in T013.
 
-### 2. Data Pipeline Setup
+## License
 
-```bash
-cd data-pipeline
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env with your Qdrant credentials
-
-# Run notebooks in order:
-jupyter notebook notebooks/01_preprocessing.ipynb
-```
-
-## 🗄️ Database
-
-**Product Collection**: ~42,000 Amazon products with:
-- Text embeddings (product title + description + category)
-- Image embeddings (product images)
-- Metadata (price, ratings, category, etc.)
-
-**Vector Dimensions**: 512 (CLIP embeddings)
-**Distance Metric**: Cosine similarity
-
-## 📊 Data Pipeline Workflow
-
-1. **Preprocessing** (`01_preprocessing.ipynb`): Clean raw data, handle missing values
-2. **EDA** (`02_eda.ipynb`): Calculate Bayesian ratings and value scores
-3. **Embedding** (`03_embedding.ipynb`): Generate CLIP embeddings and upload to Qdrant
-
-## 🔐 Environment Variables
-
-### App (`.env.local`)
-```env
-QDRANT_API_KEY=your_api_key
-QDRANT_URL=https://your-cluster.qdrant.io
-QDRANT_COLLECTION=vio_products
-DATABASE_URL=postgresql://user:pass@host/db
-AUTH_SECRET=your_secret
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### Data Pipeline (`.env`)
-```env
-QDRANT_URL=https://your-cluster.qdrant.io
-QDRANT_API_KEY=your_api_key
-CSV_PATH=/path/to/vio_EDA.csv
-IMG_ROOT=/path/to/images/
-CLIP_MODEL=openai/clip-vit-base-patch32
-DEVICE=cuda  # or cpu
-```
-
-## 🧪 Testing
-
-```bash
-# App tests
-cd app
-npm test
-
-# Data pipeline tests
-cd data-pipeline
-pytest tests/
-```
-
-## 📝 Documentation
-
-- [Architecture Overview](docs/ARCHITECTURE.md)
-- [Data Pipeline Details](data-pipeline/README.md)
-- [API Documentation](docs/API.md)
-- [Deployment Guide](docs/DEPLOYMENT.md)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Dataset: Amazon Product Data
-- Model: OpenAI CLIP
-- Vector Database: Qdrant
-- Framework: Next.js by Vercel
-
----
-
-**Built with ❤️ using AI and vector embeddings**
+MIT. See [LICENSE](LICENSE).
