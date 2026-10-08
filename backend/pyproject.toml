@@ -45,6 +45,7 @@ files = ["src", "tests"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers -m 'not integration'"
+filterwarnings = ["ignore:Payload indexes have no effect in the local Qdrant:UserWarning"]
 markers = [
     "integration: needs real external services (Qdrant, LLM); run with -m integration",
     "models: downloads and runs real ONNX models (slow on first run)",
