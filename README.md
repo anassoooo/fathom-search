@@ -23,9 +23,23 @@ recommendations from an AI assistant.
 - Interaction event logging (impressions, clicks, add-to-cart) and a `/metrics`
   page with CTR and add-to-cart rate.
 
-**Backend (`backend/`, Python 3.12)**: a skeleton only so far: typed config,
-the `vio` CLI, and the lint/type/test toolchain. The search service is being
-built in milestone M1.
+**Search backend (`backend/`, Python 3.12, FastAPI)**: not yet used by the web app (that switch is M4).
+- `vio ingest` loads the catalog CSV with per-row validation and embeds each
+  product three ways: dense text (bge-small), sparse BM25, and CLIP image. It
+  upserts into Qdrant with deterministic IDs, and re-runs skip existing products.
+- `POST /v1/search` runs hybrid retrieval in a single Qdrant query: dense, BM25,
+  and CLIP text→image (plus image→image for photo queries) as prefetches, fused
+  with RRF, with filters applied inside every prefetch. A cross-encoder then
+  reranks the top 30.
+- Named variants (`bm25`, `dense`, `hybrid`, `hybrid_rerank`) select which
+  stages run, so they can be compared directly.
+- When something fails, search degrades instead of erroring: a slow reranker
+  falls back to fused order, and an unreadable image falls back to text-only.
+- Catalog endpoints: browse with filters, product detail, similar products, taxonomy.
+- Structured JSON logs with request IDs and per-stage timings.
+- All models run on CPU through ONNX (fastembed); no PyTorch.
+- Tests: about 90 unit tests (in-memory Qdrant, fake encoders) plus
+  integration tests against a real Qdrant and the real models.
 
 **Notebooks (`notebooks/`)**: the Colab notebooks that preprocessed the
 catalog, computed Bayesian ratings and value scores, and uploaded CLIP text and
@@ -34,7 +48,8 @@ image embeddings to Qdrant.
 ## Limitations (known, being addressed)
 
 - Product text is title-only (`name | category | subcategory | price bucket | price`); there are no descriptions.
-- Search quality has **not been measured** yet. The evaluation harness arrives in M2.
+- Search quality has **not been measured** yet. The evaluation harness arrives in M2. The backend has only been run on a 24-product test fixture.
+- `full` (LLM query understanding) behaves like `hybrid_rerank` until M3.
 - The LLM endpoint is hardcoded to `localhost:11434`, so the assistant needs local Ollama.
 - Passwords are hashed with SHA-256 and one shared secret (no per-user salt), not bcrypt (fixed in T053). `/metrics` is not access-controlled.
 - The web app uses SQLite through Prisma. Postgres is available in docker compose but not wired up yet (T052).
@@ -43,7 +58,7 @@ image embeddings to Qdrant.
 ## Repository layout
 
 ```
-backend/     Python package `vio` (FastAPI service, ingestion, eval; in progress)
+backend/     Python package `vio`: ingestion, hybrid search, FastAPI service
 web/         Next.js app
 notebooks/   Colab notebooks for preprocessing, EDA, and legacy embedding upload
 docs/        Architecture notes, ADRs (docs/adr/), original project report
@@ -69,16 +84,19 @@ echo 'QDRANT_COLLECTION=vio_products' >> .env
 npx prisma db push
 npm run dev                    # http://localhost:3000
 
-# Backend toolchain
+# Search backend
 cd ../backend
 uv sync
-uv run vio --help
-uv run pytest
+uv run pytest                                   # unit tests, no services needed
+uv run vio ingest --csv tests/fixtures/products.csv   # first run downloads ~700 MB of ONNX models
+uv run vio serve                                # http://127.0.0.1:8000/docs
+# or containerized (models baked into the image):
+docker compose up -d --build backend            # http://localhost:8000/docs
 ```
 
-The Qdrant collection must be populated before the catalog shows products. For
-now that means running the notebooks in `notebooks/`. `vio ingest` replaces
-this in T013.
+The web app still reads the legacy v1 collection (`vio_products`), which the
+notebooks in `notebooks/` populate. The backend uses the v2 collection
+(`vio_products_v2`) written by `vio ingest`.
 
 ## License
 

@@ -62,27 +62,27 @@ Branch name: `t<id>-<slug>`.
 
 ## M1 — Backend + ingestion
 
-- [ ] **T010 · Domain models** — Deps: T005
+- [x] **T010 · Domain models** — Deps: T005
   `vio/models.py`: `Product` (Pydantic, validated from CSV columns),
   `SearchRequest`, `SearchResult`, `ParsedQuery`, `Filters`. Map CSV column
   names → payload field names in one place.
   *Accept:* unit tests parse sample rows; invalid rows raise clear errors.
 
-- [ ] **T011 · Qdrant store wrapper** — Deps: T010, T006
+- [x] **T011 · Qdrant store wrapper** — Deps: T010, T006
   `vio/store/`: client factory from settings; `ensure_collection(recreate=False)`
   with the v2 schema (PLAN §7.3) and payload indexes; `upsert_batch`, `get`,
   `count`, `scroll`.
   *Accept:* an integration test against docker Qdrant creates the schema twice
   (idempotent) and upserts and reads back points.
 
-- [ ] **T012 · Embedding encoders** [P] — Deps: T005
+- [x] **T012 · Embedding encoders** [P] — Deps: T005
   `vio/embeddings/`: `TextDenseEncoder`, `SparseEncoder`, and `ImageEncoder`
   protocols, plus implementations (fastembed bge-small, fastembed bm25,
   transformers or open_clip CLIP with `encode_text` and `encode_image`). Lazy
   model loading; batch API; L2-normalized outputs.
   *Accept:* unit tests check shapes, normalization, and determinism; a fake encoder exists for tests.
 
-- [ ] **T013 · Ingest CLI** — Deps: T011, T012
+- [x] **T013 · Ingest CLI** — Deps: T011, T012
   `vio ingest [--sample|--csv PATH] [--limit N] [--recreate] [--only ...]
   [--vectors-parquet PATH]`. It builds document text, embeds in batches with a
   progress bar, upserts with `uuid5("vio:{product_id}")` IDs, and resumes after
@@ -94,43 +94,45 @@ Branch name: `t<id>-<slug>`.
   `notebooks/embed_full_catalog.ipynb` imports `vio` (pip install from git),
   embeds the full catalog plus images, and writes `vectors.parquet`.
   *Accept:* `vio ingest --vectors-parquet` loads it without recomputing.
+  *Note:* the `--vectors-parquet` flag is not built yet; it is part of this task.
 
-- [ ] **T015 · Filter builder** [P] — Deps: T010
+- [x] **T015 · Filter builder** [P] — Deps: T010
   `vio/search/filters.py`: `Filters` → Qdrant `Filter`. Validates against the
   taxonomy (unknown values dropped, then logged); clamps prices; handles min > max.
   *Accept:* table-driven unit tests, including invalid LLM-like inputs.
 
-- [ ] **T016 · Retrieval + RRF fusion** — Deps: T011, T012, T015
+- [x] **T016 · Retrieval + RRF fusion** — Deps: T011, T012, T015
   `vio/search/retrieve.py`: a single Query API call with prefetch over the
   enabled sources (dense, sparse, CLIP text→image, image→image) and RRF
   fusion, with filters applied in every prefetch.
   *Accept:* an integration test on sample data shows that filters are respected
   and each source can be toggled.
 
-- [ ] **T017 · Reranker** [P] — Deps: T012
+- [x] **T017 · Reranker** [P] — Deps: T012
   `vio/search/rerank.py`: cross-encoder over `name | category | subcategory`
   for the top N, with a timeout → falls back to fused order (Art. VI).
   *Accept:* unit test with a fake model; the timeout fallback is tested.
 
-- [ ] **T018 · Search pipeline + variants** — Deps: T016, T017
+- [x] **T018 · Search pipeline + variants** — Deps: T016, T017
   `vio/search/pipeline.py`: `search(request, variant)` where `variant` ∈
   `bm25|dense|hybrid|hybrid_rerank|full`, defined in `variants.py`. It returns
   results plus per-stage timings.
   *Accept:* each variant runs on sample data; timings are populated.
 
-- [ ] **T019 · FastAPI app** — Deps: T018
+- [x] **T019 · FastAPI app** — Deps: T018
   `vio/api/`: app factory, CORS, request-ID middleware, error handlers;
   routes `/health`, `/v1/taxonomy`, `/v1/search`, `/v1/products`,
   `/v1/products/{id}`, `/v1/products/{id}/similar`. Image payload ≤ 5 MB.
   Taxonomy cached at startup.
   *Accept:* tests with `httpx.AsyncClient` and fakes; `/docs` renders; `vio serve` works.
 
-- [ ] **T020 · Observability base** [P] — Deps: T019
+- [x] **T020 · Observability base** [P] — Deps: T019
   `vio/observability/`: structured JSON logging, a `timed()` span helper, and
   optional Langfuse integration (a no-op when unconfigured).
   *Accept:* every search log line has the trace ID, variant, and stage timings.
+  *Note:* JSON logs are done. The Langfuse integration moves to T040, where the first LLM calls appear.
 
-- [ ] **T021 · Backend Dockerfile** — Deps: T019
+- [x] **T021 · Backend Dockerfile** — Deps: T019
   Multi-stage uv image; models pre-downloaded at build time or cached in a
   volume; add the `backend` service to compose.
   *Accept:* `docker compose up` gives a healthy `/health` that reports Qdrant as reachable.

@@ -152,8 +152,13 @@ VIO/
 | Named vector  | Model (default)                    | Dim | Distance |
 |---------------|------------------------------------|-----|----------|
 | `text_dense`  | `BAAI/bge-small-en-v1.5`           | 384 | Cosine   |
-| `text_sparse` | `Qdrant/bm25` (fastembed)          | —   | IDF      |
-| `image_clip`  | `openai/clip-vit-base-patch32`     | 512 | Cosine   |
+| `text_sparse` | `Qdrant/bm25`                      | —   | IDF      |
+| `image_clip`  | `Qdrant/clip-ViT-B-32-vision` + `-text` (CLIP ViT-B/32) | 512 | Cosine |
+
+All models run through **fastembed** (ONNX Runtime, CPU), so the backend has no
+PyTorch dependency. fastembed serves a quantized ONNX build of bge-small.
+ONNX Runtime is pinned to `ONNX_THREADS=4` per model. Using all 16 cores
+oversubscribed the CPU and was 5–8x slower on the dev laptop.
 
 Text→image retrieval uses the CLIP **text** encoder on the query against
 `image_clip`. That is the one job CLIP's text tower is good at.
@@ -166,10 +171,11 @@ Text→image retrieval uses the CLIP **text** encoder on the query against
    build a Qdrant `Filter`.
 3. **Retrieve** with one Qdrant Query API call: `prefetch` dense (top 100) +
    sparse (top 100) [+ CLIP text→image (top 100)] [+ image→image if an image
-   was uploaded] → `fusion: RRF` → top 50, with filters applied in every prefetch.
-4. **Rerank** the top `RERANK_TOP_N` (default 50) with a cross-encoder
-   (`cross-encoder/ms-marco-MiniLM-L-6-v2` for CPU, ablate
-   `BAAI/bge-reranker-base`), then return top k.
+   was uploaded] → `fusion: RRF` → top `RERANK_TOP_N`, with filters applied in every prefetch.
+4. **Rerank** the top `RERANK_TOP_N` (default 30, to be tuned with M2 eval data) with
+   a cross-encoder (`Xenova/ms-marco-MiniLM-L-6-v2`; ablate `BAAI/bge-reranker-base`),
+   then return top k. Measured on the fixture, warm: encode ~14 ms, retrieve
+   ~6–10 ms, rerank of ≤30 docs ~60–230 ms.
 5. Return results with per-stage timings, the parsed query, the variant ID, and the trace ID.
 
 **Variants** are named configs (`bm25`, `dense`, `hybrid`, `hybrid_rerank`,
@@ -255,7 +261,7 @@ writes `eval/reports/<date>-<git-sha>.md` plus `.json`. CI runs a fast subset
 | CLIP-encoding 42K images on CPU is slow | Run on Colab GPU once; save vectors to parquet; CPU path upserts precomputed |
 | Free-tier limits (Qdrant 1 GB, Groq rate limits) | ~42K × 896 floats ≈ 150 MB fits; LLM cache plus a fallback path |
 | Cold starts on free hosting hurt the demo | Warm-up on `/health`; keep a recorded demo video as backup |
-| Reranker CPU latency | MiniLM-L6 by default; rerank only the top 50; report the latency trade-off |
+| Reranker CPU latency | MiniLM-L6 by default; rerank only the top `RERANK_TOP_N`; report the latency trade-off |
 
 ## 10. Milestones
 
