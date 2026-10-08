@@ -50,3 +50,13 @@ def test_clip_text_and_image_share_space(encoders: Encoders) -> None:
     t = encoders.image.embed_text("a plain red square")
     assert len(red) == 512
     assert _cos(t, red) > _cos(t, blue)
+
+
+def test_cross_encoder_prefers_relevant_doc() -> None:
+    from vio.search.rerank import FastEmbedReranker
+
+    r = FastEmbedReranker(Settings().rerank_model)
+    good, bad = r.score(
+        "espresso machine", ["Breville Barista Express Espresso Machine", "LEGO Classic Brick Box"]
+    )
+    assert good > bad

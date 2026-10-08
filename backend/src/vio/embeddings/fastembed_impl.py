@@ -1,8 +1,7 @@
 """fastembed (ONNX, CPU-friendly) implementations of the encoder protocols."""
 
 import io
-import threading
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from typing import Any
 
 import numpy as np
@@ -11,22 +10,7 @@ from PIL import Image
 
 from vio.config import Settings
 from vio.embeddings.base import Encoders, SparseVector, Vector
-
-
-class _Lazy[T]:
-    """Load a model on first use, so importing or constructing the app stays fast."""
-
-    def __init__(self, factory: Callable[[], T]) -> None:
-        self._factory = factory
-        self._value: T | None = None
-        self._lock = threading.Lock()
-
-    def get(self) -> T:
-        if self._value is None:
-            with self._lock:
-                if self._value is None:
-                    self._value = self._factory()
-        return self._value
+from vio.lazy import Lazy
 
 
 def _normalize(arr: Any) -> Vector:
@@ -38,7 +22,7 @@ def _normalize(arr: Any) -> Vector:
 
 class FastEmbedDense:
     def __init__(self, model_name: str, cache_dir: str | None = None) -> None:
-        self._model = _Lazy(lambda: TextEmbedding(model_name, cache_dir=cache_dir))
+        self._model = Lazy(lambda: TextEmbedding(model_name, cache_dir=cache_dir))
         self._dim: int | None = None
 
     @property
@@ -56,7 +40,7 @@ class FastEmbedDense:
 
 class FastEmbedSparse:
     def __init__(self, model_name: str, cache_dir: str | None = None) -> None:
-        self._model = _Lazy(lambda: SparseTextEmbedding(model_name, cache_dir=cache_dir))
+        self._model = Lazy(lambda: SparseTextEmbedding(model_name, cache_dir=cache_dir))
 
     def embed_documents(self, texts: Sequence[str]) -> list[SparseVector]:
         return [
@@ -72,8 +56,8 @@ class FastEmbedSparse:
 
 class FastEmbedClip:
     def __init__(self, vision_model: str, text_model: str, cache_dir: str | None = None) -> None:
-        self._vision = _Lazy(lambda: ImageEmbedding(vision_model, cache_dir=cache_dir))
-        self._text = _Lazy(lambda: TextEmbedding(text_model, cache_dir=cache_dir))
+        self._vision = Lazy(lambda: ImageEmbedding(vision_model, cache_dir=cache_dir))
+        self._text = Lazy(lambda: TextEmbedding(text_model, cache_dir=cache_dir))
         self._dim: int | None = None
 
     @property
