@@ -21,8 +21,12 @@ class Reranker(Protocol):
 
 
 class FastEmbedReranker:
-    def __init__(self, model_name: str, cache_dir: str | None = None) -> None:
-        self._model = Lazy(lambda: TextCrossEncoder(model_name, cache_dir=cache_dir))
+    def __init__(
+        self, model_name: str, cache_dir: str | None = None, threads: int | None = None
+    ) -> None:
+        self._model = Lazy(
+            lambda: TextCrossEncoder(model_name, cache_dir=cache_dir, threads=threads)
+        )
 
     def score(self, query: str, documents: Sequence[str]) -> list[float]:
         return [float(s) for s in self._model.get().rerank(query, list(documents))]

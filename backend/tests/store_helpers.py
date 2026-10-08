@@ -1,14 +1,14 @@
 """Build a populated ProductStore from the fixture CSV with fake encoders."""
 
-import hashlib
-
 from vio.embeddings import Encoders
+from vio.embeddings.fake import FAKE_IMAGE_PREFIX
 from vio.models import Product
 from vio.store.qdrant import ProductPoint, ProductStore
 
 
 def fake_image_bytes(product: Product) -> bytes:
-    return hashlib.sha256(f"img:{product.product_id}".encode()).digest()
+    """A stand-in 'photo' whose content is the product's own description."""
+    return FAKE_IMAGE_PREFIX + f"{product.doc_text()} #{product.product_id}".encode()
 
 
 def populate(store: ProductStore, products: list[Product], enc: Encoders) -> None:

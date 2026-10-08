@@ -38,3 +38,14 @@ def test_image_identical_bytes_match() -> None:
     a, b, c = enc.embed_images([b"img-1", b"img-1", b"img-2"])
     assert a == b != c
     assert len(enc.embed_text("red dress")) == enc.dim
+
+
+def test_fake_image_descriptions_live_in_text_space() -> None:
+    from vio.embeddings.fake import FAKE_IMAGE_PREFIX
+
+    enc = FakeImage()
+    shoe, skillet = enc.embed_images(
+        [FAKE_IMAGE_PREFIX + b"red running shoe", FAKE_IMAGE_PREFIX + b"cast iron skillet"]
+    )
+    q = enc.embed_text("running shoe")
+    assert _cos(q, shoe) > _cos(q, skillet)

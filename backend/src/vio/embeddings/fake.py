@@ -62,8 +62,16 @@ class FakeSparse:
         return self._encode(text)
 
 
+FAKE_IMAGE_PREFIX = b"fakeimg:"
+
+
 class FakeImage:
-    """Images hash to a vector; text uses bag-of-words. Identical image bytes match exactly."""
+    """Simulates a joint text-image space.
+
+    Bytes of the form b"fakeimg:<description>" embed like their description, so text
+    queries can find them (as CLIP text->image would). Any other bytes get a dense
+    pseudo-random vector, so identical images match and different ones rarely collide.
+    """
 
     def __init__(self, dim: int = 32) -> None:
         self._dim = dim
@@ -73,7 +81,19 @@ class FakeImage:
         return self._dim
 
     def embed_images(self, images: Sequence[bytes]) -> list[Vector]:
-        return [_hashed_bow(hashlib.sha256(b).hexdigest(), self._dim) for b in images]
+        return [self._embed_one(b) for b in images]
+
+    def _embed_one(self, data: bytes) -> Vector:
+        if data.startswith(FAKE_IMAGE_PREFIX):
+            return _hashed_bow(data[len(FAKE_IMAGE_PREFIX) :].decode(), self._dim)
+        return self._pseudo_random(data)
+
+    def _pseudo_random(self, data: bytes) -> Vector:
+        # Dense vector seeded by the bytes: identical images match, different ones rarely collide.
+        digest = hashlib.shake_256(data).digest(self._dim)
+        vec = [b - 127.5 for b in digest]
+        norm = math.sqrt(sum(v * v for v in vec))
+        return [v / norm for v in vec]
 
     def embed_text(self, text: str) -> Vector:
         return _hashed_bow(text, self._dim)

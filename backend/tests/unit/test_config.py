@@ -7,7 +7,7 @@ def test_defaults_point_at_local_services(monkeypatch: pytest.MonkeyPatch) -> No
     monkeypatch.delenv("QDRANT_URL", raising=False)
     settings = Settings(_env_file=None)
     assert settings.qdrant_url == "http://localhost:6333"
-    assert settings.rerank_top_n == 50
+    assert settings.rerank_top_n == 30
 
 
 def test_env_overrides_and_secrets_are_masked(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -28,7 +28,10 @@ class Settings(BaseSettings):
     clip_text_model: str = "Qdrant/clip-ViT-B-32-text"
     rerank_model: str = "Xenova/ms-marco-MiniLM-L-6-v2"
     model_cache_dir: str | None = None
-    rerank_top_n: int = Field(default=50, ge=1, le=200)
+    # ONNX Runtime threads per model. Using every core oversubscribes the CPU and was
+    # 5-8x slower than 4 threads on a 16-thread laptop; tune per deployment target.
+    onnx_threads: int | None = Field(default=4, ge=1)
+    rerank_top_n: int = Field(default=30, ge=1, le=200)  # revisit with M2 eval data
     rerank_timeout_s: float = 2.0
 
     # Observability
