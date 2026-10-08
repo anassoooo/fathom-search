@@ -47,4 +47,5 @@ testpaths = ["tests"]
 addopts = "-ra --strict-markers -m 'not integration'"
 markers = [
     "integration: needs real external services (Qdrant, LLM); run with -m integration",
+    "models: downloads and runs real ONNX models (slow on first run)",
 ]

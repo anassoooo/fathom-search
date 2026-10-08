@@ -24,8 +24,10 @@ class Settings(BaseSettings):
     # Models
     dense_model: str = "BAAI/bge-small-en-v1.5"
     sparse_model: str = "Qdrant/bm25"
-    image_model: str = "openai/clip-vit-base-patch32"
-    rerank_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    image_model: str = "Qdrant/clip-ViT-B-32-vision"
+    clip_text_model: str = "Qdrant/clip-ViT-B-32-text"
+    rerank_model: str = "Xenova/ms-marco-MiniLM-L-6-v2"
+    model_cache_dir: str | None = None
     rerank_top_n: int = Field(default=50, ge=1, le=200)
     rerank_timeout_s: float = 2.0
 
