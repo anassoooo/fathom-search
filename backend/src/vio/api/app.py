@@ -1,6 +1,7 @@
 """FastAPI application factory."""
 
 import logging
+import time
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
@@ -16,6 +17,7 @@ from vio import __version__
 from vio.api.routes import router
 from vio.config import Settings, get_settings
 from vio.observability.context import request_id_var
+from vio.observability.logging import configure_logging
 from vio.search.pipeline import SearchInputError, SearchService
 
 log = logging.getLogger(__name__)
@@ -42,9 +44,15 @@ def _error(status: int, message: str) -> JSONResponse:
 
 
 def create_app(
-    service: SearchService | None = None, settings: Settings | None = None, *, warmup: bool = True
+    service: SearchService | None = None,
+    settings: Settings | None = None,
+    *,
+    warmup: bool = True,
+    configure_logs: bool = False,
 ) -> FastAPI:
     settings = settings or get_settings()
+    if configure_logs:
+        configure_logging(settings.log_level)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -78,6 +86,7 @@ def create_app(
         rid = request.headers.get("x-request-id") or uuid.uuid4().hex
         token = request_id_var.set(rid)
         request.state.request_id = rid
+        start = time.perf_counter()
         try:
             length = request.headers.get("content-length")
             if length is not None and length.isdigit() and int(length) > max_body:
@@ -85,6 +94,18 @@ def create_app(
             else:
                 response = await call_next(request)
             response.headers["X-Request-ID"] = rid
+            log.info(
+                "request",
+                extra={
+                    "fields": {
+                        "event": "request",
+                        "method": request.method,
+                        "path": request.url.path,
+                        "status": response.status_code,
+                        "duration_ms": round((time.perf_counter() - start) * 1000, 2),
+                    }
+                },
+            )
             return response
         finally:
             request_id_var.reset(token)

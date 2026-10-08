@@ -135,6 +135,23 @@ class SearchService:
                 if outcome.degraded:
                     degraded.append("reranker")
 
+        log.info(
+            "search",
+            extra={
+                "fields": {
+                    "event": "search",
+                    "variant": request.variant,
+                    "query": text[:200],
+                    "has_image": request.image_b64 is not None,
+                    "k": request.k,
+                    "n_results": min(len(candidates), request.k),
+                    "filters": filters.model_dump(exclude_none=True),
+                    "dropped_filters": dropped,
+                    "degraded": degraded,
+                    "timings_ms": timings,
+                }
+            },
+        )
         return SearchResponse(
             results=_to_hits(candidates[: request.k]),
             variant=request.variant,
