@@ -160,7 +160,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   *Accept:* the report shows the reproduction error and the estimated m with method;
   a ranking comparison (old vs new) shows what changes.
 
-- [ ] **T082 · Statistical outlier detection** [P] — Deps: T080
+- [x] **T082 · Statistical outlier detection** [P] — Deps: T080
   Robust z-score on log(price) within subcategory (median/MAD, Iglewicz–Hoaglin
   |z| > 3.5, min group size); low-evidence ratings (few reviews).
   *Accept:* flagged rows have reason codes; the $40,922 chair is flagged.
@@ -172,7 +172,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   *Accept:* a manual audit of a random sample of flags estimates precision;
   per-category noise rates are reported.
 
-- [ ] **T084 · Text integrity checks** [P] — Deps: T080
+- [x] **T084 · Text integrity checks** [P] — Deps: T080
   Mojibake (U+FFFD), HTML entities, brand-only titles, all-caps, whitespace
   anomalies, truncation markers.
   *Accept:* counts and examples are in the report.

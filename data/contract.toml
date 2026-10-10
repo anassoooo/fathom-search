@@ -64,3 +64,28 @@ max = 0.000001
 [checks."consistency.price_bucket_source"]
 severity = "warning"
 min = 0.99
+
+# --- Plausibility (T082): flagged rows are kept but marked; rates above these suggest a broken scrape ---
+[checks."plausibility.price_outlier"]
+severity = "warning"
+max = 0.03
+
+[checks."plausibility.low_evidence_rating"]
+severity = "warning"
+max = 0.05
+
+# --- Text integrity (T084) ---
+[checks."text.mojibake"]
+severity = "warning"
+max = 0.001
+
+[checks."text.html_entities"]
+severity = "warning"
+max = 0.001
+
+[checks."text.brand_only_title"]
+severity = "info"     # a property of the source, compensated by image vectors
+
+[checks."text.truncated"]
+severity = "warning"
+max = 0.01
