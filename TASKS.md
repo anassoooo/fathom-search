@@ -279,7 +279,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   add-to-cart events store them. Optional variant assignment per session.
   *Accept:* the metrics page shows CTR per variant.
 
-- [ ] **T055 · Assistant UI** — Deps: T045, T051
+- [x] **T055 · Assistant UI** — Deps: T045, T051
   Chat UI with clarification quick replies, product cards, and "why this
   result" chips; add-to-cart as a client action.
   *Accept:* the clarify → results flow works end to end.

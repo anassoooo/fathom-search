@@ -1,6 +1,7 @@
 'use client'
 
 import React from "react"
+import { QueryInsight, type QueryInsightData } from '@/components/query-insight'
 
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react'
 import Image from 'next/image'
@@ -41,6 +42,8 @@ function AssistantContent() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [results, setResults] = useState<Product[]>([])
+  const [insight, setInsight] = useState<QueryInsightData | null>(null)
+  const [lastPrompt, setLastPrompt] = useState('')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [showHistory, setShowHistory] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -155,6 +158,13 @@ function AssistantContent() {
 
       const data = await res.json()
       setResults(data.products)
+      setInsight({
+        understood: data.understood ?? null,
+        boostedCategory: data.boostedCategory ?? null,
+        appliedFilters: data.appliedFilters,
+        degraded: data.degraded ?? [],
+      })
+      setLastPrompt(prompt)
       await mutateHistory()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -275,6 +285,7 @@ function AssistantContent() {
             </div>
           ) : results.length > 0 ? (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+              {insight && <QueryInsight insight={insight} original={lastPrompt} />}
               <div className="flex items-center justify-between px-2">
                 <h3 className="text-xs font-bold tracking-wider bg-accent/10 px-3 py-1 rounded-full text-accent uppercase">
                   Matches your vision ({results.length})
