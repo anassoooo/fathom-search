@@ -80,9 +80,9 @@ def test_judge_all_grades_every_pooled_product(service: SearchService, tmp_path:
         QueryRecord(qid="q2", bucket="image", image_file="q.jpg", seed_product_id="22"),
     ]
     fake = FakeJudge()
-    judgments = judge_all(
-        queries, service, LLMClient(fake, sleep=lambda s: None), "m", tmp_path, depth=5
-    )
+    run = judge_all(queries, service, LLMClient(fake, sleep=lambda s: None), "m", tmp_path, depth=5)
+    judgments = run.judgments
+    assert run.judged_queries == 2 and run.skipped_queries == 0
     by_q: dict[str, dict[str, int]] = {}
     for j in judgments:
         by_q.setdefault(j.qid, {})[j.product_id] = j.grade
@@ -93,3 +93,51 @@ def test_judge_all_grades_every_pooled_product(service: SearchService, tmp_path:
     path = tmp_path / "qrels.jsonl"
     save_qrels(judgments, path)
     assert load_qrels(path) == by_q
+
+
+def test_balanced_order_interleaves_buckets() -> None:
+    from vio.eval.judge import balanced_order
+
+    qs = [QueryRecord(qid=f"d{i}", bucket="descriptive", query="x") for i in range(6)]
+    qs += [QueryRecord(qid=f"v{i}", bucket="vague", query="x") for i in range(2)]
+    order = balanced_order(qs)
+    assert {q.bucket for q in order[:2]} == {"descriptive", "vague"}  # any prefix is mixed
+    assert sorted(q.qid for q in order) == sorted(q.qid for q in qs)
+    assert balanced_order(qs) == order
+
+
+def test_quota_mid_run_keeps_cached_queries(service: SearchService, tmp_path: Path) -> None:
+    from vio.eval.judge import balanced_order
+    from vio.llm.client import RateLimitedError
+
+    queries = [
+        QueryRecord(qid=f"q{i}", bucket="specific", query=t)
+        for i, t in enumerate(["running shoes", "coffee maker", "yoga mat"])
+    ]
+    cache = tmp_path / "c.sqlite"
+    # warm the cache for the query that will come last in balanced order
+    last = balanced_order(queries)[-1]
+    judge_all(
+        [last],
+        service,
+        LLMClient(FakeJudge(), cache_path=cache, sleep=lambda s: None),
+        "m",
+        tmp_path,
+        depth=3,
+    )
+
+    class QuotaGone:
+        def __call__(self, *args: object) -> ChatResult:
+            raise RateLimitedError(3600.0, "tokens per day (TPD)")
+
+    run = judge_all(
+        queries,
+        service,
+        LLMClient(QuotaGone(), cache_path=cache, sleep=lambda s: None),
+        "m",
+        tmp_path,
+        depth=3,
+    )
+    assert run.judged_queries == 1 and run.skipped_queries == 2
+    assert {j.qid for j in run.judgments} == {last.qid}
+    assert run.quota_message and "TPD" in run.quota_message

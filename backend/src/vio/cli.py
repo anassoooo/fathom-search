@@ -316,7 +316,6 @@ def eval_judge(
     from vio.api.app import build_service
     from vio.eval.judge import judge_all, save_qrels
     from vio.eval.queries import load
-    from vio.llm.client import QuotaExhaustedError
 
     _refuse_overwrite(QRELS_V1, force)
     settings = get_settings()
@@ -332,25 +331,26 @@ def eval_judge(
         console=console,
     ) as progress:
         task = progress.add_task("Pooling + judging", total=len(queries))
-        try:
-            judgments = judge_all(
-                queries,
-                service,
-                llm,
-                settings.llm_model_eval,
-                EVAL_DATA,
-                depth=depth,
-                on_query=lambda q: progress.advance(task),
-            )
-        except QuotaExhaustedError as e:
-            done = int(progress.tasks[0].completed)
-            console.print(
-                f"[yellow]Stopped after {done}/{len(queries)} queries: {e}[/]\n"
-                "Judged queries are cached; re-run `vio eval judge` later to continue."
-            )
-            raise typer.Exit(code=2) from e
-    save_qrels(judgments, QRELS_V1)
-    console.print(f"Wrote {len(judgments):,} judgments -> {QRELS_V1}; LLM usage: {llm.usage}")
+        run = judge_all(
+            queries,
+            service,
+            llm,
+            settings.llm_model_eval,
+            EVAL_DATA,
+            depth=depth,
+            on_query=lambda q: progress.advance(task),
+        )
+    save_qrels(run.judgments, QRELS_V1)
+    console.print(
+        f"Judged {run.judged_queries}/{len(queries)} queries "
+        f"({len(run.judgments):,} pairs) -> {QRELS_V1}; LLM usage: {llm.usage}"
+    )
+    if run.skipped_queries:
+        console.print(
+            f"[yellow]{run.skipped_queries} queries skipped: {run.quota_message}[/]\n"
+            "Re-run `vio eval judge --force` after the quota resets; judged queries are cached."
+        )
+        raise typer.Exit(code=2)
 
 
 @eval_app.command("retrieval")

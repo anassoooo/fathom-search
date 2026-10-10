@@ -8,14 +8,16 @@ cached by the LLM client, so judging resumes where it stopped.
 
 import base64
 import json
+import random
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
 from vio.eval.queries import QueryRecord, prompt
-from vio.llm.client import LLMClient
+from vio.llm.client import LLMClient, QuotaExhaustedError
 from vio.models import Product, SearchRequest, Variant
 from vio.search.pipeline import SearchService
 
@@ -120,6 +122,34 @@ def judge_pool(
     ]
 
 
+def balanced_order(queries: Sequence[QueryRecord], seed: int = 11) -> list[QueryRecord]:
+    """Round-robin across buckets (each shuffled), so any prefix of the list is a
+    representative mix. Judging under a daily quota then yields usable partial sets."""
+    by_bucket: dict[str, list[QueryRecord]] = {}
+    for q in queries:
+        by_bucket.setdefault(q.bucket, []).append(q)
+    rng = random.Random(seed)
+    lanes = []
+    for b in sorted(by_bucket):
+        lane = list(by_bucket[b])
+        rng.shuffle(lane)
+        lanes.append(lane)
+    out: list[QueryRecord] = []
+    while any(lanes):
+        for lane in lanes:
+            if lane:
+                out.append(lane.pop(0))
+    return out
+
+
+@dataclass
+class JudgeRun:
+    judgments: list[Judgment]
+    judged_queries: int
+    skipped_queries: int  # not judged because the quota ran out
+    quota_message: str | None = None
+
+
 def judge_all(
     queries: Sequence[QueryRecord],
     service: SearchService,
@@ -129,15 +159,24 @@ def judge_all(
     *,
     depth: int = 20,
     on_query: Callable[[QueryRecord], None] | None = None,
-) -> list[Judgment]:
-    out: list[Judgment] = []
-    for q in queries:
+) -> JudgeRun:
+    """Judge queries in balanced order. When the quota runs out, keep collecting the
+    queries that are already cached (offline) and report how many were skipped."""
+    run = JudgeRun([], 0, 0)
+    for q in balanced_order(queries):
         pool = build_pool(q, service, eval_dir, depth)
         seed = service.get(q.seed_product_id) if q.seed_product_id else None
-        out += judge_pool(q, pool, seed, llm, model)
+        try:
+            run.judgments += judge_pool(q, pool, seed, llm, model)
+            run.judged_queries += 1
+        except QuotaExhaustedError as e:
+            if not llm.offline:
+                run.quota_message = str(e)
+                llm.offline = True
+            run.skipped_queries += 1
         if on_query:
             on_query(q)
-    return out
+    return run
 
 
 def save_qrels(judgments: Sequence[Judgment], path: Path) -> None:

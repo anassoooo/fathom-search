@@ -139,6 +139,9 @@ class LLMClient:
         self._max_attempts = max_attempts
         self._sleep = sleep
         self.usage = Usage()
+        # Set after a QuotaExhaustedError: cached answers still work, new calls fail fast
+        # without spending requests against the daily request quota.
+        self.offline = False
 
     @classmethod
     def from_settings(cls, settings: Settings, cache_path: Path | None = None) -> "LLMClient":
@@ -151,6 +154,8 @@ class LLMClient:
         if self._cache and (hit := self._cache.get(key)) is not None:
             self.usage.cache_hits += 1
             return hit
+        if self.offline:
+            raise QuotaExhaustedError("offline after quota exhaustion and this call is not cached")
 
         delay = 2.0
         for attempt in range(1, self._max_attempts + 1):
