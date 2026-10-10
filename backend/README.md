@@ -8,8 +8,10 @@ See [../PLAN.md](../PLAN.md) and [../CONSTITUTION.md](../CONSTITUTION.md).
 
 ```bash
 cd backend
-uv sync                      # creates .venv with Python 3.12
-cp .env.example .env         # then fill in values
+uv sync --extra cpu          # creates .venv with Python 3.12 (CPU inference)
+# or, with an NVIDIA GPU + recent driver:
+uv sync --extra gpu          # CUDA 12 / cuDNN 9 from pip; then set ONNX_DEVICE=cuda in .env
+cp .env.example .env         # then paste your Groq key into LLM_API_KEY
 uv run vio --help
 ```
 

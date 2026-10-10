@@ -2,6 +2,8 @@
 
 import io
 from collections.abc import Sequence
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -13,6 +15,46 @@ from vio.embeddings.base import Encoders, SparseVector, Vector
 from vio.lazy import Lazy
 
 
+@dataclass(frozen=True)
+class Runtime:
+    """Where and how ONNX models run. Passed to every fastembed model."""
+
+    cache_dir: str | None = None
+    threads: int | None = None
+    cuda: bool = False
+
+    def kwargs(self) -> dict[str, Any]:
+        if self.cuda:
+            enable_cuda()
+            return {"cache_dir": self.cache_dir, "cuda": True}
+        return {"cache_dir": self.cache_dir, "threads": self.threads}
+
+    @classmethod
+    def from_settings(cls, settings: Settings) -> "Runtime":
+        # A fixed default: fastembed-gpu otherwise resolves its cache to the working directory.
+        cache = settings.model_cache_dir or str(Path.home() / ".cache" / "vio" / "models")
+        return cls(cache, settings.onnx_threads, settings.onnx_device == "cuda")
+
+
+_cuda_ready = False
+
+
+def enable_cuda() -> None:
+    """Load the CUDA/cuDNN DLLs shipped as nvidia-* pip packages (needed on Windows)."""
+    global _cuda_ready
+    if _cuda_ready:
+        return
+    import onnxruntime as ort
+
+    if "CUDAExecutionProvider" not in ort.get_available_providers():
+        raise RuntimeError(
+            "ONNX_DEVICE=cuda but onnxruntime has no CUDA provider; run `uv sync --extra gpu`"
+        )
+    if hasattr(ort, "preload_dlls"):
+        ort.preload_dlls()
+    _cuda_ready = True
+
+
 def _normalize(arr: Any) -> Vector:
     vec = np.asarray(arr, dtype=np.float32)
     norm = float(np.linalg.norm(vec))
@@ -21,10 +63,9 @@ def _normalize(arr: Any) -> Vector:
 
 
 class FastEmbedDense:
-    def __init__(
-        self, model_name: str, cache_dir: str | None = None, threads: int | None = None
-    ) -> None:
-        self._model = Lazy(lambda: TextEmbedding(model_name, cache_dir=cache_dir, threads=threads))
+    def __init__(self, model_name: str, runtime: Runtime | None = None) -> None:
+        rt = runtime or Runtime()
+        self._model = Lazy(lambda: TextEmbedding(model_name, **rt.kwargs()))
         self._dim: int | None = None
 
     @property
@@ -41,11 +82,11 @@ class FastEmbedDense:
 
 
 class FastEmbedSparse:
-    def __init__(
-        self, model_name: str, cache_dir: str | None = None, threads: int | None = None
-    ) -> None:
+    def __init__(self, model_name: str, runtime: Runtime | None = None) -> None:
+        # BM25 is a tokenizer + statistics, not a neural model: always CPU.
+        rt = runtime or Runtime()
         self._model = Lazy(
-            lambda: SparseTextEmbedding(model_name, cache_dir=cache_dir, threads=threads)
+            lambda: SparseTextEmbedding(model_name, cache_dir=rt.cache_dir, threads=rt.threads)
         )
 
     def embed_documents(self, texts: Sequence[str]) -> list[SparseVector]:
@@ -61,17 +102,10 @@ class FastEmbedSparse:
 
 
 class FastEmbedClip:
-    def __init__(
-        self,
-        vision_model: str,
-        text_model: str,
-        cache_dir: str | None = None,
-        threads: int | None = None,
-    ) -> None:
-        self._vision = Lazy(
-            lambda: ImageEmbedding(vision_model, cache_dir=cache_dir, threads=threads)
-        )
-        self._text = Lazy(lambda: TextEmbedding(text_model, cache_dir=cache_dir, threads=threads))
+    def __init__(self, vision_model: str, text_model: str, runtime: Runtime | None = None) -> None:
+        rt = runtime or Runtime()
+        self._vision = Lazy(lambda: ImageEmbedding(vision_model, **rt.kwargs()))
+        self._text = Lazy(lambda: TextEmbedding(text_model, **rt.kwargs()))
         self._dim: int | None = None
 
     @property
@@ -89,9 +123,9 @@ class FastEmbedClip:
 
 
 def build_encoders(settings: Settings) -> Encoders:
-    cache, threads = settings.model_cache_dir, settings.onnx_threads
+    rt = Runtime.from_settings(settings)
     return Encoders(
-        dense=FastEmbedDense(settings.dense_model, cache, threads),
-        sparse=FastEmbedSparse(settings.sparse_model, cache, threads),
-        image=FastEmbedClip(settings.image_model, settings.clip_text_model, cache, threads),
+        dense=FastEmbedDense(settings.dense_model, rt),
+        sparse=FastEmbedSparse(settings.sparse_model, rt),
+        image=FastEmbedClip(settings.image_model, settings.clip_text_model, rt),
     )

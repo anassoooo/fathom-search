@@ -7,10 +7,10 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never
 WORKDIR /app
 COPY pyproject.toml uv.lock README.md ./
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-default-groups --no-install-project
+    uv sync --locked --no-default-groups --extra cpu --no-install-project
 COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-default-groups --no-editable
+    uv sync --locked --no-default-groups --extra cpu --no-editable
 
 # ---- runtime ----------------------------------------------------------------
 FROM python:3.12-slim
@@ -25,10 +25,11 @@ RUN mkdir /models && python -c "\
 from vio.config import Settings; \
 from vio.embeddings.fastembed_impl import build_encoders; \
 from vio.search.rerank import FastEmbedReranker; \
+from vio.embeddings.fastembed_impl import Runtime; \
 s = Settings(); e = build_encoders(s); \
 e.dense.embed_query('x'); e.sparse.embed_query('x'); e.image.embed_text('x'); \
 e.image.embed_images([__import__('base64').b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==')]); \
-FastEmbedReranker(s.rerank_model, s.model_cache_dir).score('x', ['a', 'b'])" \
+FastEmbedReranker(s.rerank_model, Runtime.from_settings(s)).score('x', ['a', 'b'])" \
     && chown -R vio /models
 
 USER vio

@@ -20,7 +20,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-      - run: uv sync --locked
+      - run: uv sync --locked --extra cpu
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy
@@ -43,7 +43,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-      - run: uv sync --locked
+      - run: uv sync --locked --extra cpu
       - name: Wait for Qdrant
         run: timeout 60 bash -c 'until curl -sf localhost:6333/readyz; do sleep 2; done'
       - run: uv run pytest -m "integration and not models"

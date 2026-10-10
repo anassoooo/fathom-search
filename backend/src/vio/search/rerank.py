@@ -10,6 +10,7 @@ from typing import Protocol
 
 from fastembed.rerank.cross_encoder import TextCrossEncoder
 
+from vio.embeddings.fastembed_impl import Runtime
 from vio.lazy import Lazy
 from vio.search.retrieve import Candidate
 
@@ -21,12 +22,9 @@ class Reranker(Protocol):
 
 
 class FastEmbedReranker:
-    def __init__(
-        self, model_name: str, cache_dir: str | None = None, threads: int | None = None
-    ) -> None:
-        self._model = Lazy(
-            lambda: TextCrossEncoder(model_name, cache_dir=cache_dir, threads=threads)
-        )
+    def __init__(self, model_name: str, runtime: Runtime | None = None) -> None:
+        rt = runtime or Runtime()
+        self._model = Lazy(lambda: TextCrossEncoder(model_name, **rt.kwargs()))
 
     def score(self, query: str, documents: Sequence[str]) -> list[float]:
         return [float(s) for s in self._model.get().rerank(query, list(documents))]

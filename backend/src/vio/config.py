@@ -1,6 +1,7 @@
 """Typed runtime configuration. This module is the only place that reads env vars."""
 
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -33,6 +34,8 @@ class Settings(BaseSettings):
     # ONNX Runtime threads per model. Using every core oversubscribes the CPU and was
     # 5-8x slower than 4 threads on a 16-thread laptop; tune per deployment target.
     onnx_threads: int | None = Field(default=4, ge=1)
+    # "cuda" needs the GPU build (`uv sync --extra gpu`) and an NVIDIA GPU.
+    onnx_device: Literal["cpu", "cuda"] = "cpu"
     rerank_top_n: int = Field(default=30, ge=1, le=200)  # revisit with M2 eval data
     rerank_timeout_s: float = 2.0
 

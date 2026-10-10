@@ -27,14 +27,14 @@ _BODY_OVERHEAD = 64 * 1024
 
 
 def build_service(settings: Settings) -> SearchService:
-    from vio.embeddings.fastembed_impl import build_encoders
+    from vio.embeddings.fastembed_impl import Runtime, build_encoders
     from vio.search.rerank import FastEmbedReranker
     from vio.store.qdrant import ProductStore, create_client
 
     return SearchService(
         ProductStore(create_client(settings), settings.qdrant_collection),
         build_encoders(settings),
-        FastEmbedReranker(settings.rerank_model, settings.model_cache_dir, settings.onnx_threads),
+        FastEmbedReranker(settings.rerank_model, Runtime.from_settings(settings)),
         settings,
     )
 
