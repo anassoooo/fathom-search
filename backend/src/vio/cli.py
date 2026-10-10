@@ -53,6 +53,7 @@ def data_audit(
     refit: Annotated[
         bool, typer.Option(help="Re-estimate the rating prior from this CSV (full catalog only).")
     ] = False,
+    figures: Annotated[bool, typer.Option(help="Render PNG figures into the report.")] = False,
 ) -> None:
     """Audit a catalog CSV against the data contract; exit 1 on blocking failures."""
     from vio.quality import load_contract, run_audit
@@ -98,6 +99,13 @@ def data_audit(
         console.print(f"Wrote findings for {len(findings):,} rows -> {QUALITY_FLAGS}")
 
     out_dir.mkdir(parents=True, exist_ok=True)
+    if figures:
+        from vio.quality.figures import make_figures
+
+        paths = make_figures(df, report, prior, out_dir / "figures")
+        sections["Figures"] = "\n\n".join(
+            f"![{p.stem.replace('_', ' ')}](figures/{p.name})" for p in paths
+        )
     (out_dir / f"{name}.md").write_text(to_markdown(report, sections), encoding="utf-8")
     (out_dir / f"{name}.json").write_text(to_json(report), encoding="utf-8")
 

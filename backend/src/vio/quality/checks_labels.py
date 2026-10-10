@@ -21,6 +21,9 @@ from vio.quality.core import Dimension, Measurement, check
 
 N_FOLDS = 5
 SEED = 0
+# Below this many scorable products the classifier is too weak for its disagreements to
+# mean anything (on the 501-row sample it flagged 30%), so the check reports itself skipped.
+MIN_PRODUCTS = 2_000
 
 
 @dataclass
@@ -72,7 +75,7 @@ def detect_label_noise(df: pd.DataFrame) -> LabelNoiseResult:
         counts = items["category"].value_counts()
         items = items[items["category"].isin(counts[counts >= N_FOLDS].index)]
     items = items.reset_index(drop=True)
-    if items.empty or items["category"].nunique() < 2:
+    if len(items) < MIN_PRODUCTS or items["category"].nunique() < 2:
         empty = pd.DataFrame(columns=[*items.columns, "suggested", "p_given", "p_suggested"])
         return LabelNoiseResult(empty, float("nan"), float("nan"), 0, pd.DataFrame())
 
@@ -151,6 +154,11 @@ def detect_label_noise(df: pd.DataFrame) -> LabelNoiseResult:
 )
 def category_disagreement(df: pd.DataFrame) -> Measurement:
     r = detect_label_noise(df)
+    if r.n_scored == 0:
+        return Measurement(
+            metric=0.0,
+            details={"skipped": f"fewer than {MIN_PRODUCTS:,} scorable products; too few to train"},
+        )
     ids = [pid for ids in r.flagged["merged_ids"] for pid in ids]
     examples = (
         r.flagged[["product_id", "name", "category", "suggested", "p_given", "p_suggested"]]
@@ -175,6 +183,12 @@ def category_disagreement(df: pd.DataFrame) -> Measurement:
             "cv_accuracy": round(r.cv_accuracy, 3),
             "cv_macro_f1": round(r.cv_macro_f1, 3),
             "products_scored": r.n_scored,
+            "rate_by_category": {
+                str(c): float(rate)
+                for c, rate in zip(
+                    r.per_category.get("category", []), r.per_category.get("rate", []), strict=True
+                )
+            },
             "highest_noise_categories": {
                 str(c): float(rate)
                 for c, rate in zip(

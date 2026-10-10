@@ -18,6 +18,10 @@ import pandas as pd
 from vio.quality.core import Dimension, Measurement, check
 
 N_BINS = 20
+# The source formulas use catalog-wide statistics (global mean, median price, per-subcategory
+# percentiles), so they can only be reproduced on the full catalog, not a sample.
+POPULATION_MIN_ROWS = 5_000
+_SKIP = {"skipped": f"needs the full catalog (>= {POPULATION_MIN_ROWS:,} rows)"}
 MIN_EVIDENCE_FOR_MEAN = 50  # reviews needed for a product to inform its category mean
 
 
@@ -37,6 +41,8 @@ def source_bayes(df: pd.DataFrame) -> pd.Series:
     "Max |error| reproducing source bayes_rating from its notebook formula (m = median price)",
 )
 def bayes_source(df: pd.DataFrame) -> Measurement:
+    if len(df) < POPULATION_MIN_ROWS:
+        return Measurement(metric=0.0, details=dict(_SKIP))
     err = (source_bayes(df) - df["bayes_rating"].astype(float)).abs()
     return Measurement(
         metric=float(err.max()),
@@ -72,6 +78,8 @@ def value_source(df: pd.DataFrame) -> Measurement:
     "Share of price_bucket values matching per-subcategory 30th/70th price percentiles",
 )
 def bucket_source(df: pd.DataFrame) -> Measurement:
+    if len(df) < POPULATION_MIN_ROWS:
+        return Measurement(metric=1.0, details=dict(_SKIP))
     p = df["price"].astype(float)
     grp = p.groupby(df["subcategory"])
     q30, q70 = grp.transform(lambda s: s.quantile(0.3)), grp.transform(lambda s: s.quantile(0.7))

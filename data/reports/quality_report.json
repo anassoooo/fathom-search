@@ -1,0 +1,659 @@
+{
+  "source": "data/processed/vio_EDA.csv",
+  "n_rows": 42427,
+  "trusted": true,
+  "blocking_failures": [],
+  "results": [
+    {
+      "name": "schema.required_columns",
+      "dimension": "validity",
+      "description": "All expected columns are present",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "missing": []
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "completeness.required_fields",
+      "dimension": "completeness",
+      "description": "Share of rows missing id, name, category, or price",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "null_counts": {
+            "product_id": 0,
+            "name": 0,
+            "category": 0,
+            "price": 0
+          }
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "completeness.optional_fields",
+      "dimension": "completeness",
+      "description": "Null rate of optional fields (max over columns)",
+      "severity": "warning",
+      "threshold": "<= 0.05",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "null_rates": {
+            "subcategory": 0.0,
+            "price_bucket": 0.0,
+            "rating": 0.0,
+            "total_ratings": 0.0,
+            "bayes_rating": 0.0,
+            "value_score": 0.0,
+            "image_url": 0.0
+          }
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "uniqueness.product_id",
+      "dimension": "uniqueness",
+      "description": "Rows whose Product ID is not unique",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "uniqueness.duplicate_listings",
+      "dimension": "uniqueness",
+      "description": "Share of rows repeating another listing (title, price, image); merged at ingest (ADR-0002)",
+      "severity": "warning",
+      "threshold": "<= 0.2",
+      "passed": true,
+      "measurement": {
+        "metric": 0.15770617766988002,
+        "n_affected": 6691,
+        "examples": [],
+        "details": {
+          "groups": 5362
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.rating_range",
+      "dimension": "validity",
+      "description": "Ratings outside [1, 5]",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.price_positive",
+      "dimension": "validity",
+      "description": "Prices that are non-numeric, zero, or negative",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.review_count",
+      "dimension": "validity",
+      "description": "Review counts that are negative or not whole numbers",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.price_bucket_domain",
+      "dimension": "validity",
+      "description": "price_bucket values outside {cheap, mid, premium}",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.image_url",
+      "dimension": "validity",
+      "description": "Share of image URLs matching the Amazon CDN pattern",
+      "severity": "warning",
+      "threshold": ">= 0.99",
+      "passed": true,
+      "measurement": {
+        "metric": 1.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.rows_parse",
+      "dimension": "validity",
+      "description": "Rows rejected by the Product model (types, ranges, enums)",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "labels.category_disagreement",
+      "dimension": "label quality",
+      "description": "Share of products whose title confidently points to a category they are not listed in (confident learning, 5-fold out-of-fold). A manual audit found most are taxonomy overlap, not errors: see data/reports/label_noise_audit.csv",
+      "severity": "warning",
+      "threshold": "<= 0.08",
+      "passed": true,
+      "measurement": {
+        "metric": 0.04258330117071916,
+        "n_affected": 1324,
+        "examples": [
+          {
+            "product_id": "1868",
+            "name": "Polymer Clay 50 Colors, Modeling Clay for Kids DIY Starter Kits, Oven Baked Model Clay, Non-Sticky Molding Clay with Sculpting Tools, Gift for Children and Artists (50 Colors A)",
+            "category": "Books",
+            "suggested": "Arts & Crafts",
+            "p_given": 0.003,
+            "p_suggested": 0.987
+          },
+          {
+            "product_id": "38109",
+            "name": "365 by Whole Foods Market",
+            "category": "Arts & Crafts",
+            "suggested": "Groceries",
+            "p_given": 0.001,
+            "p_suggested": 0.983
+          },
+          {
+            "product_id": "37047",
+            "name": "La Roche-Posay Cicaplast Balm B5 UV SPF 50, Vitamin B5 + Shea Butter + Tribioma + Madecassoside + Zinc Oxide Sunscreen, Post Treatment Skin Protectant With SPF, Multi-Purpose Cream For Dry Skin",
+            "category": "Camping & Hiking",
+            "suggested": "Beauty & Personal Care",
+            "p_given": 0.003,
+            "p_suggested": 0.986
+          },
+          {
+            "product_id": "39292",
+            "name": "Freshware Food Storage Containers [50 Set] 16 oz Plastic Deli Containers with Lids, Slime, Soup, Meal Prep Containers | BPA Free | Stackable | Leakproof | Microwave/Dishwasher/Freezer Safe",
+            "category": "Industrial & Scientific",
+            "suggested": "Kitchenware",
+            "p_given": 0.003,
+            "p_suggested": 0.986
+          },
+          {
+            "product_id": "8323",
+            "name": "Custom Canvas Prints with Your Photos, Framed Canvas Print Many sizes, Personalized Picture To Canvas Wall Art, Custom Canvas for Home Decor, Personalized Prints for Wedding Baby Pet Family Picture",
+            "category": "Toys",
+            "suggested": "Home Decor",
+            "p_given": 0.001,
+            "p_suggested": 0.985
+          },
+          {
+            "product_id": "6076",
+            "name": "Noahas Fluffy Area Rugs for Living Room,4x5.3 Feet Black Rugs for Bedroom,Thick Shag Throw Floor Carpet,Soft Shaggy Bedside Non-Slip Plush Dorm Nursery Kids Rug Home Decor Aesthetic",
+            "category": "Furniture",
+            "suggested": "Home Decor",
+            "p_given": 0.004,
+            "p_suggested": 0.985
+          },
+          {
+            "product_id": "7383",
+            "name": "Solar Globe Lights Outdoor Waterproof-Solar Balls for Garden-Cracked Glass Ball Solar Lights Outdoor-Solar Orbs for Outside-Outdoor Decorations for Patio and Yard Lawn Backyard Decor",
+            "category": "Furniture",
+            "suggested": "Gardening & Outdoor",
+            "p_given": 0.002,
+            "p_suggested": 0.983
+          },
+          {
+            "product_id": "10853",
+            "name": "10 Inch Microwave Food Cover & Collapsible Silicone Mat - Splatter Guard, Plate Holder & Kitchen Colander for Meal Prep, Charcoal",
+            "category": "Home Appliances",
+            "suggested": "Kitchenware",
+            "p_given": 0.0,
+            "p_suggested": 0.98
+          }
+        ],
+        "details": {
+          "classifier": "TF-IDF word 1-2 + char 3-5 -> SGD logistic, 5-fold out-of-fold",
+          "cv_accuracy": 0.898,
+          "cv_macro_f1": 0.877,
+          "products_scored": 31092,
+          "rate_by_category": {
+            "Camping & Hiking": 0.1523,
+            "Footwear": 0.1364,
+            "Home Appliances": 0.131,
+            "Travel Accessories": 0.1102,
+            "Electronics": 0.0975,
+            "Sports & Outdoors": 0.0811,
+            "Gaming & Accessories": 0.07,
+            "Tools & Home Improvement": 0.062,
+            "Books": 0.0603,
+            "Health & Household": 0.0581,
+            "Industrial & Scientific": 0.0569,
+            "Office Supplies": 0.0529,
+            "Furniture": 0.0483,
+            "Jewelry": 0.0388,
+            "Toys": 0.0315,
+            "Gardening & Outdoor": 0.0311,
+            "Beauty & Personal Care": 0.0308,
+            "Music & Instruments": 0.0268,
+            "Baby Products": 0.0243,
+            "Arts & Crafts": 0.0209,
+            "Groceries": 0.0163,
+            "Kitchenware": 0.0156,
+            "Home Decor": 0.0134,
+            "Automotive": 0.0128,
+            "Pet Supplies": 0.0023
+          },
+          "highest_noise_categories": {
+            "Camping & Hiking": 0.1523,
+            "Footwear": 0.1364,
+            "Home Appliances": 0.131,
+            "Travel Accessories": 0.1102,
+            "Electronics": 0.0975
+          }
+        }
+      },
+      "flag": "category_disagreement"
+    },
+    {
+      "name": "plausibility.price_outlier",
+      "dimension": "plausibility",
+      "description": "Share of prices with |robust z| > 3.5 on log(price) within subcategory and >= 3x from its median",
+      "severity": "warning",
+      "threshold": "<= 0.03",
+      "passed": true,
+      "measurement": {
+        "metric": 0.011690668677964504,
+        "n_affected": 496,
+        "examples": [
+          {
+            "product_id": "5764",
+            "name": "Computer Cockpit Chair Family Deluxe Racing Executive Office Cockpit Gaming Station Video Gaming Chair Computer Table and Chair High-Back Swivel with Headrest Lumbar Support(No Computer)",
+            "subcategory": "Gaming Chairs",
+            "price": 40922.03,
+            "x_median": 454.74,
+            "robust_z": 13.6
+          },
+          {
+            "product_id": "39922",
+            "name": "Rolex",
+            "subcategory": "Men's watches",
+            "price": 10995.0,
+            "x_median": 184.357,
+            "robust_z": 4.9
+          },
+          {
+            "product_id": "39637",
+            "name": "The Pearl Source",
+            "subcategory": "Necklaces",
+            "price": 2040.0,
+            "x_median": 157.529,
+            "robust_z": 12.8
+          },
+          {
+            "product_id": "42882",
+            "name": "DEWALT 20V MAX Cordless Plumbing Pipe Press Tool Kit with Crimping Heads, Pro Press Tool For Copper Pipe and Stainless Steel Pipes, \u00bd\u201d-1 \u00bc\u201d, 2 Batteries and Charger Included (DCE200M2K)",
+            "subcategory": "Plumbing tools",
+            "price": 2850.0,
+            "x_median": 142.571,
+            "robust_z": 5.3
+          },
+          {
+            "product_id": "42849",
+            "name": "Milwaukee 2473-22 M12 Force Logic Press tool 1/2\" - 1\" Kit",
+            "subcategory": "Plumbing tools",
+            "price": 2049.9,
+            "x_median": 102.546,
+            "robust_z": 5.0
+          },
+          {
+            "product_id": "38831",
+            "name": "3M PAPR Respirator, Versaflo Powered Air Purifying Respirator Kit, TR-300N+ HIK, Heavy Industry, Hard Hat Assembly, All-in-One Respiratory Protection for Particulates, NIOSH Approved, Grinding",
+            "subcategory": "Respirators",
+            "price": 1608.81,
+            "x_median": 59.608,
+            "robust_z": 6.3
+          },
+          {
+            "product_id": "2082",
+            "name": "Encyclopedia of Cardiovascular Research and Medicine(Volume 1-4)",
+            "subcategory": "Medical Books",
+            "price": 1800.0,
+            "x_median": 56.533,
+            "robust_z": 3.8
+          },
+          {
+            "product_id": "28290",
+            "name": "Design Toscano The Fairy Gardener Garden Statue, Cast Bronze",
+            "subcategory": "Garden statues",
+            "price": 1281.99,
+            "x_median": 51.3,
+            "robust_z": 13.0
+          }
+        ],
+        "details": {
+          "high": 331,
+          "low": 165
+        }
+      },
+      "flag": "price_outlier"
+    },
+    {
+      "name": "plausibility.low_evidence_rating",
+      "dimension": "plausibility",
+      "description": "Share of products rated by fewer than 5 reviews",
+      "severity": "warning",
+      "threshold": "<= 0.05",
+      "passed": true,
+      "measurement": {
+        "metric": 0.011997077332830508,
+        "n_affected": 509,
+        "examples": [
+          {
+            "product_id": "49",
+            "name": "HP 14\" Ultra Light Laptop for Student & Home (Intel Quad-Core N4120, 4GB RAM, 128GB(64GB + 64GB SD), 1-Year Office 365) 11-Hr Long Battery Life, Webcam, WiFi, Win 11 Home in S Mode - Snow White",
+            "rating": 4.1,
+            "total_ratings": 4
+          },
+          {
+            "product_id": "53",
+            "name": "HP 15.6\" Touchscreen Laptop Computer, 32GB RAM 1.5TB Storage (1TB SSD+512GB Docking Station Set), 10-Cores Intel Core i5, Windows 11 Pro with Microsoft Office Home & Business, PLUSERA Earphones",
+            "rating": 5.0,
+            "total_ratings": 2
+          },
+          {
+            "product_id": "113",
+            "name": "COSTWAY 18K BTU Dual 2 Zone Mini Split AC/Heating System, 22 SEER2 9,000 + 12,000 BTU Wall Mount Ductless Inverter Air Conditioner, Pre-Charged, Compatible with Alexa(Greenforce Series)",
+            "rating": 5.0,
+            "total_ratings": 4
+          },
+          {
+            "product_id": "137",
+            "name": "15000 Btus Portable Air Conditioner, 3-in-1 Portable AC Unit with Remote Control, Cooling Up to 850 Sq. Ft, Portable Air Conditioners for Home Garage Office, Complete Window Mount Exhaust Kit",
+            "rating": 1.0,
+            "total_ratings": 1
+          },
+          {
+            "product_id": "161",
+            "name": "BLACK+DECKER 16.4 Cu. Ft. Top Mount Refrigerator with Freezer, 2 Door Refrigerator with Top Freezer and Separate Temperature Controls, Auto Defrost, Full Size Kitchen Refrigerator, BR1640KB, Black",
+            "rating": 5.0,
+            "total_ratings": 1
+          }
+        ],
+        "details": {}
+      },
+      "flag": "low_evidence"
+    },
+    {
+      "name": "text.mojibake",
+      "dimension": "text integrity",
+      "description": "Titles containing U+FFFD (encoding lost upstream)",
+      "severity": "warning",
+      "threshold": "<= 0.001",
+      "passed": true,
+      "measurement": {
+        "metric": 2.356989652815424e-05,
+        "n_affected": 1,
+        "examples": [
+          {
+            "product_id": "14695",
+            "name": "Meguiar\ufffds Whole Car Air Refresher, Odor Eliminator Spray Eliminates Strong Vehicle Odors, Black Chrome Scent \ufffd 2 Oz Spray Bottle"
+          }
+        ],
+        "details": {}
+      },
+      "flag": "mojibake"
+    },
+    {
+      "name": "text.html_entities",
+      "dimension": "text integrity",
+      "description": "Titles with unescaped HTML entities (&amp;, &#39;)",
+      "severity": "warning",
+      "threshold": "<= 0.001",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": "html_entity"
+    },
+    {
+      "name": "text.brand_only_title",
+      "dimension": "text integrity",
+      "description": "Titles of two words or fewer (often just a brand): little text signal for search",
+      "severity": "info",
+      "threshold": "measured",
+      "passed": true,
+      "measurement": {
+        "metric": 0.12173851556791666,
+        "n_affected": 5165,
+        "examples": [
+          {
+            "product_id": "895",
+            "name": "The Housemaid"
+          },
+          {
+            "product_id": "920",
+            "name": "Fahrenheit 451"
+          },
+          {
+            "product_id": "923",
+            "name": "Magic Hour"
+          },
+          {
+            "product_id": "932",
+            "name": "The Arrangement"
+          },
+          {
+            "product_id": "995",
+            "name": "Engineers"
+          }
+        ],
+        "details": {
+          "top_categories": {
+            "Footwear": 1395,
+            "Jewelry": 1262,
+            "Travel Accessories": 551,
+            "Toys": 296,
+            "Groceries": 226
+          }
+        }
+      },
+      "flag": "brand_only_title"
+    },
+    {
+      "name": "text.all_caps",
+      "dimension": "text integrity",
+      "description": "Titles written entirely in capitals (> 10 letters)",
+      "severity": "info",
+      "threshold": "measured",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0025926886180969665,
+        "n_affected": 110,
+        "examples": [
+          {
+            "product_id": "200",
+            "name": "LG WM3555HVA COMBINATION WASHER ELECTRIC DRYER"
+          },
+          {
+            "product_id": "1405",
+            "name": "THINGS WE DON\u2019T TALK ABOUT"
+          },
+          {
+            "product_id": "1524",
+            "name": "DAREDEVIL: BORN AGAIN [MARVEL PREMIER COLLECTION]"
+          },
+          {
+            "product_id": "2777",
+            "name": "LYNK PROFESSIONAL"
+          },
+          {
+            "product_id": "8696",
+            "name": "BIGPOWER ELECTRIC"
+          }
+        ],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "text.whitespace",
+      "dimension": "text integrity",
+      "description": "Titles with leading/trailing or repeated whitespace",
+      "severity": "info",
+      "threshold": "measured",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "text.truncated",
+      "dimension": "text integrity",
+      "description": "Titles ending in an ellipsis (likely truncated)",
+      "severity": "warning",
+      "threshold": "<= 0.01",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0013199142055766375,
+        "n_affected": 56,
+        "examples": [
+          {
+            "product_id": "652",
+            "name": "Wall Outlet Extender with Shelf and Night Light,Surge Protector,USB Wall Charger with 5 AC Outlets and 3 USB Ports 1 USB C Outlet Wide Space 3-Sided Power Strip Multi Plug Outlets\u2026"
+          },
+          {
+            "product_id": "2401",
+            "name": "Glaver's Drinking Glasses Set of 10 Highball Glass Cups, Premium Glass Quality Coolers 17 Oz. Glassware. Ideal for Water, Juice, Cocktails, and Iced Tea. Dishwasher Safe.\u2026"
+          },
+          {
+            "product_id": "2770",
+            "name": "Magnetic Spice Rack for Refrigerator, Kitchen Organizer and Storage Shelf, Black (4 Pack)\u2026"
+          },
+          {
+            "product_id": "3059",
+            "name": "Original Vegetable Fruit Peeler Carbon Steel Blade 3 Pack Red/Green/Yellow\u2026"
+          },
+          {
+            "product_id": "3153",
+            "name": "Under Sink Organizers, Metal Pull Out Under Sink Organizers and Storage Shelves with Sliding Drawer, Under Sink Storage for Kitchen, Bathroom, Black\u2026"
+          }
+        ],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "consistency.bayes_rating_source",
+      "dimension": "consistency",
+      "description": "Max |error| reproducing source bayes_rating from its notebook formula (m = median price)",
+      "severity": "warning",
+      "threshold": "<= 0.001",
+      "passed": true,
+      "measurement": {
+        "metric": 7.33157032186682e-05,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "prior_strength_used": 23.99,
+          "prior_strength_unit": "dollars (median price), a unit error; see ADR-0003"
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "consistency.value_score_source",
+      "dimension": "consistency",
+      "description": "Max relative error reproducing value_score = bayes * ln(1 + reviews) / price",
+      "severity": "warning",
+      "threshold": "<= 1e-06",
+      "passed": true,
+      "measurement": {
+        "metric": 1.1041220907493166e-13,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "max_value_score": 169.96,
+          "note": "upstream EDA dropped rows with value_score >= 1000 (very cheap items); how many cannot be recovered from this file"
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "consistency.price_bucket_source",
+      "dimension": "consistency",
+      "description": "Share of price_bucket values matching per-subcategory 30th/70th price percentiles",
+      "severity": "warning",
+      "threshold": ">= 0.99",
+      "passed": true,
+      "measurement": {
+        "metric": 0.9999292903104156,
+        "n_affected": 3,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    }
+  ]
+}

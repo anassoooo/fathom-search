@@ -33,7 +33,7 @@ def test_estimator_recovers_known_prior_strength() -> None:
 
 
 def test_source_formula_check_detects_reproduction() -> None:
-    df = _simulate(2_000, 1.4, 0.2)
+    df = _simulate(6_000, 1.4, 0.2)
     assert REGISTRY["consistency.bayes_rating_source"].fn(df).metric < 1e-9
     df["bayes_rating"] = df["bayes_rating"] + np.r_[0.5, np.zeros(len(df) - 1)]
     assert REGISTRY["consistency.bayes_rating_source"].fn(df).metric == pytest.approx(0.5)
@@ -84,3 +84,9 @@ def test_compare_rankings_identity() -> None:
     cmp = compare_rankings(df, est)
     assert cmp["spearman_old_vs_new"] == pytest.approx(1.0)
     assert cmp["max_abs_change"] == 0
+
+
+def test_population_checks_skip_on_samples() -> None:
+    small = _simulate(500, 1.4, 0.2)
+    m = REGISTRY["consistency.bayes_rating_source"].fn(small)
+    assert m.metric == 0 and "skipped" in m.details

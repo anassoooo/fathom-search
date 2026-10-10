@@ -1,0 +1,508 @@
+{
+  "source": "data/sample/products.csv",
+  "n_rows": 501,
+  "trusted": true,
+  "blocking_failures": [],
+  "results": [
+    {
+      "name": "schema.required_columns",
+      "dimension": "validity",
+      "description": "All expected columns are present",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "missing": []
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "completeness.required_fields",
+      "dimension": "completeness",
+      "description": "Share of rows missing id, name, category, or price",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "null_counts": {
+            "product_id": 0,
+            "name": 0,
+            "category": 0,
+            "price": 0
+          }
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "completeness.optional_fields",
+      "dimension": "completeness",
+      "description": "Null rate of optional fields (max over columns)",
+      "severity": "warning",
+      "threshold": "<= 0.05",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "null_rates": {
+            "subcategory": 0.0,
+            "price_bucket": 0.0,
+            "rating": 0.0,
+            "total_ratings": 0.0,
+            "bayes_rating": 0.0,
+            "value_score": 0.0,
+            "image_url": 0.0
+          }
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "uniqueness.product_id",
+      "dimension": "uniqueness",
+      "description": "Rows whose Product ID is not unique",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "uniqueness.duplicate_listings",
+      "dimension": "uniqueness",
+      "description": "Share of rows repeating another listing (title, price, image); merged at ingest (ADR-0002)",
+      "severity": "warning",
+      "threshold": "<= 0.2",
+      "passed": true,
+      "measurement": {
+        "metric": 0.021956087824351298,
+        "n_affected": 11,
+        "examples": [],
+        "details": {
+          "groups": 11
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.rating_range",
+      "dimension": "validity",
+      "description": "Ratings outside [1, 5]",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.price_positive",
+      "dimension": "validity",
+      "description": "Prices that are non-numeric, zero, or negative",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.review_count",
+      "dimension": "validity",
+      "description": "Review counts that are negative or not whole numbers",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.price_bucket_domain",
+      "dimension": "validity",
+      "description": "price_bucket values outside {cheap, mid, premium}",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.image_url",
+      "dimension": "validity",
+      "description": "Share of image URLs matching the Amazon CDN pattern",
+      "severity": "warning",
+      "threshold": ">= 0.99",
+      "passed": true,
+      "measurement": {
+        "metric": 1.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "validity.rows_parse",
+      "dimension": "validity",
+      "description": "Rows rejected by the Product model (types, ranges, enums)",
+      "severity": "blocking",
+      "threshold": "<= 0",
+      "passed": true,
+      "measurement": {
+        "metric": 0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "labels.category_disagreement",
+      "dimension": "label quality",
+      "description": "Share of products whose title confidently points to a category they are not listed in (confident learning, 5-fold out-of-fold). A manual audit found most are taxonomy overlap, not errors: see data/reports/label_noise_audit.csv",
+      "severity": "warning",
+      "threshold": "<= 0.08",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "skipped": "fewer than 2,000 scorable products; too few to train"
+        }
+      },
+      "flag": "category_disagreement"
+    },
+    {
+      "name": "plausibility.price_outlier",
+      "dimension": "plausibility",
+      "description": "Share of prices with |robust z| > 3.5 on log(price) within subcategory and >= 3x from its median",
+      "severity": "warning",
+      "threshold": "<= 0.03",
+      "passed": true,
+      "measurement": {
+        "metric": 0.021956087824351298,
+        "n_affected": 11,
+        "examples": [
+          {
+            "product_id": "39754",
+            "name": "OURA",
+            "subcategory": "Rings",
+            "price": 499.0,
+            "x_median": 38.473,
+            "robust_z": 6.5
+          },
+          {
+            "product_id": "40691",
+            "name": "The Diamond Channel",
+            "subcategory": "Diamond earrings",
+            "price": 279.99,
+            "x_median": 21.588,
+            "robust_z": 5.5
+          },
+          {
+            "product_id": "39332",
+            "name": "MOUNTO 12-Inch Heavy Duty Cylinder Axial Fan with 25-Foot Vinyl Hose | High-Performance Portable Blower/Exhaust Fan | 2900 CFM Directional Airflow for Crawl Spaces, Attics, Basements",
+            "subcategory": "Industrial fans",
+            "price": 259.99,
+            "x_median": 20.081,
+            "robust_z": 4.3
+          },
+          {
+            "product_id": "39972",
+            "name": "Bulova",
+            "subcategory": "Women's watches",
+            "price": 224.83,
+            "x_median": 17.335,
+            "robust_z": 5.1
+          },
+          {
+            "product_id": "23395",
+            "name": "Shyft DualRide with Carryall Storage Infant Car Seat and Stroller Combo (Boone Gray)",
+            "subcategory": "Baby strollers",
+            "price": 384.99,
+            "x_median": 15.317,
+            "robust_z": 3.8
+          },
+          {
+            "product_id": "23472",
+            "name": "Babyletto Hudson 3-in-1 Convertible Baby Crib with Toddler Bed & Daybed Conversion - Easy to Assemble - GREENGUARD Gold Certified w/ 4 Adjustable Mattress Heights - White",
+            "subcategory": "Baby cribs",
+            "price": 379.0,
+            "x_median": 15.079,
+            "robust_z": 3.7
+          },
+          {
+            "product_id": "11886",
+            "name": "Alberto VO5 Ocean Refresh Revitalizing Conditioner - Hair Conditioner Formulated with Essential Vitamins and Oils - Fresh Ocean Fragrance - 15 oz",
+            "subcategory": "Hair conditioner",
+            "price": 1.01,
+            "x_median": 0.068,
+            "robust_z": -4.2
+          },
+          {
+            "product_id": "39570",
+            "name": "VIVOHOME Upgraded 4CFM 1/3 HP 1-Stage HVAC Vacuum Pump and 4 Way AC Manifold Gauge Set with Leak Detector, 5ft Hoses & Accessories for R134a R12 R22 R502 R410a Automotive Air Conditioner Maintenance",
+            "subcategory": "Vacuum pumps",
+            "price": 159.99,
+            "x_median": 12.357,
+            "robust_z": 3.6
+          }
+        ],
+        "details": {
+          "high": 10,
+          "low": 1
+        }
+      },
+      "flag": "price_outlier"
+    },
+    {
+      "name": "plausibility.low_evidence_rating",
+      "dimension": "plausibility",
+      "description": "Share of products rated by fewer than 5 reviews",
+      "severity": "warning",
+      "threshold": "<= 0.05",
+      "passed": true,
+      "measurement": {
+        "metric": 0.005988023952095809,
+        "n_affected": 3,
+        "examples": [
+          {
+            "product_id": "5180",
+            "name": "DUMOS Bar Stools Set of 4, 24 inch Counter Height Bar Stools, Upholstered Modern Kitchen Barstools with Metal Base, PU Leather Saddle Stools for Kitchen Island, Black",
+            "rating": 4.3,
+            "total_ratings": 4
+          },
+          {
+            "product_id": "39570",
+            "name": "VIVOHOME Upgraded 4CFM 1/3 HP 1-Stage HVAC Vacuum Pump and 4 Way AC Manifold Gauge Set with Leak Detector, 5ft Hoses & Accessories for R134a R12 R22 R502 R410a Automotive Air Conditioner Maintenance",
+            "rating": 5.0,
+            "total_ratings": 4
+          },
+          {
+            "product_id": "40632",
+            "name": "Masedy",
+            "rating": 5.0,
+            "total_ratings": 2
+          }
+        ],
+        "details": {}
+      },
+      "flag": "low_evidence"
+    },
+    {
+      "name": "text.mojibake",
+      "dimension": "text integrity",
+      "description": "Titles containing U+FFFD (encoding lost upstream)",
+      "severity": "warning",
+      "threshold": "<= 0.001",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": "mojibake"
+    },
+    {
+      "name": "text.html_entities",
+      "dimension": "text integrity",
+      "description": "Titles with unescaped HTML entities (&amp;, &#39;)",
+      "severity": "warning",
+      "threshold": "<= 0.001",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": "html_entity"
+    },
+    {
+      "name": "text.brand_only_title",
+      "dimension": "text integrity",
+      "description": "Titles of two words or fewer (often just a brand): little text signal for search",
+      "severity": "info",
+      "threshold": "measured",
+      "passed": true,
+      "measurement": {
+        "metric": 0.10778443113772455,
+        "n_affected": 54,
+        "examples": [
+          {
+            "product_id": "1083",
+            "name": "The Silmarillion"
+          },
+          {
+            "product_id": "4727",
+            "name": "SHA CERLIN"
+          },
+          {
+            "product_id": "7371",
+            "name": "Grand patio"
+          },
+          {
+            "product_id": "8347",
+            "name": "MPLONG"
+          },
+          {
+            "product_id": "8678",
+            "name": "Nerf"
+          }
+        ],
+        "details": {
+          "top_categories": {
+            "Footwear": 16,
+            "Jewelry": 13,
+            "Toys": 5,
+            "Travel Accessories": 5,
+            "Furniture": 2
+          }
+        }
+      },
+      "flag": "brand_only_title"
+    },
+    {
+      "name": "text.all_caps",
+      "dimension": "text integrity",
+      "description": "Titles written entirely in capitals (> 10 letters)",
+      "severity": "info",
+      "threshold": "measured",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "text.whitespace",
+      "dimension": "text integrity",
+      "description": "Titles with leading/trailing or repeated whitespace",
+      "severity": "info",
+      "threshold": "measured",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "text.truncated",
+      "dimension": "text integrity",
+      "description": "Titles ending in an ellipsis (likely truncated)",
+      "severity": "warning",
+      "threshold": "<= 0.01",
+      "passed": true,
+      "measurement": {
+        "metric": 0.003992015968063872,
+        "n_affected": 2,
+        "examples": [
+          {
+            "product_id": "8898",
+            "name": "Micro Kickboard - Maxi Deluxe LED - Three Wheeled, Lean-to-Steer Swiss-Designed Micro Scooter for Kids with Motion-Activated Light-Up Wheels for Ages 5-12 \u2026"
+          },
+          {
+            "product_id": "16267",
+            "name": "Camping Tent 2 Person, Waterproof Windproof Tent with Rainfly Easy Set up-Portable Dome Tents for Camping\u2026"
+          }
+        ],
+        "details": {}
+      },
+      "flag": null
+    },
+    {
+      "name": "consistency.bayes_rating_source",
+      "dimension": "consistency",
+      "description": "Max |error| reproducing source bayes_rating from its notebook formula (m = median price)",
+      "severity": "warning",
+      "threshold": "<= 0.001",
+      "passed": true,
+      "measurement": {
+        "metric": 0.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "skipped": "needs the full catalog (>= 5,000 rows)"
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "consistency.value_score_source",
+      "dimension": "consistency",
+      "description": "Max relative error reproducing value_score = bayes * ln(1 + reviews) / price",
+      "severity": "warning",
+      "threshold": "<= 1e-06",
+      "passed": true,
+      "measurement": {
+        "metric": 2.1250137357420143e-15,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "max_value_score": 24.4,
+          "note": "upstream EDA dropped rows with value_score >= 1000 (very cheap items); how many cannot be recovered from this file"
+        }
+      },
+      "flag": null
+    },
+    {
+      "name": "consistency.price_bucket_source",
+      "dimension": "consistency",
+      "description": "Share of price_bucket values matching per-subcategory 30th/70th price percentiles",
+      "severity": "warning",
+      "threshold": ">= 0.99",
+      "passed": true,
+      "measurement": {
+        "metric": 1.0,
+        "n_affected": 0,
+        "examples": [],
+        "details": {
+          "skipped": "needs the full catalog (>= 5,000 rows)"
+        }
+      },
+      "flag": null
+    }
+  ]
+}

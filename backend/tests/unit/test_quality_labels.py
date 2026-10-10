@@ -1,6 +1,7 @@
 import pandas as pd
+import pytest
 
-from vio.quality import REGISTRY
+from vio.quality import REGISTRY, checks_labels
 from vio.quality.checks_labels import detect_label_noise
 
 KITCHEN = [
@@ -47,6 +48,11 @@ def _catalog() -> pd.DataFrame:
     )
 
 
+@pytest.fixture(autouse=True)
+def _small_min(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(checks_labels, "MIN_PRODUCTS", 50)
+
+
 def test_planted_mislabel_is_flagged_with_suggestion() -> None:
     df = _catalog()
     r = detect_label_noise(df)
@@ -75,3 +81,4 @@ def test_too_little_data_is_skipped_not_crashed(fixture_csv: object) -> None:
     small = raw[raw["category"].isin(["Sports & Outdoors", "Home & Kitchen"])]  # 4 items each
     m = REGISTRY["labels.category_disagreement"].fn(small)
     assert m.metric == 0 and m.affected_ids == []
+    assert "skipped" in m.details
