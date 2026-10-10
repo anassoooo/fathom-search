@@ -60,6 +60,9 @@ data/images/
 .cache/
 models_cache/
 
+# LLM response cache for eval (resumable runs)
+data/eval/.llm_cache.sqlite
+
 # Logs
 logs/
 *.log

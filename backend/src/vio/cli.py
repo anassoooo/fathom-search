@@ -1,7 +1,8 @@
 """`vio` command-line entry point."""
 
+import json
 from pathlib import Path
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import typer
 from rich.console import Console
@@ -9,6 +10,9 @@ from rich.progress import BarColumn, MofNCompleteColumn, Progress, TimeElapsedCo
 
 from vio import __version__
 from vio.config import get_settings
+
+if TYPE_CHECKING:
+    from vio.llm.client import LLMClient
 
 app = typer.Typer(
     help="VIO: multimodal product search, assistant, and evaluation.", no_args_is_help=True
@@ -242,3 +246,154 @@ def ingest(
         f"{report.with_image} with image vectors, {report.image_errors} unreadable images. "
         f"Collection now holds {store.count()} points."
     )
+
+
+eval_app = typer.Typer(help="Offline evaluation (milestone M2).", no_args_is_help=True)
+app.add_typer(eval_app, name="eval")
+EVAL_DATA = REPO_ROOT / "data" / "eval"
+EVAL_REPORTS = REPO_ROOT / "eval" / "reports"
+QUERIES_V1 = EVAL_DATA / "queries_v1.jsonl"
+QRELS_V1 = EVAL_DATA / "qrels_v1.jsonl"
+LLM_CACHE = EVAL_DATA / ".llm_cache.sqlite"
+
+
+def _refuse_overwrite(path: Path, force: bool) -> None:
+    # Constitution Art. VII.4: versioned eval sets are never regenerated silently.
+    if path.exists() and not force:
+        raise typer.BadParameter(f"{path.name} exists; bump the version or pass --force")
+
+
+def _llm() -> "LLMClient":
+    from vio.llm.client import LLMClient
+
+    settings = get_settings()
+    if "localhost" in settings.llm_base_url:
+        console.print("[yellow]LLM_BASE_URL points at localhost; set Groq in backend/.env[/]")
+    return LLMClient.from_settings(settings, cache_path=LLM_CACHE)
+
+
+@eval_app.command("gen-queries")
+def eval_gen_queries(
+    csv_path: Annotated[Path, typer.Option("--csv")] = REPO_ROOT
+    / "data"
+    / "processed"
+    / "vio_EDA.csv",
+    per_category: Annotated[int, typer.Option(min=1)] = 10,
+    image_dir: Annotated[Path, typer.Option()] = REPO_ROOT / "data" / "images",
+    force: Annotated[bool, typer.Option(help="Overwrite queries_v1.jsonl.")] = False,
+) -> None:
+    """Generate data/eval/queries_v1.jsonl from unflagged seed products (T031)."""
+    from vio.eval.queries import generate, save
+    from vio.ingest.prepare import prepare_catalog
+
+    _refuse_overwrite(QUERIES_V1, force)
+    settings = get_settings()
+    products = prepare_catalog(csv_path, REPO_ROOT / "data").products
+    llm = _llm()
+    records = generate(
+        products,
+        llm,
+        settings.llm_model_eval,
+        image_dir=image_dir,
+        out_dir=EVAL_DATA,
+        per_category=per_category,
+    )
+    save(records, QUERIES_V1)
+    counts: dict[str, int] = {}
+    for r in records:
+        counts[r.bucket] = counts.get(r.bucket, 0) + 1
+    console.print(f"Wrote {len(records)} queries -> {QUERIES_V1}: {counts}")
+    console.print(f"LLM usage: {llm.usage}")
+
+
+@eval_app.command("judge")
+def eval_judge(
+    depth: Annotated[int, typer.Option(min=1, max=50)] = 20,
+    limit: Annotated[int | None, typer.Option(help="Judge only the first N queries.")] = None,
+    force: Annotated[bool, typer.Option(help="Overwrite qrels_v1.jsonl.")] = False,
+) -> None:
+    """Pool every variant's results and grade them with the LLM judge (T032)."""
+    from vio.api.app import build_service
+    from vio.eval.judge import judge_all, save_qrels
+    from vio.eval.queries import load
+
+    _refuse_overwrite(QRELS_V1, force)
+    settings = get_settings()
+    queries = load(QUERIES_V1)[:limit]
+    service = build_service(settings)
+    service.warmup()
+    llm = _llm()
+    with Progress(
+        "[progress.description]{task.description}",
+        BarColumn(),
+        MofNCompleteColumn(),
+        TimeElapsedColumn(),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Pooling + judging", total=len(queries))
+        judgments = judge_all(
+            queries,
+            service,
+            llm,
+            settings.llm_model_eval,
+            EVAL_DATA,
+            depth=depth,
+            on_query=lambda q: progress.advance(task),
+        )
+    save_qrels(judgments, QRELS_V1)
+    console.print(f"Wrote {len(judgments):,} judgments -> {QRELS_V1}; LLM usage: {llm.usage}")
+
+
+@eval_app.command("retrieval")
+def eval_retrieval(
+    variants: Annotated[
+        str, typer.Option(help="Comma-separated variants.")
+    ] = "bm25,dense,hybrid,hybrid_rerank",
+) -> None:
+    """Score retrieval variants on the judged set and write eval/reports/<date>-<sha>.md (T034)."""
+    from vio.api.app import build_service
+    from vio.eval.judge import load_qrels
+    from vio.eval.queries import load
+    from vio.eval.retrieval import run, write_report
+
+    settings = get_settings()
+    queries, qrels = load(QUERIES_V1), load_qrels(QRELS_V1)
+    service = build_service(settings)
+    service.warmup()
+    from typing import get_args
+
+    from vio.models import Variant
+
+    allowed: tuple[Variant, ...] = get_args(Variant)
+    names: list[Variant] = []
+    for raw in variants.split(","):
+        name = raw.strip()
+        if name not in allowed:
+            raise typer.BadParameter(f"unknown variant {name!r}; choose from {allowed}")
+        names.append(name)
+    with Progress(
+        "[progress.description]{task.description}",
+        BarColumn(),
+        MofNCompleteColumn(),
+        TimeElapsedColumn(),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Scoring", total=len(queries) * len(names))
+        results = run(
+            queries, qrels, service, names, EVAL_DATA, on_step=lambda: progress.advance(task)
+        )
+    first = QRELS_V1.read_text("utf-8").splitlines()[0]
+    judge_model = str(json.loads(first).get("judge_model", "?"))
+    md = write_report(
+        results,
+        queries,
+        qrels,
+        EVAL_REPORTS,
+        {
+            "queries": QUERIES_V1.relative_to(REPO_ROOT).as_posix(),
+            "judge_model": judge_model,
+            "collection": settings.qdrant_collection,
+            "n_points": str(service.store.count()),
+        },
+    )
+    console.print(f"Report: {md}")
