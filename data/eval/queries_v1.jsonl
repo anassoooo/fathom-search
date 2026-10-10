@@ -1,0 +1,325 @@
+{"qid":"q0001","bucket":"descriptive","query":"clay kit for making small charms","seed_product_id":"31343","category":"Arts & Crafts","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0002","bucket":"specific","query":"sky candybar 99ft acrylic crystal beads garland","seed_product_id":"31519","category":"Arts & Crafts","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0003","bucket":"constrained","query":"whittling knife set with leather strop for carving under $53","seed_product_id":"30948","category":"Arts & Crafts","filters":{"price_max":53.0},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0004","bucket":"descriptive","query":"non‑toxic paint for glass bottles and windows","seed_product_id":"31177","category":"Arts & Crafts","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0005","bucket":"noisy","query":"non‑toxic paint for glasss bottles and winndows","seed_product_id":"31177","category":"Arts & Crafts","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0006","bucket":"descriptive","query":"semi‑transparent paper for decoupage and card making","seed_product_id":"31149","category":"Arts & Crafts","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0007","bucket":"specific","query":"utopia kitchen 2 pack adjustable bib aprons","seed_product_id":"38549","category":"Arts & Crafts","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0008","bucket":"constrained","query":"steel beveled wood chisels for woodworking projects under $13","seed_product_id":"30955","category":"Arts & Crafts","filters":{"price_max":13.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0009","bucket":"descriptive","query":"permanent dual tip markers for illustration and sketching","seed_product_id":"30696","category":"Arts & Crafts","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0010","bucket":"noisy","query":"permanent duual tip markers for illustration and sketchnig","seed_product_id":"30696","category":"Arts & Crafts","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0011","bucket":"descriptive","query":"portable lithium jump box for car batteries","seed_product_id":"15456","category":"Automotive","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0012","bucket":"specific","query":"bike cover waterproof outdoor with lock holes","seed_product_id":"14749","category":"Automotive","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0013","bucket":"constrained","query":"lightweight road bike helmet for daily rides under $88","seed_product_id":"14934","category":"Automotive","filters":{"price_max":88.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0014","bucket":"descriptive","query":"protective full face helmet for street and e‑bikes","seed_product_id":"14306","category":"Automotive","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0015","bucket":"noisy","query":"protetcive fuull face helmet for street and e‑bikes","seed_product_id":"14306","category":"Automotive","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0016","bucket":"descriptive","query":"restore shine on black car paint and remove scratches","seed_product_id":"14516","category":"Automotive","filters":{},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0017","bucket":"specific","query":"optima dh5 yellowtop AGM car battery 700 cca","seed_product_id":"14271","category":"Automotive","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0018","bucket":"constrained","query":"waterproof leather side bags for Harley and Honda bikes under $150","seed_product_id":"14881","category":"Automotive","filters":{"price_max":150.0},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0019","bucket":"descriptive","query":"10k mile change interval oil filter for car engines","seed_product_id":"14562","category":"Automotive","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0020","bucket":"noisy","query":"10k mile chnage interval oil flter for car engines","seed_product_id":"14562","category":"Automotive","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0021","bucket":"descriptive","query":"convertible high chair that grows into a toddler table","seed_product_id":"23521","category":"Baby Products","filters":{},"title_overlap":0.429,"prompt_version":"v1"}
+{"qid":"q0022","bucket":"specific","query":"accmor portable waterproof diaper changing pad","seed_product_id":"24082","category":"Baby Products","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0023","bucket":"constrained","query":"safe electric nail care kit for newborns and toddlers under $9","seed_product_id":"24047","category":"Baby Products","filters":{"price_max":9.0},"title_overlap":0.625,"prompt_version":"v1"}
+{"qid":"q0024","bucket":"descriptive","query":"soft silicone pacifier for infants promoting oral health","seed_product_id":"23252","category":"Baby Products","filters":{},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0025","bucket":"noisy","query":"soft silicone paciifer for infants promoting oral healtth","seed_product_id":"23252","category":"Baby Products","filters":{},"title_overlap":0.143,"prompt_version":"v1"}
+{"qid":"q0026","bucket":"descriptive","query":"portable bathtub for newborns and toddlers","seed_product_id":"23834","category":"Baby Products","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0027","bucket":"specific","query":"dream on me 5-in-1 convertible crib","seed_product_id":"23456","category":"Baby Products","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0028","bucket":"constrained","query":"nemo baby gym under $58","seed_product_id":"24163","category":"Baby Products","filters":{"price_max":58.0},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0029","bucket":"descriptive","query":"portable baby camera with two‑way talk","seed_product_id":"24297","category":"Baby Products","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0030","bucket":"noisy","query":"portable baby caera with two‑way tallk","seed_product_id":"24297","category":"Baby Products","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0031","bucket":"descriptive","query":"full makeup set for beginners with eyeshadows and lip gloss","seed_product_id":"13145","category":"Beauty & Personal Care","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0032","bucket":"specific","query":"paula's choice skin recovery calming toner","seed_product_id":"12691","category":"Beauty & Personal Care","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0033","bucket":"constrained","query":"full makeup kit under $22","seed_product_id":"13146","category":"Beauty & Personal Care","filters":{"price_max":22.0},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0034","bucket":"descriptive","query":"moisturizing hand cream for dry cracked skin","seed_product_id":"12474","category":"Beauty & Personal Care","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0035","bucket":"noisy","query":"moisturizing hand crem for dry cacked skin","seed_product_id":"12474","category":"Beauty & Personal Care","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0036","bucket":"descriptive","query":"relaxing bath salts with almond oil for sore muscles","seed_product_id":"12613","category":"Beauty & Personal Care","filters":{},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0037","bucket":"specific","query":"harry's aloe shaving gel 3 pack","seed_product_id":"12252","category":"Beauty & Personal Care","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0038","bucket":"constrained","query":"women's antiperspirant under $12","seed_product_id":"13302","category":"Beauty & Personal Care","filters":{"price_max":12.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0039","bucket":"descriptive","query":"firming face cream for men after shave","seed_product_id":"13978","category":"Beauty & Personal Care","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0040","bucket":"noisy","query":"firming face creaam for men after shae","seed_product_id":"13978","category":"Beauty & Personal Care","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0041","bucket":"descriptive","query":"how to love kids effectively guide","seed_product_id":"2148","category":"Books","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0042","bucket":"specific","query":"the montessori toddler parent guide","seed_product_id":"2155","category":"Books","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0043","bucket":"constrained","query":"philosophy art book under $35","seed_product_id":"1444","category":"Books","filters":{"price_max":35.0},"title_overlap":0.2,"prompt_version":"v1"}
+{"qid":"q0044","bucket":"descriptive","query":"classic american family saga reading","seed_product_id":"1755","category":"Books","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0045","bucket":"noisy","query":"classic americaan family sagga reading","seed_product_id":"1755","category":"Books","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0046","bucket":"descriptive","query":"artist sketchbook 100 sheets for drawing","seed_product_id":"1452","category":"Books","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0047","bucket":"specific","query":"cali's books you are my sunshine sound book","seed_product_id":"1922","category":"Books","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0048","bucket":"constrained","query":"vaginal probiotic gummies under $35","seed_product_id":"1647","category":"Books","filters":{"price_max":35.0},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0049","bucket":"descriptive","query":"how artificial intelligence shapes future","seed_product_id":"1977","category":"Books","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0050","bucket":"noisy","query":"how artificial intelligence shapes futre","seed_product_id":"1977","category":"Books","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0051","bucket":"descriptive","query":"portable table for backyard barbecue","seed_product_id":"36494","category":"Camping & Hiking","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0052","bucket":"specific","query":"ultralight inflatable camping pillow","seed_product_id":"36992","category":"Camping & Hiking","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0053","bucket":"constrained","query":"large foldable table for 6 to 8 people under $132","seed_product_id":"36513","category":"Camping & Hiking","filters":{"price_max":132.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0054","bucket":"descriptive","query":"fixed blade hunting knife with leather sheath","seed_product_id":"36712","category":"Camping & Hiking","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0055","bucket":"noisy","query":"fixed blade huntting knfe with leather sheath","seed_product_id":"36712","category":"Camping & Hiking","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0056","bucket":"descriptive","query":"compressible pillow for backpacking and flights","seed_product_id":"36960","category":"Camping & Hiking","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0057","bucket":"specific","query":"amazon basics replacement water filter pack","seed_product_id":"36857","category":"Camping & Hiking","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0058","bucket":"constrained","query":"lightweight everyday carry multi tool under $99","seed_product_id":"36927","category":"Camping & Hiking","filters":{"price_max":99.0},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0059","bucket":"descriptive","query":"waterproof cooler backpack for camping and beach","seed_product_id":"36451","category":"Camping & Hiking","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0060","bucket":"noisy","query":"waterproof coooler backpack for capming and beach","seed_product_id":"36451","category":"Camping & Hiking","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0061","bucket":"descriptive","query":"high performance desktop computer for gaming and work","seed_product_id":"346","category":"Electronics","filters":{},"title_overlap":0.333,"prompt_version":"v1"}
+{"qid":"q0062","bucket":"specific","query":"apple ipad 10.2 inch wi-fi 32gb renewed","seed_product_id":"304","category":"Electronics","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0063","bucket":"constrained","query":"compact 24 inch smart television for bedroom under $150","seed_product_id":"91","category":"Electronics","filters":{"price_max":150.0},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0064","bucket":"descriptive","query":"home theater with surround speakers and dolby atmosphere","seed_product_id":"481","category":"Electronics","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0065","bucket":"noisy","query":"home theater witth surround speakers and dloby atmosphere","seed_product_id":"481","category":"Electronics","filters":{},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0066","bucket":"descriptive","query":"large french door fridge with bottom freezer and ice maker","seed_product_id":"181","category":"Electronics","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0067","bucket":"specific","query":"wd 2tb elements portable external hard drive","seed_product_id":"560","category":"Electronics","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0068","bucket":"constrained","query":"universal vr goggles for phones up to 6.5 inch under $20","seed_product_id":"837","category":"Electronics","filters":{"price_max":20.0},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0069","bucket":"descriptive","query":"hands‑free streaming device with Alexa and 4k support","seed_product_id":"791","category":"Electronics","filters":{},"title_overlap":0.857,"prompt_version":"v1"}
+{"qid":"q0070","bucket":"noisy","query":"hands‑free streaming device wiht Alexa and 4k supprot","seed_product_id":"791","category":"Electronics","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0071","bucket":"descriptive","query":"comfortable school shoes for kids ages 5 to 8","seed_product_id":"17670","category":"Footwear","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0072","bucket":"specific","query":"the children's place formal shoes","seed_product_id":"17195","category":"Footwear","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0073","bucket":"constrained","query":"lightweight sandals for kids for summer play under $20","seed_product_id":"17711","category":"Footwear","filters":{"price_max":20.0},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0074","bucket":"descriptive","query":"affordable kids sandals for everyday wear","seed_product_id":"17720","category":"Footwear","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0075","bucket":"noisy","query":"affordable kidds sandals for everyday weaar","seed_product_id":"17720","category":"Footwear","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0076","bucket":"descriptive","query":"comfortable traditional style footwear","seed_product_id":"17562","category":"Footwear","filters":{},"title_overlap":0.25,"prompt_version":"v1"}
+{"qid":"q0077","bucket":"specific","query":"step n style budget ethnic shoes","seed_product_id":"17570","category":"Footwear","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0078","bucket":"constrained","query":"stylish ethnic shoes for casual outings under $45","seed_product_id":"17565","category":"Footwear","filters":{"price_max":45.0},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0079","bucket":"descriptive","query":"traditional shoes with modern comfort","seed_product_id":"17588","category":"Footwear","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0080","bucket":"noisy","query":"traditional shes witth modern comfort","seed_product_id":"17588","category":"Footwear","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0081","bucket":"descriptive","query":"soft plush armchair for kids reading nook","seed_product_id":"5831","category":"Furniture","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0082","bucket":"specific","query":"odk black bedroom dresser with four drawers","seed_product_id":"6708","category":"Furniture","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0083","bucket":"constrained","query":"adjustable stackable shoe organizer for hallway under $35","seed_product_id":"5262","category":"Furniture","filters":{"price_max":35.0},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0084","bucket":"descriptive","query":"large lockable metal wardrobe for office or home","seed_product_id":"5046","category":"Furniture","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0085","bucket":"noisy","query":"large lockabble metla wardrobe for office or home","seed_product_id":"5046","category":"Furniture","filters":{},"title_overlap":0.333,"prompt_version":"v1"}
+{"qid":"q0086","bucket":"descriptive","query":"heavy duty folding table for events and training","seed_product_id":"5706","category":"Furniture","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0087","bucket":"specific","query":"allewie queen size metal platform bed frame","seed_product_id":"7059","category":"Furniture","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0088","bucket":"constrained","query":"small shoe rack for entryway under $10","seed_product_id":"5257","category":"Furniture","filters":{"price_max":10.0},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0089","bucket":"descriptive","query":"bed with storage drawers and USB ports","seed_product_id":"7117","category":"Furniture","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0090","bucket":"noisy","query":"bed with storgae drawesr and USB ports","seed_product_id":"7117","category":"Furniture","filters":{},"title_overlap":0.2,"prompt_version":"v1"}
+{"qid":"q0091","bucket":"descriptive","query":"wireless game controller for pc and android","seed_product_id":"33298","category":"Gaming & Accessories","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0092","bucket":"specific","query":"razer blackshark v2 x gaming headset","seed_product_id":"33096","category":"Gaming & Accessories","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0093","bucket":"constrained","query":"portable console for cloud gaming under $250","seed_product_id":"33331","category":"Gaming & Accessories","filters":{"price_max":250.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0094","bucket":"descriptive","query":"soft blanket shaped like a game controller","seed_product_id":"33553","category":"Gaming & Accessories","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0095","bucket":"noisy","query":"soft blanket shaped like a gme controller","seed_product_id":"33553","category":"Gaming & Accessories","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0096","bucket":"descriptive","query":"mid range graphics card for 4k gaming","seed_product_id":"33153","category":"Gaming & Accessories","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0097","bucket":"specific","query":"call of duty ghost warzone mobile controller holder","seed_product_id":"33528","category":"Gaming & Accessories","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0098","bucket":"constrained","query":"wireless gaming headset under $30","seed_product_id":"33105","category":"Gaming & Accessories","filters":{"price_max":30.0},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0099","bucket":"descriptive","query":"two wireless ps4 controllers with usb-c cables","seed_product_id":"32874","category":"Gaming & Accessories","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0100","bucket":"noisy","query":"two wireless ps4 controllesr wiith usb-c cables","seed_product_id":"32874","category":"Gaming & Accessories","filters":{},"title_overlap":0.429,"prompt_version":"v1"}
+{"qid":"q0101","bucket":"descriptive","query":"solar garden statue for yard decoration","seed_product_id":"28277","category":"Gardening & Outdoor","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0102","bucket":"specific","query":"greengro greenhouse 57 inch kit","seed_product_id":"28235","category":"Gardening & Outdoor","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0103","bucket":"constrained","query":"assorted potted succulents for indoor decor under $25","seed_product_id":"27813","category":"Gardening & Outdoor","filters":{"price_max":25.0},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0104","bucket":"descriptive","query":"lightweight garden scissors for cutting herbs","seed_product_id":"28126","category":"Gardening & Outdoor","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0105","bucket":"noisy","query":"lightweight grden scissors for cutting herbbs","seed_product_id":"28126","category":"Gardening & Outdoor","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0106","bucket":"descriptive","query":"galvanized steel watering can with removable spout","seed_product_id":"27773","category":"Gardening & Outdoor","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0107","bucket":"specific","query":"9-piece heavy duty garden tool set","seed_product_id":"27652","category":"Gardening & Outdoor","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0108","bucket":"constrained","query":"small kitchen compost caddy with air vent under $17","seed_product_id":"27927","category":"Gardening & Outdoor","filters":{"price_max":17.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0109","bucket":"descriptive","query":"green garden watering can for indoor and outdoor plants","seed_product_id":"27779","category":"Gardening & Outdoor","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0110","bucket":"noisy","query":"green garden watering can for indoor and otdoor plannts","seed_product_id":"27779","category":"Gardening & Outdoor","filters":{},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0111","bucket":"descriptive","query":"sweet corn breakfast cereal box","seed_product_id":"19634","category":"Groceries","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0112","bucket":"specific","query":"skinnypop original popcorn snack pack","seed_product_id":"19956","category":"Groceries","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0113","bucket":"constrained","query":"spice mix for seasoning vegetables under $2","seed_product_id":"19929","category":"Groceries","filters":{"price_max":2.0},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0114","bucket":"descriptive","query":"couple magnetic bracelets gift idea","seed_product_id":"18636","category":"Groceries","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0115","bucket":"noisy","query":"cople magnetic bracelets gift iea","seed_product_id":"18636","category":"Groceries","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0116","bucket":"descriptive","query":"ready to use canned potatoes for soups","seed_product_id":"19415","category":"Groceries","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0117","bucket":"specific","query":"lavazza dolcevita classico ground coffee","seed_product_id":"18795","category":"Groceries","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0118","bucket":"constrained","query":"large bottle of organic apple juice under $8","seed_product_id":"19893","category":"Groceries","filters":{"price_max":8.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0119","bucket":"descriptive","query":"bulk basmati rice for Indian dishes","seed_product_id":"18539","category":"Groceries","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0120","bucket":"noisy","query":"bulk basmati rce for Indian disehs","seed_product_id":"18539","category":"Groceries","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0121","bucket":"descriptive","query":"knee support for ACL injury recovery","seed_product_id":"26701","category":"Health & Household","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0122","bucket":"specific","query":"hydroxycut hardcore elite thermogenic caps","seed_product_id":"26215","category":"Health & Household","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0123","bucket":"constrained","query":"digital infrared thermometer for cooking under $30","seed_product_id":"26970","category":"Health & Household","filters":{"price_max":30.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0124","bucket":"descriptive","query":"knee support for meniscus tear relief","seed_product_id":"26681","category":"Health & Household","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0125","bucket":"noisy","query":"knee support for menisscus tear relief","seed_product_id":"26681","category":"Health & Household","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0126","bucket":"descriptive","query":"relief for sore muscles and joint pain","seed_product_id":"26610","category":"Health & Household","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0127","bucket":"specific","query":"nature's bounty women's multivitamin gummies","seed_product_id":"41014","category":"Health & Household","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0128","bucket":"constrained","query":"overnight cold medicine for better sleep under $12","seed_product_id":"41209","category":"Health & Household","filters":{"price_max":12.0},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0129","bucket":"descriptive","query":"treatment for male pattern baldness","seed_product_id":"41571","category":"Health & Household","filters":{},"title_overlap":0.25,"prompt_version":"v1"}
+{"qid":"q0130","bucket":"noisy","query":"tretament for male pattern baldness","seed_product_id":"41571","category":"Health & Household","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0131","bucket":"descriptive","query":"home deep fryer with temperature control","seed_product_id":"10805","category":"Home Appliances","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0132","bucket":"specific","query":"black+decker 3-in-1 waffle iron grill press","seed_product_id":"10833","category":"Home Appliances","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0133","bucket":"constrained","query":"quick ice machine for home parties under $77","seed_product_id":"10749","category":"Home Appliances","filters":{"price_max":77.0},"title_overlap":0.429,"prompt_version":"v1"}
+{"qid":"q0134","bucket":"descriptive","query":"energy star dishwasher with multiple wash programs","seed_product_id":"10408","category":"Home Appliances","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0135","bucket":"noisy","query":"energy star dishwasher wiith mutiple wash programs","seed_product_id":"10408","category":"Home Appliances","filters":{},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0136","bucket":"descriptive","query":"small tabletop fan with adjustable tilt","seed_product_id":"10725","category":"Home Appliances","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0137","bucket":"specific","query":"12 inch slim push pull electric fan","seed_product_id":"10733","category":"Home Appliances","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0138","bucket":"constrained","query":"coffee machine with hot water dispenser under $150","seed_product_id":"10529","category":"Home Appliances","filters":{"price_max":150.0},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0139","bucket":"descriptive","query":"grill panini and grilled cheese at home","seed_product_id":"10819","category":"Home Appliances","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0140","bucket":"noisy","query":"grill paini and grilled chese at home","seed_product_id":"10819","category":"Home Appliances","filters":{},"title_overlap":0.2,"prompt_version":"v1"}
+{"qid":"q0141","bucket":"descriptive","query":"small round tray for bathroom or kitchen","seed_product_id":"22654","category":"Home Decor","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0142","bucket":"specific","query":"wowbox 4 piece plastic serving trays","seed_product_id":"22620","category":"Home Decor","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0143","bucket":"constrained","query":"luxury ship figurine for holiday gifts under $30","seed_product_id":"22508","category":"Home Decor","filters":{"price_max":30.0},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0144","bucket":"descriptive","query":"color changing ceiling light for dining room","seed_product_id":"21974","category":"Home Decor","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0145","bucket":"noisy","query":"color chaging ceiling light for dinning room","seed_product_id":"21974","category":"Home Decor","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0146","bucket":"descriptive","query":"industrial cracked concrete wall sticker","seed_product_id":"22129","category":"Home Decor","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0147","bucket":"specific","query":"rustic 5x7 multi wood picture frames set","seed_product_id":"21524","category":"Home Decor","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0148","bucket":"constrained","query":"tuned wind chime for garden patio under $10","seed_product_id":"22299","category":"Home Decor","filters":{"price_max":10.0},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0149","bucket":"descriptive","query":"rustic truck planter for tabletop or garden","seed_product_id":"22584","category":"Home Decor","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0150","bucket":"noisy","query":"rustic truck panter for tabltop or garden","seed_product_id":"22584","category":"Home Decor","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0151","bucket":"descriptive","query":"small corded grinder for metal cutting","seed_product_id":"39496","category":"Industrial & Scientific","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0152","bucket":"specific","query":"seville classics led lighted pegboard workcenter","seed_product_id":"38715","category":"Industrial & Scientific","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0153","bucket":"constrained","query":"reusable gas mask for painting and welding under $30","seed_product_id":"38835","category":"Industrial & Scientific","filters":{"price_max":30.0},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0154","bucket":"descriptive","query":"drill attachment for threading pvc pipe","seed_product_id":"39047","category":"Industrial & Scientific","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0155","bucket":"noisy","query":"drrill attachment for threading pvc piipe","seed_product_id":"39047","category":"Industrial & Scientific","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0156","bucket":"descriptive","query":"anti‑scratch clear safety glasses for visitors","seed_product_id":"38788","category":"Industrial & Scientific","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0157","bucket":"specific","query":"mini heat gun with reflector nozzle kit","seed_product_id":"39236","category":"Industrial & Scientific","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0158","bucket":"constrained","query":"anti‑fog dual lens safety glasses for work under $20","seed_product_id":"38809","category":"Industrial & Scientific","filters":{"price_max":20.0},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0159","bucket":"descriptive","query":"grip coated breathable work gloves bulk pack","seed_product_id":"38961","category":"Industrial & Scientific","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0160","bucket":"noisy","query":"grip coated breathablle work gloves bulk pck","seed_product_id":"38961","category":"Industrial & Scientific","filters":{},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0161","bucket":"descriptive","query":"assorted ponytail holders and scrunchies for thick hair","seed_product_id":"40419","category":"Jewelry","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0162","bucket":"specific","query":"gem stone king diamond earrings","seed_product_id":"40675","category":"Jewelry","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0163","bucket":"constrained","query":"large decorative hair bows for girls under $9","seed_product_id":"40425","category":"Jewelry","filters":{"price_max":9.0},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0164","bucket":"descriptive","query":"smooth hair bands that don’t crease","seed_product_id":"40446","category":"Jewelry","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0165","bucket":"noisy","query":"smooth hair bans tat don’t crease","seed_product_id":"40446","category":"Jewelry","filters":{},"title_overlap":0.333,"prompt_version":"v1"}
+{"qid":"q0166","bucket":"descriptive","query":"sparkly hoop earrings for formal events","seed_product_id":"40701","category":"Jewelry","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0167","bucket":"specific","query":"tortoiseshell side hair comb","seed_product_id":"40434","category":"Jewelry","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0168","bucket":"constrained","query":"replaceable watch strap for leather watches under $27","seed_product_id":"39833","category":"Jewelry","filters":{"price_max":27.0},"title_overlap":0.143,"prompt_version":"v1"}
+{"qid":"q0169","bucket":"descriptive","query":"soft cloth headbands for everyday wear","seed_product_id":"40429","category":"Jewelry","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0170","bucket":"noisy","query":"soft colth headbands for everyday wera","seed_product_id":"40429","category":"Jewelry","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0171","bucket":"descriptive","query":"make soft boiled eggs quickly","seed_product_id":"3224","category":"Kitchenware","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0172","bucket":"specific","query":"Euro Ceramica Zanzibar dinnerware set","seed_product_id":"2363","category":"Kitchenware","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0173","bucket":"constrained","query":"grey matte plates for four people under $44","seed_product_id":"2325","category":"Kitchenware","filters":{"price_max":44.0},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0174","bucket":"descriptive","query":"stainless steel tea infusers with handle","seed_product_id":"4225","category":"Kitchenware","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0175","bucket":"noisy","query":"stainless steeel tea infuers with handle","seed_product_id":"4225","category":"Kitchenware","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0176","bucket":"descriptive","query":"set of kitchen knives with protective covers","seed_product_id":"3732","category":"Kitchenware","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0177","bucket":"specific","query":"CAROTE 14 piece nonstick pots and pans set","seed_product_id":"2186","category":"Kitchenware","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0178","bucket":"constrained","query":"small measuring spoons set under $5","seed_product_id":"3914","category":"Kitchenware","filters":{"price_max":5.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0179","bucket":"descriptive","query":"tea infuser with drip bowl for loose leaf tea","seed_product_id":"4258","category":"Kitchenware","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0180","bucket":"noisy","query":"tea inufser with drp bowl for loose leaf tea","seed_product_id":"4258","category":"Kitchenware","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0181","bucket":"descriptive","query":"lightweight travel ukulele with beginner kit","seed_product_id":"29177","category":"Music & Instruments","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0182","bucket":"specific","query":"VTech Kidi Star DJ mixer","seed_product_id":"29841","category":"Music & Instruments","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0183","bucket":"constrained","query":"music production software FL Studio under $130","seed_product_id":"29922","category":"Music & Instruments","filters":{"price_max":130.0},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0184","bucket":"descriptive","query":"full size electronic keyboard for beginners","seed_product_id":"34942","category":"Music & Instruments","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0185","bucket":"noisy","query":"full size electronic kyboard for beginers","seed_product_id":"34942","category":"Music & Instruments","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0186","bucket":"descriptive","query":"long lasting bright tone guitar strings set","seed_product_id":"29578","category":"Music & Instruments","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0187","bucket":"specific","query":"Cecilio CVN-500 solid wood ebony fitted violin","seed_product_id":"28854","category":"Music & Instruments","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0188","bucket":"constrained","query":"delay effect for electric guitar under $20","seed_product_id":"29472","category":"Music & Instruments","filters":{"price_max":20.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0189","bucket":"descriptive","query":"portable metronome for piano and drums","seed_product_id":"30035","category":"Music & Instruments","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0190","bucket":"noisy","query":"portabble metornome for piano and drums","seed_product_id":"30035","category":"Music & Instruments","filters":{},"title_overlap":0.25,"prompt_version":"v1"}
+{"qid":"q0191","bucket":"descriptive","query":"school party supplies for goodie bags","seed_product_id":"24843","category":"Office Supplies","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0192","bucket":"specific","query":"vintage airmail stationery set 96 pack","seed_product_id":"24866","category":"Office Supplies","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0193","bucket":"constrained","query":"small rolling file cabinet for office under $120","seed_product_id":"24651","category":"Office Supplies","filters":{"price_max":120.0},"title_overlap":0.286,"prompt_version":"v1"}
+{"qid":"q0194","bucket":"descriptive","query":"large frameless glass whiteboard for classroom","seed_product_id":"24777","category":"Office Supplies","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0195","bucket":"noisy","query":"lrage fraameless glass whiteboard for classroom","seed_product_id":"24777","category":"Office Supplies","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0196","bucket":"descriptive","query":"paper and envelopes kit for personal letters","seed_product_id":"24884","category":"Office Supplies","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0197","bucket":"specific","query":"amazon basics permanent markers 24 pack black","seed_product_id":"25016","category":"Office Supplies","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0198","bucket":"constrained","query":"multi compartment pen holder with drawer for desk under $20","seed_product_id":"25210","category":"Office Supplies","filters":{"price_max":20.0},"title_overlap":0.625,"prompt_version":"v1"}
+{"qid":"q0199","bucket":"descriptive","query":"metal laptop stand with storage drawer","seed_product_id":"25200","category":"Office Supplies","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0200","bucket":"noisy","query":"metal laptop stnad wth storage drawer","seed_product_id":"25200","category":"Office Supplies","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0201","bucket":"descriptive","query":"schedule multiple meals for cat and dog","seed_product_id":"20938","category":"Pet Supplies","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0202","bucket":"specific","query":"expandable pet carrier black","seed_product_id":"20693","category":"Pet Supplies","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0203","bucket":"constrained","query":"wet kitten food variety pack under $20","seed_product_id":"20075","category":"Pet Supplies","filters":{"price_max":20.0},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0204","bucket":"descriptive","query":"warm sweatshirt for small dogs","seed_product_id":"20848","category":"Pet Supplies","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0205","bucket":"noisy","query":"waarm sweatshirt for smmall dogs","seed_product_id":"20848","category":"Pet Supplies","filters":{},"title_overlap":0.0,"prompt_version":"v1"}
+{"qid":"q0206","bucket":"descriptive","query":"quiet rechargeable grooming clippers for pets","seed_product_id":"20221","category":"Pet Supplies","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0207","bucket":"specific","query":"fragralley waterproof dog winter coat","seed_product_id":"20881","category":"Pet Supplies","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0208","bucket":"constrained","query":"no pull reflective dog harness under $20","seed_product_id":"21153","category":"Pet Supplies","filters":{"price_max":20.0},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0209","bucket":"descriptive","query":"multi‑sided cardboard scratching tower for cats","seed_product_id":"21049","category":"Pet Supplies","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0210","bucket":"noisy","query":"multi‑sided cardbaord scratching towr for cats","seed_product_id":"21049","category":"Pet Supplies","filters":{},"title_overlap":0.333,"prompt_version":"v1"}
+{"qid":"q0211","bucket":"descriptive","query":"telescopic spinning rod and reel set for beginners","seed_product_id":"16334","category":"Sports & Outdoors","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0212","bucket":"specific","query":"badminton nylon shuttlecocks set","seed_product_id":"16164","category":"Sports & Outdoors","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0213","bucket":"constrained","query":"thick non slip yoga mat for home workouts under $60","seed_product_id":"15586","category":"Sports & Outdoors","filters":{"price_max":60.0},"title_overlap":0.778,"prompt_version":"v1"}
+{"qid":"q0214","bucket":"descriptive","query":"official size streetball basketball for indoor outdoor","seed_product_id":"15968","category":"Sports & Outdoors","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0215","bucket":"noisy","query":"offficial size streetball basketball for inndoor outdoor","seed_product_id":"15968","category":"Sports & Outdoors","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0216","bucket":"descriptive","query":"leather boxing gloves for training and sparring","seed_product_id":"15861","category":"Sports & Outdoors","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0217","bucket":"specific","query":"fabric resistance bands","seed_product_id":"15675","category":"Sports & Outdoors","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0218","bucket":"constrained","query":"collapsible insulated cooler bag for picnics under $36","seed_product_id":"16675","category":"Sports & Outdoors","filters":{"price_max":36.0},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0219","bucket":"descriptive","query":"non slip yoga mat for fitness classes","seed_product_id":"15592","category":"Sports & Outdoors","filters":{},"title_overlap":0.833,"prompt_version":"v1"}
+{"qid":"q0220","bucket":"noisy","query":"non slip yoga mat for fitnss claasses","seed_product_id":"15592","category":"Sports & Outdoors","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0221","bucket":"descriptive","query":"paint sprayer kit for car and house projects","seed_product_id":"42615","category":"Tools & Home Improvement","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0222","bucket":"specific","query":"suizan ryoba double edge saw","seed_product_id":"43323","category":"Tools & Home Improvement","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0223","bucket":"constrained","query":"cordless power drill with multiple torque settings under $42","seed_product_id":"42543","category":"Tools & Home Improvement","filters":{"price_max":42.0},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0224","bucket":"descriptive","query":"hex shank twist drill bits for wood and metal","seed_product_id":"42392","category":"Tools & Home Improvement","filters":{},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0225","bucket":"noisy","query":"hex shank twist dill bits for wood and mteal","seed_product_id":"42392","category":"Tools & Home Improvement","filters":{},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0226","bucket":"descriptive","query":"small clamp for jewelry making","seed_product_id":"43521","category":"Tools & Home Improvement","filters":{},"title_overlap":0.5,"prompt_version":"v1"}
+{"qid":"q0227","bucket":"specific","query":"700w hvlp paint sprayer","seed_product_id":"42598","category":"Tools & Home Improvement","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0228","bucket":"constrained","query":"multi‑bit screwdriver for home repairs under $25","seed_product_id":"42482","category":"Tools & Home Improvement","filters":{"price_max":25.0},"title_overlap":0.429,"prompt_version":"v1"}
+{"qid":"q0229","bucket":"descriptive","query":"hand pipe bender for copper tubing","seed_product_id":"43202","category":"Tools & Home Improvement","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0230","bucket":"noisy","query":"hadn piipe bender for copper tubing","seed_product_id":"43202","category":"Tools & Home Improvement","filters":{},"title_overlap":0.4,"prompt_version":"v1"}
+{"qid":"q0231","bucket":"descriptive","query":"electric kids car with parental control","seed_product_id":"10225","category":"Toys","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0232","bucket":"specific","query":"jelly cube clear slime kit","seed_product_id":"8121","category":"Toys","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0233","bucket":"constrained","query":"musical wooden rainmaker toy for toddlers under $16","seed_product_id":"7934","category":"Toys","filters":{"price_max":16.0},"title_overlap":0.571,"prompt_version":"v1"}
+{"qid":"q0234","bucket":"descriptive","query":"1000 piece Venice jigsaw puzzle adults","seed_product_id":"7817","category":"Toys","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0235","bucket":"noisy","query":"1000 piece Vennice jigasw puzzle adults","seed_product_id":"7817","category":"Toys","filters":{},"title_overlap":0.6,"prompt_version":"v1"}
+{"qid":"q0236","bucket":"descriptive","query":"sexy maid outfit for roleplay","seed_product_id":"9822","category":"Toys","filters":{},"title_overlap":0.75,"prompt_version":"v1"}
+{"qid":"q0237","bucket":"specific","query":"kids preferred curious george plush","seed_product_id":"7869","category":"Toys","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0238","bucket":"constrained","query":"small die cast police car toy under $9","seed_product_id":"9518","category":"Toys","filters":{"price_max":9.0},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0239","bucket":"descriptive","query":"colorful foam building blocks for toddlers","seed_product_id":"7870","category":"Toys","filters":{},"title_overlap":0.2,"prompt_version":"v1"}
+{"qid":"q0240","bucket":"noisy","query":"colrful foam building blocks for todders","seed_product_id":"7870","category":"Toys","filters":{},"title_overlap":0.2,"prompt_version":"v1"}
+{"qid":"q0241","bucket":"descriptive","query":"portable inflatable seat pad for stadium","seed_product_id":"32725","category":"Travel Accessories","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0242","bucket":"specific","query":"premium leather travel toiletry pouch","seed_product_id":"32153","category":"Travel Accessories","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0243","bucket":"constrained","query":"disposable hand warmers for cold days under $8","seed_product_id":"32674","category":"Travel Accessories","filters":{"price_max":8.0},"title_overlap":0.167,"prompt_version":"v1"}
+{"qid":"q0244","bucket":"descriptive","query":"compact memory bead neck pillow","seed_product_id":"31695","category":"Travel Accessories","filters":{},"title_overlap":0.2,"prompt_version":"v1"}
+{"qid":"q0245","bucket":"noisy","query":"compact memory bed ncek pillow","seed_product_id":"31695","category":"Travel Accessories","filters":{},"title_overlap":0.2,"prompt_version":"v1"}
+{"qid":"q0246","bucket":"descriptive","query":"wireless headphones with noise cancel and mic","seed_product_id":"31965","category":"Travel Accessories","filters":{},"title_overlap":0.8,"prompt_version":"v1"}
+{"qid":"q0247","bucket":"specific","query":"travel smart TSA approved travel bottles","seed_product_id":"32083","category":"Travel Accessories","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0248","bucket":"constrained","query":"fast drying workout towel for gym under $26","seed_product_id":"32650","category":"Travel Accessories","filters":{"price_max":26.0},"title_overlap":0.714,"prompt_version":"v1"}
+{"qid":"q0249","bucket":"descriptive","query":"long lasting air activated hand warmers","seed_product_id":"32679","category":"Travel Accessories","filters":{},"title_overlap":1.0,"prompt_version":"v1"}
+{"qid":"q0250","bucket":"noisy","query":"log lasting air activated hand waremrs","seed_product_id":"32679","category":"Travel Accessories","filters":{},"title_overlap":0.667,"prompt_version":"v1"}
+{"qid":"q0251","bucket":"vague","query":"ideas for a weekend DIY project","category":"Arts & Crafts","filters":{},"prompt_version":"v1"}
+{"qid":"q0252","bucket":"vague","query":"things to keep my car clean","category":"Automotive","filters":{},"prompt_version":"v1"}
+{"qid":"q0253","bucket":"vague","query":"essentials for a newborn's first month","category":"Baby Products","filters":{},"prompt_version":"v1"}
+{"qid":"q0254","bucket":"vague","query":"simple routine for fresh skin","category":"Beauty & Personal Care","filters":{},"prompt_version":"v1"}
+{"qid":"q0255","bucket":"vague","query":"good reads for a rainy afternoon","category":"Books","filters":{},"prompt_version":"v1"}
+{"qid":"q0256","bucket":"vague","query":"must‑haves for a two‑day trek","category":"Camping & Hiking","filters":{},"prompt_version":"v1"}
+{"qid":"q0257","bucket":"vague","query":"gadgets to simplify daily chores","category":"Electronics","filters":{},"prompt_version":"v1"}
+{"qid":"q0258","bucket":"vague","query":"comfortable shoes for long walks","category":"Footwear","filters":{},"prompt_version":"v1"}
+{"qid":"q0259","bucket":"vague","query":"pieces to make a small living room cozy","category":"Furniture","filters":{},"prompt_version":"v1"}
+{"qid":"q0260","bucket":"vague","query":"gear to level up my home gaming","category":"Gaming & Accessories","filters":{},"prompt_version":"v1"}
+{"qid":"q0261","bucket":"vague","query":"tools for starting a balcony garden","category":"Gardening & Outdoor","filters":{},"prompt_version":"v1"}
+{"qid":"q0262","bucket":"vague","query":"quick snacks for busy evenings","category":"Groceries","filters":{},"prompt_version":"v1"}
+{"qid":"q0263","bucket":"vague","query":"items to boost my immunity naturally","category":"Health & Household","filters":{},"prompt_version":"v1"}
+{"qid":"q0264","bucket":"vague","query":"appliances that save kitchen space","category":"Home Appliances","filters":{},"prompt_version":"v1"}
+{"qid":"q0265","bucket":"vague","query":"decor ideas for a minimalist bedroom","category":"Home Decor","filters":{},"prompt_version":"v1"}
+{"qid":"q0266","bucket":"vague","query":"supplies for a home workshop project","category":"Industrial & Scientific","filters":{},"prompt_version":"v1"}
+{"qid":"q0267","bucket":"vague","query":"thoughtful gifts for a close friend","category":"Jewelry","filters":{},"prompt_version":"v1"}
+{"qid":"q0268","bucket":"vague","query":"must‑have tools for easy meal prep","category":"Kitchenware","filters":{},"prompt_version":"v1"}
+{"qid":"q0269","bucket":"vague","query":"beginner gear for learning guitar","category":"Music & Instruments","filters":{},"prompt_version":"v1"}
+{"qid":"q0270","bucket":"vague","query":"essentials for a home office setup","category":"Office Supplies","filters":{},"prompt_version":"v1"}
+{"qid":"q0271","bucket":"vague","query":"comfort items for a nervous dog","category":"Pet Supplies","filters":{},"prompt_version":"v1"}
+{"qid":"q0272","bucket":"vague","query":"equipment for weekend backyard games","category":"Sports & Outdoors","filters":{},"prompt_version":"v1"}
+{"qid":"q0273","bucket":"vague","query":"basic tools for simple home fixes","category":"Tools & Home Improvement","filters":{},"prompt_version":"v1"}
+{"qid":"q0274","bucket":"vague","query":"fun activities for a rainy day indoors","category":"Toys","filters":{},"prompt_version":"v1"}
+{"qid":"q0275","bucket":"vague","query":"compact items for a short weekend trip","category":"Travel Accessories","filters":{},"prompt_version":"v1"}
+{"qid":"q0276","bucket":"image","image_file":"images_v1/q_30774.jpg","seed_product_id":"30774","category":"Arts & Crafts","filters":{},"prompt_version":"v1"}
+{"qid":"q0277","bucket":"image","image_file":"images_v1/q_30417.jpg","seed_product_id":"30417","category":"Arts & Crafts","filters":{},"prompt_version":"v1"}
+{"qid":"q0278","bucket":"image","image_file":"images_v1/q_15233.jpg","seed_product_id":"15233","category":"Automotive","filters":{},"prompt_version":"v1"}
+{"qid":"q0279","bucket":"image","image_file":"images_v1/q_14430.jpg","seed_product_id":"14430","category":"Automotive","filters":{},"prompt_version":"v1"}
+{"qid":"q0280","bucket":"image","image_file":"images_v1/q_23509.jpg","seed_product_id":"23509","category":"Baby Products","filters":{},"prompt_version":"v1"}
+{"qid":"q0281","bucket":"image","image_file":"images_v1/q_24329.jpg","seed_product_id":"24329","category":"Baby Products","filters":{},"prompt_version":"v1"}
+{"qid":"q0282","bucket":"image","image_file":"images_v1/q_11574.jpg","seed_product_id":"11574","category":"Beauty & Personal Care","filters":{},"prompt_version":"v1"}
+{"qid":"q0283","bucket":"image","image_file":"images_v1/q_11662.jpg","seed_product_id":"11662","category":"Beauty & Personal Care","filters":{},"prompt_version":"v1"}
+{"qid":"q0284","bucket":"image","image_file":"images_v1/q_1511.jpg","seed_product_id":"1511","category":"Books","filters":{},"prompt_version":"v1"}
+{"qid":"q0285","bucket":"image","image_file":"images_v1/q_906.jpg","seed_product_id":"906","category":"Books","filters":{},"prompt_version":"v1"}
+{"qid":"q0286","bucket":"image","image_file":"images_v1/q_36297.jpg","seed_product_id":"36297","category":"Camping & Hiking","filters":{},"prompt_version":"v1"}
+{"qid":"q0287","bucket":"image","image_file":"images_v1/q_36945.jpg","seed_product_id":"36945","category":"Camping & Hiking","filters":{},"prompt_version":"v1"}
+{"qid":"q0288","bucket":"image","image_file":"images_v1/q_24.jpg","seed_product_id":"24","category":"Electronics","filters":{},"prompt_version":"v1"}
+{"qid":"q0289","bucket":"image","image_file":"images_v1/q_597.jpg","seed_product_id":"597","category":"Electronics","filters":{},"prompt_version":"v1"}
+{"qid":"q0290","bucket":"image","image_file":"images_v1/q_17872.jpg","seed_product_id":"17872","category":"Footwear","filters":{},"prompt_version":"v1"}
+{"qid":"q0291","bucket":"image","image_file":"images_v1/q_17657.jpg","seed_product_id":"17657","category":"Footwear","filters":{},"prompt_version":"v1"}
+{"qid":"q0292","bucket":"image","image_file":"images_v1/q_7053.jpg","seed_product_id":"7053","category":"Furniture","filters":{},"prompt_version":"v1"}
+{"qid":"q0293","bucket":"image","image_file":"images_v1/q_7406.jpg","seed_product_id":"7406","category":"Furniture","filters":{},"prompt_version":"v1"}
+{"qid":"q0294","bucket":"image","image_file":"images_v1/q_33025.jpg","seed_product_id":"33025","category":"Gaming & Accessories","filters":{},"prompt_version":"v1"}
+{"qid":"q0295","bucket":"image","image_file":"images_v1/q_32870.jpg","seed_product_id":"32870","category":"Gaming & Accessories","filters":{},"prompt_version":"v1"}
+{"qid":"q0296","bucket":"image","image_file":"images_v1/q_27849.jpg","seed_product_id":"27849","category":"Gardening & Outdoor","filters":{},"prompt_version":"v1"}
+{"qid":"q0297","bucket":"image","image_file":"images_v1/q_27552.jpg","seed_product_id":"27552","category":"Gardening & Outdoor","filters":{},"prompt_version":"v1"}
+{"qid":"q0298","bucket":"image","image_file":"images_v1/q_19662.jpg","seed_product_id":"19662","category":"Groceries","filters":{},"prompt_version":"v1"}
+{"qid":"q0299","bucket":"image","image_file":"images_v1/q_18866.jpg","seed_product_id":"18866","category":"Groceries","filters":{},"prompt_version":"v1"}
+{"qid":"q0300","bucket":"image","image_file":"images_v1/q_42128.jpg","seed_product_id":"42128","category":"Health & Household","filters":{},"prompt_version":"v1"}
+{"qid":"q0301","bucket":"image","image_file":"images_v1/q_26107.jpg","seed_product_id":"26107","category":"Health & Household","filters":{},"prompt_version":"v1"}
+{"qid":"q0302","bucket":"image","image_file":"images_v1/q_10392.jpg","seed_product_id":"10392","category":"Home Appliances","filters":{},"prompt_version":"v1"}
+{"qid":"q0303","bucket":"image","image_file":"images_v1/q_10877.jpg","seed_product_id":"10877","category":"Home Appliances","filters":{},"prompt_version":"v1"}
+{"qid":"q0304","bucket":"image","image_file":"images_v1/q_21941.jpg","seed_product_id":"21941","category":"Home Decor","filters":{},"prompt_version":"v1"}
+{"qid":"q0305","bucket":"image","image_file":"images_v1/q_21800.jpg","seed_product_id":"21800","category":"Home Decor","filters":{},"prompt_version":"v1"}
+{"qid":"q0306","bucket":"image","image_file":"images_v1/q_39413.jpg","seed_product_id":"39413","category":"Industrial & Scientific","filters":{},"prompt_version":"v1"}
+{"qid":"q0307","bucket":"image","image_file":"images_v1/q_39545.jpg","seed_product_id":"39545","category":"Industrial & Scientific","filters":{},"prompt_version":"v1"}
+{"qid":"q0308","bucket":"image","image_file":"images_v1/q_40411.jpg","seed_product_id":"40411","category":"Jewelry","filters":{},"prompt_version":"v1"}
+{"qid":"q0309","bucket":"image","image_file":"images_v1/q_40440.jpg","seed_product_id":"40440","category":"Jewelry","filters":{},"prompt_version":"v1"}
+{"qid":"q0310","bucket":"image","image_file":"images_v1/q_2278.jpg","seed_product_id":"2278","category":"Kitchenware","filters":{},"prompt_version":"v1"}
+{"qid":"q0311","bucket":"image","image_file":"images_v1/q_2885.jpg","seed_product_id":"2885","category":"Kitchenware","filters":{},"prompt_version":"v1"}
+{"qid":"q0312","bucket":"image","image_file":"images_v1/q_29702.jpg","seed_product_id":"29702","category":"Music & Instruments","filters":{},"prompt_version":"v1"}
+{"qid":"q0313","bucket":"image","image_file":"images_v1/q_29805.jpg","seed_product_id":"29805","category":"Music & Instruments","filters":{},"prompt_version":"v1"}
+{"qid":"q0314","bucket":"image","image_file":"images_v1/q_25340.jpg","seed_product_id":"25340","category":"Office Supplies","filters":{},"prompt_version":"v1"}
+{"qid":"q0315","bucket":"image","image_file":"images_v1/q_25857.jpg","seed_product_id":"25857","category":"Office Supplies","filters":{},"prompt_version":"v1"}
+{"qid":"q0316","bucket":"image","image_file":"images_v1/q_20289.jpg","seed_product_id":"20289","category":"Pet Supplies","filters":{},"prompt_version":"v1"}
+{"qid":"q0317","bucket":"image","image_file":"images_v1/q_21376.jpg","seed_product_id":"21376","category":"Pet Supplies","filters":{},"prompt_version":"v1"}
+{"qid":"q0318","bucket":"image","image_file":"images_v1/q_16282.jpg","seed_product_id":"16282","category":"Sports & Outdoors","filters":{},"prompt_version":"v1"}
+{"qid":"q0319","bucket":"image","image_file":"images_v1/q_15939.jpg","seed_product_id":"15939","category":"Sports & Outdoors","filters":{},"prompt_version":"v1"}
+{"qid":"q0320","bucket":"image","image_file":"images_v1/q_42814.jpg","seed_product_id":"42814","category":"Tools & Home Improvement","filters":{},"prompt_version":"v1"}
+{"qid":"q0321","bucket":"image","image_file":"images_v1/q_43021.jpg","seed_product_id":"43021","category":"Tools & Home Improvement","filters":{},"prompt_version":"v1"}
+{"qid":"q0322","bucket":"image","image_file":"images_v1/q_10153.jpg","seed_product_id":"10153","category":"Toys","filters":{},"prompt_version":"v1"}
+{"qid":"q0323","bucket":"image","image_file":"images_v1/q_8652.jpg","seed_product_id":"8652","category":"Toys","filters":{},"prompt_version":"v1"}
+{"qid":"q0324","bucket":"image","image_file":"images_v1/q_31693.jpg","seed_product_id":"31693","category":"Travel Accessories","filters":{},"prompt_version":"v1"}
+{"qid":"q0325","bucket":"image","image_file":"images_v1/q_32381.jpg","seed_product_id":"32381","category":"Travel Accessories","filters":{},"prompt_version":"v1"}

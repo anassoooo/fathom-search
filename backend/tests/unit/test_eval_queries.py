@@ -120,3 +120,15 @@ def test_augmented_image_differs_but_is_valid() -> None:
     out = augment_image(buf.getvalue(), random.Random(0))
     img = Image.open(io.BytesIO(out))
     assert img.size[0] < 200 and img.format == "JPEG"
+
+
+def test_noisy_queries_come_from_every_other_descriptive(tmp_path: Path) -> None:
+    images = tmp_path / "images"
+    images.mkdir()
+    llm = LLMClient(FakeLLM(), sleep=lambda s: None)
+    recs = generate(
+        _products(30), llm, "m", image_dir=images, out_dir=tmp_path / "eval", per_category=20
+    )
+    n_desc = sum(r.bucket == "descriptive" for r in recs)
+    n_noisy = sum(r.bucket == "noisy" for r in recs)
+    assert n_noisy == n_desc // 2

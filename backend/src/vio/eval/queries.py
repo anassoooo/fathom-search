@@ -204,6 +204,7 @@ def generate(
     assigned = {p.product_id: rotation[i % len(rotation)] for i, p in enumerate(seeds)}
     by_id = {p.product_id: p for p in seeds}
     records: list[QueryRecord] = []
+    n_descriptive = 0
 
     text_seeds = [p for p in seeds if assigned[p.product_id] != "image"]
     template = prompt(f"eval_query_gen.{PROMPT_VERSION}.md")
@@ -228,6 +229,7 @@ def generate(
                     (item.specific if bucket == "specific" else item.descriptive),
                     Filters(),
                 )
+            n_descriptive += bucket == "descriptive"
             records.append(
                 QueryRecord(
                     qid="",
@@ -240,7 +242,7 @@ def generate(
                 )
             )
             # every other descriptive seed also yields a noisy (typo) variant
-            if bucket == "descriptive" and len(records) % 2 == 0:
+            if bucket == "descriptive" and n_descriptive % 2 == 0:
                 noisy = add_typos(item.descriptive.strip(), rng)
                 records.append(
                     QueryRecord(
