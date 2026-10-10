@@ -253,18 +253,18 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
 
 ## M4 — Web migration
 
-- [ ] **T050 · Typed API client** — Deps: T019
+- [x] **T050 · Typed API client** — Deps: T019
   Generate `web/src/lib/api-types.ts` from OpenAPI (`openapi-typescript`)
   plus a thin `web/src/lib/api.ts`. Add an npm script `gen:api`.
   *Accept:* `tsc` passes; CI checks that the generated file is up to date.
 
-- [ ] **T051 · Swap web data paths** — Deps: T050
+- [x] **T051 · Swap web data paths** — Deps: T050
   Catalog, product page, similar products, and assistant now call the backend.
   Delete `lib/qdrant.ts`, `lib/clip.ts`, `lib/embeddings.ts`, `lib/ollama.ts`,
   `/api/clip`, `/api/products*`, `/api/categories`, and `/api/assistant/recommend`.
   *Accept:* `grep -r qdrant web/src` is empty; all pages work against the backend.
 
-- [ ] **T052 · Postgres + Prisma fix** [P] — Deps: T006
+- [x] **T052 · Postgres + Prisma fix** [P] — Deps: T006
   Datasource → postgresql; pin Prisma 6 (or migrate config for 7 properly);
   move `@prisma/client` to dependencies; first migration.
   *Accept:* `npx prisma migrate dev` works against compose Postgres.
