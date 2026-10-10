@@ -15,7 +15,7 @@ DENSE = "text_dense"
 SPARSE = "text_sparse"
 IMAGE = "image_clip"
 
-_KEYWORD_INDEXES = ("category", "subcategory", "price_bucket", "product_id")
+_KEYWORD_INDEXES = ("categories", "subcategories", "price_bucket", "product_id")
 _FLOAT_INDEXES = ("price", "rating", "bayes_rating")
 
 
@@ -126,7 +126,7 @@ class ProductStore:
         )[0]
         max_price = float(top[0].payload["price"]) if top and top[0].payload else 100_000.0
         return Taxonomy(
-            categories=facet_values("category"),
-            subcategories=facet_values("subcategory"),
+            categories=facet_values("categories"),
+            subcategories=facet_values("subcategories"),
             max_price=max_price,
         )

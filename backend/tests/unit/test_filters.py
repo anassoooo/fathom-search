@@ -46,6 +46,13 @@ def test_to_qdrant_builds_all_conditions() -> None:
     )
     assert f is not None and isinstance(f.must, list)
     by_key = {c.key: c for c in f.must if isinstance(c, qm.FieldCondition)}
-    assert set(by_key) == {"category", "price", "price_bucket", "rating"}
+    assert set(by_key) == {"categories", "price", "price_bucket", "rating"}
     assert by_key["price"].range == qm.Range(gte=10, lte=50)
-    assert by_key["category"].match == qm.MatchValue(value="Electronics")
+    assert by_key["categories"].match == qm.MatchValue(value="Electronics")
+
+
+def test_category_aliases_resolve_to_canonical() -> None:
+    tax = Taxonomy(categories=frozenset({"Arts & Crafts", "Beauty & Personal Care"}))
+    assert tax.canonical_category("art supplies") == "Arts & Crafts"
+    assert tax.canonical_category("Beauty & Personal") == "Beauty & Personal Care"
+    assert tax.canonical_category("Arts & Crafts") == "Arts & Crafts"

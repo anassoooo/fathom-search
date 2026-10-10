@@ -170,7 +170,7 @@ Branch name: `t<id>-<slug>`.
   subset on the sample collection in CI with no LLM.
   *Accept:* a deliberately broken retriever fails CI.
 
-- [ ] **T036 · ADR-0002, 0003, 0005** [P] — Deps: T034
+- [ ] **T036 · ADR-0003, 0004, 0006** [P] — Deps: T034
   Record the fusion, embedding-model, and labeling decisions, citing report numbers.
 
 ## M3 — Query understanding + agent
@@ -211,7 +211,7 @@ Branch name: `t<id>-<slug>`.
 - [ ] **T046 · Agent eval** — Deps: T045, T030
   `data/eval/clarification_v1.jsonl` (about 100) plus tool-choice cases;
   `vio eval agent` → clarification F1, tool accuracy, steps, latency, cost.
-  *Accept:* report section added; ADR-0004 written.
+  *Accept:* report section added; ADR-0005 written.
 
 ## M4 — Web migration
 

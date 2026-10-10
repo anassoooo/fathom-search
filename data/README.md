@@ -36,8 +36,9 @@ committed, so the project runs end to end from a fresh clone.
 
 ## Known data-quality issues (profiled 2026-10-10)
 
-These affect search and evaluation design. Each is tracked as a decision in
-`TASKS.md` or `docs/adr/`.
+These affect search and evaluation design. Issues 1 and 2 are handled at ingest
+([ADR-0002](../docs/adr/0002-dedup-and-category-aliases.md)): 42,427 rows become
+**35,736 products** across **25 categories**.
 
 1. **Duplicate listings.** 6,054 titles appear more than once (10,069 extra rows,
    24% of the catalog), usually the same item listed under several categories

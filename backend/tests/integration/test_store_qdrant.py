@@ -23,7 +23,7 @@ def server_store(products: list[Product]) -> Iterator[ProductStore]:
 
 def test_schema_has_indexes_and_vectors(server_store: ProductStore) -> None:
     info = server_store.client.get_collection(server_store.collection)
-    assert {"category", "subcategory", "price_bucket", "price", "rating"} <= set(
+    assert {"categories", "subcategories", "price_bucket", "price", "rating"} <= set(
         info.payload_schema
     )
     assert server_store.ensure_collection(64, 32) is False  # idempotent

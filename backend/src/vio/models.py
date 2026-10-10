@@ -55,6 +55,13 @@ class Product(BaseModel):
     bayes_rating: float | None = None
     value_score: float | None = None
     image_url: str | None = None
+    # A product listed under several categories is merged into one point at ingest
+    # (ADR-0002). These hold every (canonical) category it was listed under, the
+    # original category spellings, and the IDs of the merged source rows.
+    categories: list[str] = Field(default_factory=list)
+    subcategories: list[str] = Field(default_factory=list)
+    raw_categories: list[str] = Field(default_factory=list)
+    merged_ids: list[str] = Field(default_factory=list)
 
     @model_validator(mode="before")
     @classmethod
@@ -84,6 +91,18 @@ class Product(BaseModel):
     def _strip(cls, v: str | None) -> str | None:
         return v.strip() if v is not None else None
 
+    @model_validator(mode="after")
+    def _default_lists(self) -> "Product":
+        if not self.categories:
+            self.categories = [self.category]
+        if not self.subcategories and self.subcategory:
+            self.subcategories = [self.subcategory]
+        if not self.raw_categories:
+            self.raw_categories = [self.category]
+        if not self.merged_ids:
+            self.merged_ids = [self.product_id]
+        return self
+
     @classmethod
     def from_csv_row(cls, row: Mapping[str, Any]) -> "Product":
         return cls.model_validate({CSV_COLUMNS[k]: v for k, v in row.items() if k in CSV_COLUMNS})
@@ -93,9 +112,13 @@ class Product(BaseModel):
         return point_id_for(self.product_id)
 
     def doc_text(self) -> str:
-        """Text indexed by the text encoders. Price is excluded: it is a filter, not semantics."""
-        parts = [self.name, self.category, self.subcategory]
-        return " | ".join(p for p in parts if p)
+        """Text indexed by the text encoders. Price is excluded: it is a filter, not semantics.
+
+        All subcategories a merged product was listed under add context
+        (e.g. "Laptops, Gaming laptops").
+        """
+        subs = ", ".join(self.subcategories[:3])
+        return " | ".join(p for p in (self.name, self.category, subs) if p)
 
     def payload(self) -> dict[str, Any]:
         return self.model_dump()

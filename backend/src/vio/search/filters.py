@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 
 from qdrant_client import models as qm
 
+from vio.catalog import CATEGORY_ALIASES
 from vio.models import Filters
 
 
@@ -20,6 +21,12 @@ class Taxonomy:
     max_price: float = 100_000.0
 
     def canonical_category(self, value: str) -> str | None:
+        """Resolve user/LLM text to a catalog category, following aliases ("Art Supplies")."""
+        key = " ".join(value.split()).casefold()
+        for raw, canonical in CATEGORY_ALIASES.items():
+            if raw.casefold() == key:
+                value = canonical
+                break
         return _canonical(value, self.categories)
 
     def canonical_subcategory(self, value: str) -> str | None:
@@ -66,8 +73,13 @@ def sanitize(filters: Filters, taxonomy: Taxonomy) -> tuple[Filters, list[str]]:
 
 def to_qdrant(filters: Filters) -> qm.Filter | None:
     must: list[qm.Condition] = []
-    for key in ("category", "subcategory", "price_bucket"):
-        value = getattr(filters, key)
+    # `categories`/`subcategories` are arrays (merged listings); MatchValue matches any element.
+    for attr, key in (
+        ("category", "categories"),
+        ("subcategory", "subcategories"),
+        ("price_bucket", "price_bucket"),
+    ):
+        value = getattr(filters, attr)
         if value is not None:
             must.append(qm.FieldCondition(key=key, match=qm.MatchValue(value=value)))
 

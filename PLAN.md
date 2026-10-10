@@ -139,7 +139,8 @@ VIO/
 
 ### 7.2 Ingestion (`vio ingest`)
 - Input: the processed CSV (same columns as `vio_EDA.csv`) plus an optional image directory.
-- Steps: load → validate rows (Pydantic `Product`) → build document text →
+- Steps: load → validate rows (Pydantic `Product`) → normalize (category aliases,
+  merge duplicate listings; ADR-0002) → build document text →
   embed in batches (dense, sparse, image) → upsert with deterministic IDs.
 - Flags: `--sample`, `--limit N`, `--recreate`, `--only {dense,sparse,image}`,
   `--batch-size`.
@@ -281,7 +282,8 @@ The critical path is M0 → M1 → M2. M3 and M4 can overlap once M1's API is st
 
 Recorded as ADRs in `docs/adr/`:
 - 0001: Backend owns all AI logic; web keeps auth, cart, and events.
-- 0002: Qdrant named vectors + server-side RRF (vs. client-side weighted blend).
-- 0003: bge-small for text, CLIP only for the image modality.
-- 0004: OpenAI-compatible LLM client; Groq in prod, Ollama in dev.
-- 0005: Eval labeling with pooling + LLM judge + human audit.
+- 0002: Merge duplicate listings at ingest (title + price + image ID); category alias map. **Accepted.**
+- 0003: Qdrant named vectors + server-side RRF (vs. client-side weighted blend).
+- 0004: bge-small for text, CLIP only for the image modality.
+- 0005: OpenAI-compatible LLM client; Groq in prod, Ollama in dev.
+- 0006: Eval labeling with pooling + LLM judge + human audit.

@@ -92,6 +92,7 @@ def ingest(
     from vio.embeddings.fastembed_impl import build_encoders
     from vio.ingest.images import ImageSource
     from vio.ingest.loader import load_products
+    from vio.ingest.normalize import normalize
     from vio.ingest.pipeline import ingest as run_ingest
     from vio.store.qdrant import ProductStore, create_client
 
@@ -112,6 +113,11 @@ def ingest(
     )
     for line_no, reason in loaded.invalid[:5]:
         console.print(f"  [yellow]skipped line {line_no}[/]: {reason}")
+    products, norm = normalize(loaded.products)
+    console.print(
+        f"Normalized to [bold]{norm.output_products}[/] products: merged {norm.merged_rows} "
+        f"duplicate listings; {norm.categories_before} -> {norm.categories_after} categories"
+    )
 
     store = ProductStore(create_client(settings), settings.qdrant_collection)
     encoders = make_fake() if fake_encoders else build_encoders(settings)
@@ -126,9 +132,9 @@ def ingest(
         TimeElapsedColumn(),
         console=console,
     ) as progress:
-        task = progress.add_task("Embedding + upserting", total=len(loaded.products))
+        task = progress.add_task("Embedding + upserting", total=len(products))
         report = run_ingest(
-            loaded.products,
+            products,
             store,
             encoders,
             ImageSource(image_dir, fetch=fetch_images),
