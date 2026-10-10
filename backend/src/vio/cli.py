@@ -174,13 +174,11 @@ def ingest(
     ] = False,
 ) -> None:
     """Load the catalog CSV, embed it, and upsert into Qdrant. Safe to re-run."""
-    from vio.catalog import RatingPrior
     from vio.embeddings.fake import fake_encoders as make_fake
     from vio.embeddings.fastembed_impl import build_encoders
     from vio.ingest.images import ImageSource
-    from vio.ingest.loader import load_products
-    from vio.ingest.normalize import apply_quality_flags, apply_rating_prior, normalize
     from vio.ingest.pipeline import ingest as run_ingest
+    from vio.ingest.prepare import prepare_catalog
     from vio.store.qdrant import ProductStore, create_client
 
     if sample == (csv_path is not None):
@@ -192,7 +190,8 @@ def ingest(
         raise typer.BadParameter(f"{path} not found{hint}")
 
     settings = get_settings()
-    loaded = load_products(path, limit=limit)
+    prep = prepare_catalog(path, REPO_ROOT / "data", limit=limit)
+    loaded, norm, products = prep.loaded, prep.normalized, prep.products
     console.print(
         f"Loaded [bold]{len(loaded.products)}[/] products from {path.name} "
         f"({loaded.rows_read} rows, {loaded.duplicates} duplicate IDs, "
@@ -200,27 +199,20 @@ def ingest(
     )
     for line_no, reason in loaded.invalid[:5]:
         console.print(f"  [yellow]skipped line {line_no}[/]: {reason}")
-    products, norm = normalize(loaded.products)
     console.print(
         f"Normalized to [bold]{norm.output_products}[/] products: merged {norm.merged_rows} "
         f"duplicate listings; {norm.categories_before} -> {norm.categories_after} categories"
     )
-    params = REPO_ROOT / "data" / "derived_params.json"
-    if params.exists():
-        prior = RatingPrior.load(params)
-        products = apply_rating_prior(products, prior)
-        console.print(f"Recomputed bayes_rating/value_score with empirical-Bayes prior m={prior.m}")
-    else:
+    if prep.prior_m is None:
         console.print("[yellow]No data/derived_params.json; keeping source bayes_rating[/]")
-    flags_file = REPO_ROOT / "data" / "quality_flags.json"
-    if flags_file.exists():
-        import json
-
-        products = apply_quality_flags(products, json.loads(flags_file.read_text("utf-8")))
-        n_flagged = sum(bool(p.quality_flags) for p in products)
-        console.print(f"Attached quality flags to {n_flagged} products")
     else:
+        console.print(
+            f"Recomputed bayes_rating/value_score with empirical-Bayes prior m={prep.prior_m}"
+        )
+    if prep.n_flagged is None:
         console.print("[yellow]No data/quality_flags.json; run `vio data audit` first[/]")
+    else:
+        console.print(f"Attached quality flags to {prep.n_flagged} products")
 
     store = ProductStore(create_client(settings), settings.qdrant_collection)
     encoders = make_fake() if fake_encoders else build_encoders(settings)
