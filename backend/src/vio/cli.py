@@ -78,6 +78,14 @@ def data_audit(
     sections["Derived features: Bayesian rating"] = report_section(
         prior, compare_rankings(df, prior), refit
     )
+    label_audit = out_dir / "label_noise_audit.csv"
+    labels = next(r for r in report.results if r.name == "labels.category_disagreement")
+    if label_audit.exists() and labels.measurement.n_affected > 1000:  # full catalog only
+        from vio.quality.checks_labels import audit_section
+
+        sections["Label quality: manual audit of flags"] = audit_section(
+            label_audit, labels.measurement.n_affected
+        )
 
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / f"{name}.md").write_text(to_markdown(report, sections), encoding="utf-8")

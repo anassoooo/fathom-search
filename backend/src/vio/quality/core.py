@@ -39,6 +39,8 @@ class Measurement:
     affected_ids: list[str] = field(default_factory=list)
     examples: list[dict[str, Any]] = field(default_factory=list)
     details: dict[str, Any] = field(default_factory=dict)
+    # Optional per-row extra data (e.g. a suggested category), keyed by product_id.
+    annotations: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
 CheckFn = Callable[[pd.DataFrame], Measurement]
@@ -135,6 +137,13 @@ class AuditReport:
                 for pid in r.measurement.affected_ids:
                     out.setdefault(pid, set()).add(r.flag)
         return {pid: sorted(f) for pid, f in sorted(out.items())}
+
+    def annotations(self) -> dict[str, dict[str, Any]]:
+        out: dict[str, dict[str, Any]] = {}
+        for r in self.results:
+            for pid, extra in r.measurement.annotations.items():
+                out.setdefault(pid, {}).update(extra)
+        return out
 
 
 def run_audit(df: pd.DataFrame, contract: dict[str, Rule], source: str) -> AuditReport:

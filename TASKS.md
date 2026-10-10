@@ -165,7 +165,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   |z| > 3.5, min group size); low-evidence ratings (few reviews).
   *Accept:* flagged rows have reason codes; the $40,922 chair is flagged.
 
-- [ ] **T083 · Label-noise detection (confident learning)** [P] — Deps: T080
+- [x] **T083 · Label-noise detection (confident learning)** [P] — Deps: T080
   TF-IDF (word + char n-grams) on titles → logistic regression → 5-fold
   out-of-fold probabilities → flag products whose given categories all have low
   probability, using per-class thresholds (cleanlab-style).

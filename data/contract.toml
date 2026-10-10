@@ -89,3 +89,10 @@ severity = "info"     # a property of the source, compensated by image vectors
 [checks."text.truncated"]
 severity = "warning"
 max = 0.01
+
+# --- Label quality (T083) ---
+# Mostly taxonomy overlap rather than annotation error (manual audit: 12.5% real errors,
+# 72.5% overlap, 15% classifier wrong). Above 8% would indicate a broken category mapping.
+[checks."labels.category_disagreement"]
+severity = "warning"
+max = 0.08
