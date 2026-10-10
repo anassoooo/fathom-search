@@ -41,19 +41,39 @@ recommendations from an AI assistant.
 - Tests: 86 unit tests (in-memory Qdrant, fake encoders) plus
   integration tests against a real Qdrant and the real models.
 
+**Data quality (`vio data audit`)**: the catalog is treated as trusted only after it
+passes a reviewed data contract (`data/contract.toml`). Latest report:
+[`data/reports/quality_report.md`](data/reports/quality_report.md). 23 checks:
+- **Schema, completeness, validity, uniqueness.** Blocking failures stop ingestion.
+- **Consistency.** The source's derived columns are re-derived from their formulas.
+  This exposed a **unit error in the source Bayesian rating** (prior strength set to
+  median *price*), now replaced by an empirical-Bayes prior fitted on the data:
+  m = 43 reviews, 95% CI 38 to 51 ([ADR-0003](docs/adr/0003-empirical-bayes-rating-prior.md)).
+- **Plausibility.** Robust log-price outliers within subcategory (MAD z-score with a
+  practical-significance gate) and low-evidence ratings.
+- **Label quality.** Confident learning on a title → category classifier (89.8% CV
+  accuracy) flags 4.3% of products. A manual audit of a random 40 found 12.5% real
+  errors (Wilson CI 5.5–26%), mostly keyword collisions in the original scrape;
+  72.5% are taxonomy overlap.
+- **Text integrity.**
+
+Findings become row-level `quality_flags`, handled by a documented policy (block /
+merge / recompute / flag) in [`data/README.md`](data/README.md). CI enforces the
+contract on the committed sample.
+
 **Notebooks (`notebooks/`)**: the Colab notebooks that preprocessed the
 catalog, computed Bayesian ratings and value scores, and uploaded CLIP text and
 image embeddings to Qdrant.
 
 ## Limitations (known, being addressed)
 
-- Product text is title-only (`name | category | subcategory | price bucket | price`); there are no descriptions.
+- Product text is title-only; 12% of titles are just a brand name (97% of Footwear), so text search has little to work with there.
 - Search quality has **not been measured** yet. The evaluation harness arrives in M2. The backend has only been run on a 24-product test fixture.
 - `full` (LLM query understanding) behaves like `hybrid_rerank` until M3.
 - The LLM endpoint is hardcoded to `localhost:11434`, so the assistant needs local Ollama.
 - Passwords are hashed with SHA-256 and one shared secret (no per-user salt), not bcrypt (fixed in T053). `/metrics` is not access-controlled.
 - The web app uses SQLite through Prisma. Postgres is available in docker compose but not wired up yet (T052).
-- The full dataset and images are not in the repo. A committed sample is pending (T002).
+- The full dataset and images are not in the repo; a 501-row sample is (`data/sample/`).
 
 ## Repository layout
 

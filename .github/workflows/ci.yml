@@ -25,6 +25,8 @@ jobs:
       - run: uv run ruff format --check .
       - run: uv run mypy
       - run: uv run pytest
+      - name: Data contract (committed sample)
+        run: uv run vio data audit --csv ../data/sample/products.csv --out-dir "$RUNNER_TEMP/audit" --name sample
 
   backend-integration:
     runs-on: ubuntu-latest
