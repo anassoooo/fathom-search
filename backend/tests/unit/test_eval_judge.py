@@ -106,38 +106,67 @@ def test_balanced_order_interleaves_buckets() -> None:
     assert balanced_order(qs) == order
 
 
-def test_quota_mid_run_keeps_cached_queries(service: SearchService, tmp_path: Path) -> None:
-    from vio.eval.judge import balanced_order
+def test_judging_is_incremental_and_survives_quota(service: SearchService, tmp_path: Path) -> None:
     from vio.llm.client import RateLimitedError
 
     queries = [
         QueryRecord(qid=f"q{i}", bucket="specific", query=t)
         for i, t in enumerate(["running shoes", "coffee maker", "yoga mat"])
     ]
-    cache = tmp_path / "c.sqlite"
-    # warm the cache for the query that will come last in balanced order
-    last = balanced_order(queries)[-1]
-    judge_all(
-        [last],
-        service,
-        LLMClient(FakeJudge(), cache_path=cache, sleep=lambda s: None),
-        "m",
-        tmp_path,
-        depth=3,
+    fake = FakeJudge()
+    first = judge_all(
+        queries, service, LLMClient(fake, sleep=lambda s: None), "m", tmp_path, depth=3
     )
+    assert first.judged_queries == 3
 
     class QuotaGone:
+        calls = 0
+
         def __call__(self, *args: object) -> ChatResult:
+            QuotaGone.calls += 1
             raise RateLimitedError(3600.0, "tokens per day (TPD)")
 
+    # Everything already judged: nothing is sent, nothing is lost.
+    again = judge_all(
+        queries,
+        service,
+        LLMClient(QuotaGone(), sleep=lambda s: None),
+        "m",
+        tmp_path,
+        existing=first.judgments,
+        depth=3,
+    )
+    assert (again.judged_queries, again.skipped_queries, QuotaGone.calls) == (3, 0, 0)
+    assert len(again.judgments) == len(first.judgments)
+
+    # One judgment missing (e.g. the pool shifted): only that query is pending.
+    partial = [j for j in first.judgments if j.qid != "q1"] + [
+        j for j in first.judgments if j.qid == "q1"
+    ][1:]
     run = judge_all(
         queries,
         service,
-        LLMClient(QuotaGone(), cache_path=cache, sleep=lambda s: None),
+        LLMClient(QuotaGone(), sleep=lambda s: None),
         "m",
         tmp_path,
+        existing=partial,
         depth=3,
     )
-    assert run.judged_queries == 1 and run.skipped_queries == 2
-    assert {j.qid for j in run.judgments} == {last.qid}
+    assert (run.judged_queries, run.skipped_queries) == (2, 1)
+    assert QuotaGone.calls == 1  # offline after the first quota error
     assert run.quota_message and "TPD" in run.quota_message
+    assert len(run.judgments) == len(partial)  # nothing dropped
+
+
+def test_save_qrels_dedupes_and_sorts(tmp_path: Path) -> None:
+    from vio.eval.judge import Judgment, load_judgments
+
+    js = [
+        Judgment(qid="q2", product_id="5", grade=1, judge_model="m"),
+        Judgment(qid="q1", product_id="9", grade=0, judge_model="m"),
+        Judgment(qid="q2", product_id="5", grade=2, judge_model="m"),
+    ]
+    path = tmp_path / "q.jsonl"
+    save_qrels(js, path)
+    out = load_judgments(path)
+    assert [(j.qid, j.product_id, j.grade) for j in out] == [("q1", "9", 0), ("q2", "5", 2)]

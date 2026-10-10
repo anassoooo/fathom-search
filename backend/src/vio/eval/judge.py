@@ -157,33 +157,58 @@ def judge_all(
     model: str,
     eval_dir: Path,
     *,
+    existing: Sequence[Judgment] = (),
     depth: int = 20,
     on_query: Callable[[QueryRecord], None] | None = None,
 ) -> JudgeRun:
-    """Judge queries in balanced order. When the quota runs out, keep collecting the
-    queries that are already cached (offline) and report how many were skipped."""
-    run = JudgeRun([], 0, 0)
+    """Judge queries in balanced order, sending the judge only (query, product) pairs that
+    have no judgment yet. Judgments therefore accumulate across runs: a pool that shifts
+    slightly between runs (GPU float non-determinism, near-tied scores) costs a few new
+    pairs instead of a whole re-judge. When the quota runs out, already-complete queries
+    still count and the rest are reported as skipped."""
+    known: dict[str, set[str]] = {}
+    for j in existing:
+        known.setdefault(j.qid, set()).add(j.product_id)
+    run = JudgeRun(list(existing), 0, 0)
     for q in balanced_order(queries):
         pool = build_pool(q, service, eval_dir, depth)
-        seed = service.get(q.seed_product_id) if q.seed_product_id else None
-        try:
-            run.judgments += judge_pool(q, pool, seed, llm, model)
-            run.judged_queries += 1
-        except QuotaExhaustedError as e:
-            if not llm.offline:
-                run.quota_message = str(e)
-                llm.offline = True
+        todo = sorted(
+            (p for p in pool if p.product_id not in known.get(q.qid, set())),
+            key=lambda p: p.product_id,  # stable prompt for the LLM cache
+        )
+        if todo:
+            seed = service.get(q.seed_product_id) if q.seed_product_id else None
+            try:
+                new = judge_pool(q, todo, seed, llm, model)
+                run.judgments += new
+                known.setdefault(q.qid, set()).update(j.product_id for j in new)
+                todo = []
+            except QuotaExhaustedError as e:
+                if not llm.offline:
+                    run.quota_message = str(e)
+                    llm.offline = True
+        if todo:
             run.skipped_queries += 1
+        else:
+            run.judged_queries += 1
         if on_query:
             on_query(q)
     return run
 
 
 def save_qrels(judgments: Sequence[Judgment], path: Path) -> None:
+    """Write judgments sorted by (qid, product_id), one per pair, for readable diffs."""
     path.parent.mkdir(parents=True, exist_ok=True)
+    unique = {(j.qid, j.product_id): j for j in judgments}
     with path.open("w", encoding="utf-8", newline="\n") as f:
-        for j in judgments:
-            f.write(j.model_dump_json() + "\n")
+        for key in sorted(unique):
+            f.write(unique[key].model_dump_json() + "\n")
+
+
+def load_judgments(path: Path) -> list[Judgment]:
+    if not path.exists():
+        return []
+    return [Judgment.model_validate_json(x) for x in path.read_text("utf-8").splitlines() if x]
 
 
 def load_qrels(path: Path) -> dict[str, dict[str, int]]:

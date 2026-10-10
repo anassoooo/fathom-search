@@ -310,14 +310,18 @@ def eval_gen_queries(
 def eval_judge(
     depth: Annotated[int, typer.Option(min=1, max=50)] = 20,
     limit: Annotated[int | None, typer.Option(help="Judge only the first N queries.")] = None,
-    force: Annotated[bool, typer.Option(help="Overwrite qrels_v1.jsonl.")] = False,
+    restart: Annotated[
+        bool, typer.Option(help="Discard qrels_v1.jsonl and judge from scratch.")
+    ] = False,
 ) -> None:
-    """Pool every variant's results and grade them with the LLM judge (T032)."""
+    """Pool every variant's results and grade them with the LLM judge (T032).
+
+    Resumable: pairs already in qrels_v1.jsonl are kept and never re-sent to the judge."""
     from vio.api.app import build_service
-    from vio.eval.judge import judge_all, save_qrels
+    from vio.eval.judge import judge_all, load_judgments, save_qrels
     from vio.eval.queries import load
 
-    _refuse_overwrite(QRELS_V1, force)
+    existing = [] if restart else load_judgments(QRELS_V1)
     settings = get_settings()
     queries = load(QUERIES_V1)[:limit]
     service = build_service(settings)
@@ -337,6 +341,7 @@ def eval_judge(
             llm,
             settings.llm_model_eval,
             EVAL_DATA,
+            existing=existing,
             depth=depth,
             on_query=lambda q: progress.advance(task),
         )
@@ -348,7 +353,7 @@ def eval_judge(
     if run.skipped_queries:
         console.print(
             f"[yellow]{run.skipped_queries} queries skipped: {run.quota_message}[/]\n"
-            "Re-run `vio eval judge --force` after the quota resets; judged queries are cached."
+            "Re-run `vio eval judge` after the quota resets; judgments are kept and resumed."
         )
         raise typer.Exit(code=2)
 
