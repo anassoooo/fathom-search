@@ -74,14 +74,15 @@ so they don't compete. If the quota runs out, search still works (`degraded: ["l
 | Setting | Value |
 |---|---|
 | Account | https://neon.tech (sign in with GitHub) |
-| Project name | `vio` |
-| Postgres version | 16 (same as local `docker-compose.yml`) |
-| Region | AWS Europe Central 1 (Frankfurt) |
-| Database name | `vio` |
-| Role | keep Neon's default owner role |
-| Branch | `main` (default) |
+| Project name | `vio` (project id `icy-rain-24708274`) |
+| Region | AWS `eu-central-1` (Frankfurt) |
+| Database name | `neondb` (Neon's default) |
+| Role | `neondb_owner` (default owner) |
+| Branch | `production` (default) |
 
-From **Connection details**, copy two strings (both with `?sslmode=require`):
+From **Connect**, copy two strings. Remove `&channel_binding=require` and keep only
+`?sslmode=require`: Prisma's engine doesn't reliably support channel binding, and SSL is
+still enforced.
 - **Pooled** (host contains `-pooler`): for the running app → `DATABASE_URL`
 - **Direct** (no `-pooler`): for migrations → `DIRECT_URL`
 
@@ -145,7 +146,7 @@ ONNX_DEVICE=cuda uv run vio ingest --csv ../data/processed/vio_EDA.csv --image-d
 |---|---|
 | Qdrant cluster / collection | `vio` / `vio_products_v2` |
 | HF Space | `vio-search-api` |
-| Neon project / database | `vio` / `vio` |
+| Neon project / database / branch | `vio` / `neondb` / `production` |
 | Vercel project | `vio-web` |
 | Groq keys | `vio-local` (laptop), `vio-prod` (Space) |
 | HF token | `vio-github-deploy` |
