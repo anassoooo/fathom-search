@@ -175,4 +175,6 @@ class SearchResponse(BaseModel):
     degraded: list[str] = Field(default_factory=list)
     # What LLM query understanding inferred (variant `full`), for transparency in the UI.
     parsed_query: dict[str, Any] | None = None
+    # Inferred category used as a soft ranking boost, not a filter (full variant).
+    boosted_category: str | None = None
     trace_id: str | None = None

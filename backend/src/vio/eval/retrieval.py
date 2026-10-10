@@ -54,12 +54,19 @@ class VariantSummary:
     latency_p95: float = 0.0
 
 
-def score(ranked: Sequence[str], qrels: dict[str, int]) -> dict[str, float]:
+def min_grade_for(bucket: str) -> int:
+    """Budget queries count only exact, within-budget matches (grade 2) as relevant for
+    recall/MRR: the rubric lets over-budget items earn a 1, and counting those would
+    penalize exactly the variants that respect the budget. NDCG stays graded."""
+    return 2 if bucket == "constrained" else 1
+
+
+def score(ranked: Sequence[str], qrels: dict[str, int], min_grade: int = 1) -> dict[str, float]:
     return {
         "ndcg@10": ndcg_at_k(ranked, qrels, 10),
-        "recall@10": recall_at_k(ranked, qrels, 10),
-        "recall@50": recall_at_k(ranked, qrels, 50),
-        "mrr@10": mrr_at_k(ranked, qrels, 10),
+        "recall@10": recall_at_k(ranked, qrels, 10, min_grade),
+        "recall@50": recall_at_k(ranked, qrels, 50, min_grade),
+        "mrr@10": mrr_at_k(ranked, qrels, 10, min_grade),
     }
 
 
@@ -83,7 +90,11 @@ def run(
             name = "image" if image else v
             results.append(
                 QueryResult(
-                    q.qid, q.bucket, name, score(ranked, qrels[q.qid]), resp.timings_ms["total_ms"]
+                    q.qid,
+                    q.bucket,
+                    name,
+                    score(ranked, qrels[q.qid], min_grade_for(q.bucket)),
+                    resp.timings_ms["total_ms"],
                 )
             )
             if on_step:
@@ -98,7 +109,7 @@ def run(
                     q.qid,
                     q.bucket,
                     ORACLE,
-                    score(ranked, qrels[q.qid]),
+                    score(ranked, qrels[q.qid], min_grade_for(q.bucket)),
                     resp.timings_ms["total_ms"],
                 )
             )

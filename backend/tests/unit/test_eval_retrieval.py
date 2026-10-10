@@ -61,3 +61,11 @@ def test_run_scores_variants_and_oracle(service: SearchService, tmp_path: Path) 
     text = md.read_text(encoding="utf-8")
     assert "| `hybrid_rerank` |" in text and "### constrained" in text
     assert md.with_suffix(".json").exists()
+
+
+def test_budget_queries_count_only_exact_matches() -> None:
+    from vio.eval.retrieval import min_grade_for
+
+    qrels = {"in_budget": 2, "over_budget": 1}
+    assert score(["in_budget"], qrels, min_grade_for("constrained"))["recall@10"] == 1.0
+    assert score(["in_budget"], qrels, min_grade_for("descriptive"))["recall@10"] == 0.5

@@ -60,6 +60,14 @@ def _with_exclusion(base: qm.Filter | None, point_id: str) -> qm.Filter:
     return base.model_copy(update={"must_not": [*existing, exclude]})
 
 
+def _and(a: qm.Filter | None, b: qm.Filter) -> qm.Filter:
+    if a is None:
+        return b
+    must_a = a.must if isinstance(a.must, list) else ([a.must] if a.must else [])
+    must_b = b.must if isinstance(b.must, list) else ([b.must] if b.must else [])
+    return a.model_copy(update={"must": [*must_a, *must_b]})
+
+
 def _query(
     client: QdrantClient,
     collection: str,
@@ -67,11 +75,15 @@ def _query(
     query_filter: qm.Filter | None,
     limit: int,
     prefetch_limit: int,
+    boost_filter: qm.Filter | None = None,
 ) -> list[Candidate]:
+    """`query_filter` is hard (applied everywhere). `boost_filter` is soft: each source gets
+    an extra prefetch restricted to it, so matching products earn an extra RRF vote and rank
+    higher, while everything else stays eligible."""
     if not sources:
         raise ValueError("at least one query vector is required")
 
-    if len(sources) == 1:
+    if len(sources) == 1 and boost_filter is None:
         using, vector = sources[0]
         res = client.query_points(
             collection,
@@ -82,12 +94,19 @@ def _query(
             with_payload=True,
         )
     else:
+        prefetch = [
+            qm.Prefetch(query=v, using=u, filter=query_filter, limit=prefetch_limit)
+            for u, v in sources
+        ]
+        if boost_filter is not None:
+            boosted = _and(query_filter, boost_filter)
+            prefetch += [
+                qm.Prefetch(query=v, using=u, filter=boosted, limit=prefetch_limit)
+                for u, v in sources
+            ]
         res = client.query_points(
             collection,
-            prefetch=[
-                qm.Prefetch(query=v, using=u, filter=query_filter, limit=prefetch_limit)
-                for u, v in sources
-            ],
+            prefetch=prefetch,
             query=qm.FusionQuery(fusion=qm.Fusion.RRF),
             query_filter=query_filter,
             limit=limit,
@@ -103,8 +122,11 @@ def retrieve(
     query_filter: qm.Filter | None,
     limit: int,
     prefetch_limit: int = 100,
+    boost_filter: qm.Filter | None = None,
 ) -> list[Candidate]:
-    return _query(client, collection, vectors.sources(), query_filter, limit, prefetch_limit)
+    return _query(
+        client, collection, vectors.sources(), query_filter, limit, prefetch_limit, boost_filter
+    )
 
 
 def similar(

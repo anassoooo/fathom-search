@@ -128,14 +128,28 @@ class SearchService:
             text = (request.query or "").strip()
             requested = request.filters
             parsed = None
+            boost: str | None = None
             if cfg.llm and text:
                 parsed = self._understand(text, timings, degraded)
                 if parsed is not None:
-                    requested = merge_filters(request.filters, parsed.to_filters())
+                    inferred = parsed.to_filters()
+                    # Prices are hard filters (extraction was exact in eval). An inferred
+                    # category is only a boost: ~20% disagree with the catalog's own
+                    # overlapping taxonomy (bike helmets under Automotive), and a hard
+                    # filter would hide the right product. A user-chosen category stays hard.
+                    if request.filters.category is None:
+                        boost = inferred.category
+                    inferred = inferred.model_copy(update={"category": None})
+                    requested = merge_filters(request.filters, inferred)
                     text = parsed.search_text.strip() or text
                     request = request.model_copy(update={"query": text})
 
             filters, dropped = sanitize(requested, self.taxonomy())
+            if boost is not None:
+                canonical = self.taxonomy().canonical_category(boost)
+                if canonical is None:
+                    dropped.append(f"unknown category {boost!r}")
+                boost = canonical
             vectors = self._encode(request, timings, degraded)
             if not vectors.sources():
                 raise SearchInputError("nothing to search with: empty query and no usable image")
@@ -145,7 +159,12 @@ class SearchService:
 
             with timed(timings, "retrieve_ms"):
                 candidates = retrieve(
-                    self.store.client, self.store.collection, vectors, to_qdrant(filters), limit
+                    self.store.client,
+                    self.store.collection,
+                    vectors,
+                    to_qdrant(filters),
+                    limit,
+                    boost_filter=to_qdrant(Filters(category=boost)) if boost else None,
                 )
 
             if use_rerank:
@@ -187,6 +206,7 @@ class SearchService:
             timings_ms=timings,
             degraded=degraded,
             parsed_query=parsed.model_dump() if parsed else None,
+            boosted_category=boost,
             trace_id=trace_id,
         )
 

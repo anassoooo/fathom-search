@@ -324,7 +324,7 @@ def eval_judge(
     existing = [] if restart else load_judgments(QRELS_V1)
     settings = get_settings()
     queries = load(QUERIES_V1)[:limit]
-    service = build_service(settings)
+    service = build_service(settings, llm_cache=LLM_CACHE)
     service.warmup()
     llm = _llm()
     with Progress(
@@ -362,7 +362,7 @@ def eval_judge(
 def eval_retrieval(
     variants: Annotated[
         str, typer.Option(help="Comma-separated variants.")
-    ] = "bm25,dense,hybrid,hybrid_rerank",
+    ] = "bm25,dense,hybrid,hybrid_rerank,full",
 ) -> None:
     """Score retrieval variants on the judged set and write eval/reports/<date>-<sha>.md (T034)."""
     from vio.api.app import build_service
@@ -372,7 +372,7 @@ def eval_retrieval(
 
     settings = get_settings()
     queries, qrels = load(QUERIES_V1), load_qrels(QRELS_V1)
-    service = build_service(settings)
+    service = build_service(settings, llm_cache=LLM_CACHE)
     service.warmup()
     from typing import get_args
 

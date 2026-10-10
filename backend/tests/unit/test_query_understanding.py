@@ -78,9 +78,8 @@ def test_full_variant_applies_inferred_filters_and_clean_text(service: SearchSer
     resp = service.search(
         SearchRequest(query="i want noise cancelling headphones under $60", variant="full")
     )
-    assert resp.applied_filters == Filters(
-        category="Electronics", price_max=60
-    )  # validated + canonical
+    assert resp.applied_filters == Filters(price_max=60)  # price is a hard filter
+    assert resp.boosted_category == "Electronics"  # category only boosts (canonicalized)
     assert all((h.product.price or 0) <= 60 for h in resp.results)
     assert resp.parsed_query and resp.parsed_query["search_text"] == "noise cancelling headphones"
     assert "understand_ms" in resp.timings_ms and resp.degraded == []
@@ -90,8 +89,28 @@ def test_unknown_inferred_category_is_dropped_not_trusted(service: SearchService
     qu, _ = _qu({"search_text": "headphones", "category": "Spaceships"})
     service.understander = qu
     resp = service.search(SearchRequest(query="headphones", variant="full"))
-    assert resp.applied_filters.category is None
+    assert resp.applied_filters.category is None and resp.boosted_category is None
     assert resp.dropped_filters == ["unknown category 'Spaceships'"]
+
+
+def test_inferred_category_boosts_without_excluding(service: SearchService) -> None:
+    # "black" matches products in several categories; the boost should lift Kitchen ones.
+    qu, _ = _qu({"search_text": "black", "category": "home & kitchen"})
+    service.understander = qu
+    full = service.search(SearchRequest(query="black", variant="full", k=10))
+    cats = [h.product.category for h in full.results]
+    assert cats[0] == "Home & Kitchen"
+    assert len(set(cats)) > 1  # other categories stay eligible
+
+
+def test_explicit_user_category_stays_a_hard_filter(service: SearchService) -> None:
+    qu, _ = _qu({"search_text": "black", "category": "Electronics"})
+    service.understander = qu
+    resp = service.search(
+        SearchRequest(query="black", variant="full", filters=Filters(category="Computers"))
+    )
+    assert {h.product.category for h in resp.results} == {"Computers"}
+    assert resp.boosted_category is None
 
 
 @pytest.mark.parametrize("answer", [LLMError("down"), {"wrong": "shape"}])

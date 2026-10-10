@@ -245,7 +245,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   Wired into the `full` variant. Falls back to no-parse on failure.
   *Accept:* integration test with Ollama/Groq; the fallback is tested.
 
-- [ ] **T042 · Query-understanding eval** — Deps: T041, T030
+- [x] **T042 · Query-understanding eval** — Deps: T041, T030
   `data/eval/query_understanding_v1.jsonl` (about 150, hand-checked) and
   `vio eval query-understanding` → per-field accuracy plus exact match. Compare
   2 models and 2 prompt versions.

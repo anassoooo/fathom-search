@@ -22,7 +22,7 @@ from vio.models import Product, SearchRequest, Variant
 from vio.search.pipeline import SearchService
 
 JUDGE_PROMPT_VERSION = "v1"
-POOL_VARIANTS: tuple[Variant, ...] = ("bm25", "dense", "hybrid", "hybrid_rerank")
+POOL_VARIANTS: tuple[Variant, ...] = ("bm25", "dense", "hybrid", "hybrid_rerank", "full")
 
 
 class Judgment(BaseModel):
