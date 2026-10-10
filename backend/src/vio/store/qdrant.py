@@ -101,17 +101,21 @@ class ProductStore:
         return Product.model_validate(found[0].payload) if found and found[0].payload else None
 
     def browse(
-        self, query_filter: qm.Filter | None, limit: int, cursor: str | None = None
-    ) -> tuple[list[Product], str | None]:
-        records, next_offset = self.client.scroll(
+        self, query_filter: qm.Filter | None, limit: int, page: int = 1
+    ) -> tuple[list[Product], int]:
+        """One page of products, best Bayesian rating first, plus the filtered total."""
+        res = self.client.query_points(
             self.collection,
-            scroll_filter=query_filter,
+            query=qm.OrderByQuery(
+                order_by=qm.OrderBy(key="bayes_rating", direction=qm.Direction.DESC)
+            ),
+            query_filter=query_filter,
             limit=limit,
-            offset=cursor,
+            offset=(page - 1) * limit,
             with_payload=True,
         )
-        products = [Product.model_validate(r.payload) for r in records if r.payload]
-        return products, (str(next_offset) if next_offset is not None else None)
+        products = [Product.model_validate(p.payload) for p in res.points if p.payload]
+        return products, self.count(query_filter)
 
     def taxonomy(self) -> Taxonomy:
         def facet_values(key: str) -> frozenset[str]:

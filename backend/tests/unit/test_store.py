@@ -30,13 +30,15 @@ def test_products_without_images_have_no_image_vector(memory_store: ProductStore
     assert isinstance(rec.vector, dict) and IMAGE not in rec.vector
 
 
-def test_browse_paginates_with_filters(memory_store: ProductStore) -> None:
+def test_browse_paginates_best_rated_first(memory_store: ProductStore) -> None:
     f = to_qdrant(Filters(category="Electronics"))
-    page1, cursor = memory_store.browse(f, limit=4)
-    page2, cursor2 = memory_store.browse(f, limit=4, cursor=cursor)
-    assert len(page1) == 4 and len(page2) == 2 and cursor2 is None
+    page1, total = memory_store.browse(f, limit=4, page=1)
+    page2, _ = memory_store.browse(f, limit=4, page=2)
+    assert total == 6 and len(page1) == 4 and len(page2) == 2
     assert {p.category for p in page1 + page2} == {"Electronics"}
     assert len({p.product_id for p in page1 + page2}) == 6
+    ratings = [p.bayes_rating or 0 for p in page1 + page2]
+    assert ratings == sorted(ratings, reverse=True)
 
 
 def test_taxonomy(memory_store: ProductStore) -> None:

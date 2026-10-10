@@ -221,11 +221,9 @@ class SearchService:
             similar(self.store.client, self.store.collection, product_id, to_qdrant(clean), k)
         )
 
-    def browse(
-        self, filters: Filters, limit: int, cursor: str | None
-    ) -> tuple[list[Product], str | None]:
+    def browse(self, filters: Filters, limit: int, page: int = 1) -> tuple[list[Product], int]:
         clean, _ = sanitize(filters, self.taxonomy())
-        return self.store.browse(to_qdrant(clean), limit, cursor)
+        return self.store.browse(to_qdrant(clean), limit, page)
 
 
 def _to_hits(candidates: list[Candidate]) -> list[SearchHit]:

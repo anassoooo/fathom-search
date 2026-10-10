@@ -106,5 +106,5 @@ def test_decode_image_rejects_bad_or_large(payload: str) -> None:
 def test_similar_and_browse(service: SearchService) -> None:
     hits = service.similar("17", Filters(), k=3)
     assert len(hits) == 3 and "17" not in [h.product.product_id for h in hits]
-    page, cursor = service.browse(Filters(category="computers"), limit=10, cursor=None)
-    assert len(page) == 6 and cursor is None
+    page, total = service.browse(Filters(category="computers"), limit=10)
+    assert len(page) == 6 and total == 6

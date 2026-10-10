@@ -21,7 +21,10 @@ class TaxonomyOut(BaseModel):
 
 class ProductPage(BaseModel):
     items: list[Product]
-    next_cursor: str | None = None
+    page: int
+    limit: int
+    total: int
+    has_more: bool
 
 
 class SimilarOut(BaseModel):

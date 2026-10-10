@@ -88,13 +88,12 @@ def test_oversized_body_is_413(client: TestClient) -> None:
 
 
 def test_browse_and_pagination(client: TestClient) -> None:
-    r = client.get("/v1/products", params={"category": "electronics", "limit": 4})
-    body = r.json()
-    assert r.status_code == 200 and len(body["items"]) == 4 and body["next_cursor"]
-    r2 = client.get(
-        "/v1/products", params={"category": "electronics", "cursor": body["next_cursor"]}
-    )
-    assert len(r2.json()["items"]) == 2
+    body = client.get("/v1/products", params={"category": "electronics", "limit": 4}).json()
+    assert len(body["items"]) == 4 and body["total"] == 6 and body["has_more"] is True
+    body2 = client.get(
+        "/v1/products", params={"category": "electronics", "limit": 4, "page": 2}
+    ).json()
+    assert len(body2["items"]) == 2 and body2["has_more"] is False
 
 
 def test_get_product_and_404(client: TestClient) -> None:

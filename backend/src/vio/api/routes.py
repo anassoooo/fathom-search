@@ -42,10 +42,13 @@ def browse(
     service: ServiceDep,
     filters: FiltersDep,
     limit: Annotated[int, Query(ge=1, le=100)] = 24,
-    cursor: str | None = None,
+    page: Annotated[int, Query(ge=1, le=10_000)] = 1,
 ) -> ProductPage:
-    items, next_cursor = service.browse(filters, limit, cursor)
-    return ProductPage(items=items, next_cursor=next_cursor)
+    """Browse the catalog, best Bayesian rating first."""
+    items, total = service.browse(filters, limit, page)
+    return ProductPage(
+        items=items, page=page, limit=limit, total=total, has_more=page * limit < total
+    )
 
 
 @router.get("/v1/products/{product_id}", response_model=Product, tags=["catalog"])
