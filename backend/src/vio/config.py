@@ -22,7 +22,10 @@ class Settings(BaseSettings):
     llm_model_agent: str = "qwen2.5:3b-instruct"
     llm_timeout_s: float = 30.0
     # Offline eval (query generation, relevance judging): a stronger model than serving needs.
-    llm_model_eval: str = "llama-3.3-70b-versatile"
+    llm_model_eval: str = "openai/gpt-oss-120b"
+    # Reasoning models (gpt-oss) spend extra tokens thinking; "low" keeps eval runs inside
+    # free-tier tokens-per-minute limits. Empty = provider default / non-reasoning model.
+    llm_reasoning_effort: Literal["low", "medium", "high"] | None = None
 
     # Models
     dense_model: str = "BAAI/bge-small-en-v1.5"

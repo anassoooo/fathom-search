@@ -79,6 +79,8 @@ def openai_chat_fn(settings: Settings) -> ChatFn:
             "temperature": temperature,
             "response_format": {"type": "json_object" if json_mode else "text"},
         }
+        if settings.llm_reasoning_effort:
+            kwargs["reasoning_effort"] = settings.llm_reasoning_effort
         try:
             resp = client.chat.completions.create(**kwargs)
         except openai.RateLimitError as e:
