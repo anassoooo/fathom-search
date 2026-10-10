@@ -453,3 +453,61 @@ def eval_audit(
     labels = run_audit(stratified_sample(judgments, queries, n), describe, input, out)
     (EVAL_DATA / "human_audit_v1_summary.json").write_text(summary_json(labels) + "\n", "utf-8")
     console.print(f"Agreement with the judge: {agreement(labels)}")
+
+
+@eval_app.command("understanding")
+def eval_understanding() -> None:
+    """Measure LLM query understanding against ground truth in queries_v1 (T042)."""
+    from vio.eval.queries import load
+    from vio.eval.retrieval import _git_sha
+    from vio.eval.understanding import run, write_report
+    from vio.ingest.prepare import prepare_catalog
+    from vio.llm.query_understanding import QueryUnderstanding
+
+    settings = get_settings()
+    products = {
+        p.product_id: p
+        for p in prepare_catalog(
+            REPO_ROOT / "data" / "processed" / "vio_EDA.csv", REPO_ROOT / "data"
+        ).products
+    }
+    categories = sorted({c for p in products.values() for c in p.categories})
+    qu = QueryUnderstanding(_llm(), settings.llm_model_query, lambda: categories)
+    queries = load(QUERIES_V1)
+    with Progress(
+        "[progress.description]{task.description}",
+        BarColumn(),
+        MofNCompleteColumn(),
+        TimeElapsedColumn(),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Parsing", total=sum(q.bucket != "image" for q in queries))
+        results, stopped = run(queries, qu, on_step=lambda: progress.advance(task))
+    path = write_report(
+        results,
+        products,
+        EVAL_REPORTS,
+        {
+            "sha": _git_sha(),
+            "model": settings.llm_model_query,
+            "effort": str(settings.llm_reasoning_effort),
+        },
+        stopped,
+    )
+    console.print(f"Report: {path}")
+    if stopped:
+        console.print(f"[yellow]Stopped early: {stopped}. Re-run later; parses are cached.[/]")
+
+
+@app.command("export-openapi")
+def export_openapi(
+    out: Annotated[Path, typer.Option(help="Where to write the schema.")] = REPO_ROOT
+    / "backend"
+    / "openapi.json",
+) -> None:
+    """Write the API's OpenAPI schema (consumed by web/ to generate TypeScript types)."""
+    from vio.api.app import create_app
+
+    schema = create_app(settings=get_settings()).openapi()
+    out.write_text(json.dumps(schema, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    console.print(f"Wrote {out} ({len(schema.get('paths', {}))} paths)")
