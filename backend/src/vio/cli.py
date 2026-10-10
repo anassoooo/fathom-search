@@ -32,6 +32,49 @@ def config() -> None:
     typer.echo(get_settings().model_dump_json(indent=2))
 
 
+data_app = typer.Typer(help="Data quality and catalog utilities.", no_args_is_help=True)
+app.add_typer(data_app, name="data")
+CONTRACT = REPO_ROOT / "data" / "contract.toml"
+REPORTS = REPO_ROOT / "data" / "reports"
+
+
+@data_app.command("audit")
+def data_audit(
+    csv_path: Annotated[Path, typer.Option("--csv", help="Catalog CSV to audit.")] = REPO_ROOT
+    / "data"
+    / "processed"
+    / "vio_EDA.csv",
+    contract: Annotated[Path, typer.Option(help="Data contract (TOML).")] = CONTRACT,
+    out_dir: Annotated[Path, typer.Option(help="Where to write the report.")] = REPORTS,
+    name: Annotated[str, typer.Option(help="Report file stem.")] = "quality_report",
+) -> None:
+    """Audit a catalog CSV against the data contract; exit 1 on blocking failures."""
+    from vio.quality import load_contract, run_audit
+    from vio.quality.checks_basic import load_raw
+    from vio.quality.report import to_json, to_markdown
+
+    if not csv_path.exists():
+        raise typer.BadParameter(f"{csv_path} not found")
+    df = load_raw(csv_path)
+    try:
+        source = csv_path.resolve().relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        source = csv_path.name
+    report = run_audit(df, load_contract(contract), source=source)
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / f"{name}.md").write_text(to_markdown(report), encoding="utf-8")
+    (out_dir / f"{name}.json").write_text(to_json(report), encoding="utf-8")
+
+    for r in report.results:
+        style = "green" if r.passed else ("red" if r.severity.value == "blocking" else "yellow")
+        console.print(f"[{style}]{'pass' if r.passed else 'FAIL'}[/] {r.severity.value:8} {r.name}")
+    verdict = "[green]TRUSTED[/]" if report.trusted else "[red]NOT TRUSTED[/]"
+    console.print(f"{verdict}: report written to {out_dir / name}.md")
+    if not report.trusted:
+        raise typer.Exit(code=1)
+
+
 @app.command()
 def make_sample(
     src: Annotated[Path, typer.Option(help="Full processed CSV.")] = REPO_ROOT

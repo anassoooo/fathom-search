@@ -1,0 +1,51 @@
+# Data contract for the VIO catalog (processed CSV, vio_EDA.csv format).
+#
+# Each [checks."<name>"] entry sets the severity and the acceptable range of that
+# check's metric (`min` and/or `max`). Checks not listed here are recorded as `info`.
+#   blocking: the dataset must not be ingested
+#   warning:  ingest, but affected rows get quality flags and the report calls it out
+# Changing a threshold is a reviewed decision: say why in the PR.
+
+[checks."schema.required_columns"]
+severity = "blocking"
+max = 0
+
+[checks."completeness.required_fields"]
+severity = "blocking"
+max = 0.0
+
+[checks."completeness.optional_fields"]
+severity = "warning"
+max = 0.05            # no optional column may be more than 5% empty
+
+[checks."uniqueness.product_id"]
+severity = "blocking"
+max = 0
+
+[checks."uniqueness.duplicate_listings"]
+severity = "warning"
+max = 0.20            # duplicates are merged at ingest (ADR-0002); above 20% suggests a scraping problem
+
+[checks."validity.rating_range"]
+severity = "blocking"
+max = 0
+
+[checks."validity.price_positive"]
+severity = "blocking"
+max = 0
+
+[checks."validity.review_count"]
+severity = "blocking"
+max = 0
+
+[checks."validity.price_bucket_domain"]
+severity = "blocking"
+max = 0
+
+[checks."validity.image_url"]
+severity = "warning"
+min = 0.99
+
+[checks."validity.rows_parse"]
+severity = "blocking"
+max = 0
