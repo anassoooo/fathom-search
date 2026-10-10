@@ -193,7 +193,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
 
 ## M2 — Evaluation harness
 
-- [ ] **T030 · Metrics library** — Deps: T010
+- [x] **T030 · Metrics library** — Deps: T010
   `vio/eval/metrics.py`: NDCG@k (graded), Recall@k, MRR@k, precision/recall/F1,
   and latency percentiles.
   *Accept:* unit tests against hand-computed examples.
