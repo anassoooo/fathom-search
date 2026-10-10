@@ -1,30 +1,21 @@
 import { NextResponse } from 'next/server'
-import { getCategories } from '@/lib/qdrant'
 
-// Cache categories for 5 minutes
-let categoriesCache: { data: string[]; timestamp: number } | null = null
-const CACHE_TTL = 5 * 60 * 1000
+import { backendErrorResponse } from '@/lib/api-errors'
+import { backend } from '@/lib/backend'
+
+// The taxonomy changes only on re-ingest: cache it for 5 minutes.
+let cache: { data: string[]; at: number } | null = null
+const TTL_MS = 5 * 60 * 1000
 
 export async function GET() {
+  if (cache && Date.now() - cache.at < TTL_MS) {
+    return NextResponse.json({ categories: cache.data })
+  }
   try {
-    // Check cache
-    if (categoriesCache && Date.now() - categoriesCache.timestamp < CACHE_TTL) {
-      return NextResponse.json({ categories: categoriesCache.data })
-    }
-
-    const categories = await getCategories()
-    
-    // Update cache only if we got results
-    if (categories.length > 0) {
-      categoriesCache = { data: categories, timestamp: Date.now() }
-    }
-
+    const { categories } = await backend.taxonomy()
+    cache = { data: categories, at: Date.now() }
     return NextResponse.json({ categories })
   } catch (error) {
-    console.error('Error fetching categories:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch categories' },
-      { status: 500 }
-    )
+    return backendErrorResponse(error, 'categories')
   }
 }

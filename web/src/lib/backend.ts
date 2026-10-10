@@ -78,6 +78,6 @@ export const backend = {
     call<components['schemas']['SimilarOut']>(
       `/v1/products/${encodeURIComponent(id)}/similar${query({ k })}`,
     ),
-  browse: (params: { category?: string | null; limit: number; cursor?: string | null }) =>
+  browse: (params: { category?: string | null; limit: number; page: number }) =>
     call<components['schemas']['ProductPage']>(`/v1/products${query(params)}`),
 }

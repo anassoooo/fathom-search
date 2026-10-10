@@ -1,126 +1,79 @@
+import { createHash } from 'node:crypto'
+
 import { NextRequest, NextResponse } from 'next/server'
+
+import { backendErrorResponse } from '@/lib/api-errors'
 import { getSession } from '@/lib/auth'
+import { backend, toProduct } from '@/lib/backend'
 import { prisma } from '@/lib/prisma'
-import { recommendBlended } from '@/lib/embeddings'
-import { getTaxonomy } from '@/lib/qdrant'
-import { processQuery } from '@/lib/ollama'
-import type { Product } from '@/lib/types'
+
+const MAX_PROMPT = 500
 
 export async function POST(request: NextRequest) {
+  const session = await getSession()
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  let body: { prompt?: unknown; image?: unknown }
   try {
-    const session = await getSession()
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+  const prompt = typeof body.prompt === 'string' ? body.prompt.trim().slice(0, MAX_PROMPT) : ''
+  const image = typeof body.image === 'string' && body.image ? body.image : null
+  if (!prompt && !image) {
+    return NextResponse.json({ error: 'Please provide a text prompt or image' }, { status: 400 })
+  }
 
-    const { prompt, image } = await request.json()
-
-    if (!prompt && !image) {
-      return NextResponse.json(
-        { error: 'Please provide a text prompt or image' },
-        { status: 400 }
-      )
-    }
-
-    let finalQuery = prompt || null
-    let searchFilters = undefined
-    let searchLimit = 12
-
-    // Dynamic limit extraction (top/best K)
-    if (prompt) {
-      const topKMatch = prompt.toLowerCase().match(/(?:top|best|give me|show me)\s+(\d+)/i)
-      if (topKMatch) {
-        const requestedLimit = parseInt(topKMatch[1], 10)
-        if (requestedLimit > 0 && requestedLimit <= 100) {
-          searchLimit = requestedLimit
-        }
-      }
-    }
-
-    console.log('[API] New recommendation request:', { prompt, hasImage: !!image, searchLimit })
-
-    // Semantic preprocessing if prompt exists
-    if (prompt) {
-      try {
-        const taxonomy = await getTaxonomy()
-        const aiResult = await processQuery(prompt, taxonomy)
-        finalQuery = aiResult.semantic_expansion
-        searchFilters = aiResult.filter
-        console.log('[AI Search] Expanded:', finalQuery)
-        console.log('[AI Search] Filters:', JSON.stringify(searchFilters, null, 2))
-      } catch (e) {
-        console.error('[AI Search] Preprocessing failed:', e)
-      }
-    }
-
-    // Get recommendations from Qdrant with filters
-    const results = await recommendBlended(
-      finalQuery,
-      image || null,
-      searchLimit,
-      searchFilters
-    )
-
-    console.log('[API] Qdrant results count:', results.length)
-
-    // Transform results to products
-    const products: Product[] = results.map((r) => ({
-      id: String(r.id),
-      name: r.payload.name || 'Unknown Product',
-      category: r.payload.category || 'Uncategorized',
-      subcategory: r.payload.subcategory,
-      price: r.payload.price || 0,
-      price_bucket: r.payload.price_bucket,
-      rating: r.payload.rating || 0,
-      total_ratings: r.payload.total_ratings,
-      bayes_rating: r.payload.bayes_rating,
-      value_score: r.payload.value_score,
-      image_url: r.payload.image_url,
-    }))
-
+  try {
+    // `full` = LLM query understanding + hybrid retrieval + reranking (see PLAN.md §7.4).
+    const res = await backend.search({
+      query: prompt || null,
+      image_b64: image,
+      k: 12,
+      variant: 'full',
+    })
+    const products = res.results.map((hit) => toProduct(hit.product))
     const productIds = products.map((p) => p.id)
 
-    // Save to recommendation_interactions
-    try {
-      await prisma.assistantHistory.create({
+    // History and analytics must never break the response.
+    await Promise.allSettled([
+      prisma.assistantHistory.create({
         data: {
           userId: session.userId,
           prompt: prompt || null,
-          imageHash: image ? 'image_hash_placeholder' : null,
+          imageHash: image ? createHash('sha256').update(image).digest('hex').slice(0, 16) : null,
           returnedProductIds: JSON.stringify(productIds),
-          // Store AI metadata in metadata field if available (future proofing)
-        }
-      })
-    } catch (e) {
-      console.error('Failed to log history', e)
-    }
-
-    // Log event
-    try {
-      await prisma.event.create({
+        },
+      }),
+      prisma.event.create({
         data: {
           userId: session.userId,
           eventType: 'assistant_recommend',
           metadata: JSON.stringify({
-            hasPrompt: !!prompt,
-            hasImage: !!image,
-            resultsCount: products.length,
-          })
-        }
-      })
-    } catch (e) {
-      console.error('Failed to log event', e)
-    }
+            variant: res.variant,
+            trace_id: res.trace_id,
+            query_type: image ? (prompt ? 'text+image' : 'image') : 'text',
+            list_type: 'assistant',
+            returned_product_ids: productIds,
+            degraded: res.degraded,
+          }),
+        },
+      }),
+    ])
 
-    return NextResponse.json({ products })
+    return NextResponse.json({
+      products,
+      variant: res.variant,
+      traceId: res.trace_id,
+      understood: res.parsed_query ?? null,
+      boostedCategory: res.boosted_category ?? null,
+      appliedFilters: res.applied_filters,
+      degraded: res.degraded ?? [],
+    })
   } catch (error) {
-    console.error('Error getting recommendations:', error)
-    return NextResponse.json(
-      { error: 'Failed to get recommendations' },
-      { status: 500 }
-    )
+    return backendErrorResponse(error, 'Recommendations')
   }
 }

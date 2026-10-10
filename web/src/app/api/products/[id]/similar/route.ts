@@ -1,62 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { searchSimilarProducts } from '@/lib/qdrant'
+
+import { backendErrorResponse } from '@/lib/api-errors'
 import { getSession } from '@/lib/auth'
+import { backend, toProduct } from '@/lib/backend'
 import { prisma } from '@/lib/prisma'
-import type { Product } from '@/lib/types'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+// Similarity fuses the product's text and image vectors server-side, so the old
+// `mode=text|image` parameter is accepted but no longer needed.
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const limit = Math.min(20, Math.max(1, Number.parseInt(request.nextUrl.searchParams.get('limit') || '12', 10) || 12))
   try {
-    const { id } = await params
-    const searchParams = request.nextUrl.searchParams
-    const limit = Math.min(20, Math.max(1, parseInt(searchParams.get('limit') || '12')))
-    const mode = (searchParams.get('mode') || 'text') as 'text' | 'image'
+    const { results } = await backend.similar(id, limit)
+    const items = results.map((hit) => toProduct(hit.product))
 
-    const results = await searchSimilarProducts(id, mode, limit)
-
-    // Log the recommendation event (server knows what it returned)
     try {
       const session = await getSession()
       await prisma.event.create({
         data: {
-          userId: session?.userId || null,
+          userId: session?.userId ?? null,
           eventType: 'assistant_recommend',
           metadata: JSON.stringify({
             source: 'similar_products',
-            seed_product_id: String(id),
-            query_type: mode,
+            seed_product_id: id,
             list_type: 'similar',
-            returned_product_ids: results.map((r) => String(r.id)),
+            returned_product_ids: items.map((p) => p.id),
             limit,
           }),
         },
       })
     } catch (e) {
-      console.error('Failed to log assistant_recommend:', e)
+      console.error('Failed to log similar-products event:', e)
     }
-
-    const items: Product[] = results.map((result) => ({
-      id: String(result.id),
-      name: (result.payload.name as string) || 'Unknown Product',
-      category: (result.payload.category as string) || 'Uncategorized',
-      subcategory: (result.payload.subcategory as string) || (result.payload.subCategory as string),
-      price: (result.payload.price as number) || 0,
-      price_bucket: result.payload.price_bucket as string,
-      rating: (result.payload.rating as number) || 0,
-      total_ratings: result.payload.total_ratings as number,
-      bayes_rating: result.payload.bayes_rating as number,
-      value_score: result.payload.value_score as number,
-      image_url: result.payload.image_url as string,
-    }))
 
     return NextResponse.json({ items })
   } catch (error) {
-    console.error('Error fetching similar products:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch similar products' },
-      { status: 500 }
-    )
+    return backendErrorResponse(error, 'Similar products')
   }
 }
