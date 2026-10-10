@@ -59,6 +59,10 @@ data/images/
 *.onnx
 .cache/
 models_cache/
+# Hugging Face / fastembed cache artifacts if a model ever downloads into the repo
+models--*/
+CACHEDIR.TAG
+.locks/
 
 # LLM response cache for eval (resumable runs)
 data/eval/.llm_cache.sqlite

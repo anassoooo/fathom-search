@@ -76,7 +76,7 @@ mypy_path = "src"
 files = ["src", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["sklearn.*", "scipy.*"]
+module = ["sklearn.*", "scipy.*", "onnxruntime.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
