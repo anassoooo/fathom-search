@@ -10,7 +10,7 @@
 param([string]$At = "18:00")
 
 $script = Join-Path $PSScriptRoot "daily_eval.ps1"
-$ps = Join-Path $env:SystemRoot "System32\WindowsPowerShell1.0\powershell.exe"
+$ps = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
 $action = New-ScheduledTaskAction -Execute $ps `
     -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$script`""
 $trigger = New-ScheduledTaskTrigger -Daily -At $At
