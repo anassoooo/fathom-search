@@ -20,11 +20,20 @@ dependencies = [
 vio = "vio.cli:app"
 
 [dependency-groups]
+data = [
+    "matplotlib>=3.9",
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+]
 dev = [
     "mypy>=1.13",
     "pytest>=8.3",
     "ruff>=0.8",
 ]
+
+[tool.uv]
+# `data` holds analysis-only deps (audit, EDA); production images skip it.
+default-groups = ["dev", "data"]
 
 [build-system]
 requires = ["uv_build>=0.11,<0.12"]

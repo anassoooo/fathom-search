@@ -30,7 +30,7 @@ committed, so the project runs end to end from a fresh clone.
 | `Product Price ($)` | float | 0.28 to 40,922.03; median 23.99 |
 | `Product Rating` | float | 0 to 5 |
 | `Total Ratings` | int | Review count |
-| `Product Bayes_rating` | float | Rating shrunk toward the category mean by review count |
+| `Product Bayes_rating` | float | Rating shrunk toward the **global** mean; ⚠ prior strength was set to median *price* (see T081) |
 | `Product Value_score` | float | Quality-per-dollar score; rows ≥ 1000 were dropped in EDA |
 | `Product Image` | URL | Amazon CDN thumbnail |
 
