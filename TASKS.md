@@ -198,13 +198,13 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   and latency percentiles.
   *Accept:* unit tests against hand-computed examples.
 
-- [ ] **T031 · Query generation** — Deps: T019, T085
+- [x] **T031 · Query generation** — Deps: T019, T085
   `vio eval gen-queries`: picks seed products stratified by category, uses an
   LLM (paraphrase instruction) to produce queries in the six buckets (PLAN §8),
   and writes `data/eval/queries_v1.jsonl` with the seed ID and bucket.
   *Accept:* about 300 queries; token overlap with seed titles is reported and kept low.
 
-- [ ] **T032 · Pooling + LLM judge** — Deps: T031, T018
+- [~] **T032 · Pooling + LLM judge** — Deps: T031, T018
   `vio eval pool` (top 20 from every variant) and `vio eval judge` (fixed
   rubric prompt, graded 0/1/2, cached) → `qrels_v1.jsonl`.
   *Accept:* every query has ≥ 1 relevant document; the judge prompt is versioned.

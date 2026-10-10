@@ -397,3 +397,45 @@ def eval_retrieval(
         },
     )
     console.print(f"Report: {md}")
+
+
+@eval_app.command("audit")
+def eval_audit(
+    n: Annotated[int, typer.Option(min=10, help="Pairs to grade (stratified).")] = 100,
+) -> None:
+    """Grade a stratified sample of judged pairs yourself; reports judge agreement (T033)."""
+    from vio.eval.audit import agreement, run_audit, stratified_sample, summary_json
+    from vio.eval.judge import Judgment, describe_request
+    from vio.eval.queries import load
+    from vio.ingest.prepare import prepare_catalog
+
+    queries = {q.qid: q for q in load(QUERIES_V1)}
+    judgments = [
+        Judgment.model_validate_json(line) for line in QRELS_V1.read_text("utf-8").splitlines()
+    ]
+    products = {
+        p.product_id: p
+        for p in prepare_catalog(
+            REPO_ROOT / "data" / "processed" / "vio_EDA.csv", REPO_ROOT / "data"
+        ).products
+    }
+
+    def describe(j: Judgment) -> str:
+        q = queries[j.qid]
+        p = products.get(j.product_id)
+        seed = products.get(q.seed_product_id or "")
+        item = (
+            f"{p.name}\n  category: {p.subcategory or p.category} | price: ${p.price}"
+            if p
+            else j.product_id
+        )
+        return f"REQUEST: {describe_request(q, seed)}\nPRODUCT: {item}"
+
+    console.print(
+        "Grade each product for the request: [bold]2[/] exact match, [bold]1[/] partial "
+        "(related / over budget), [bold]0[/] irrelevant. The judge's grade is hidden."
+    )
+    out = EVAL_DATA / "human_audit_v1.jsonl"
+    labels = run_audit(stratified_sample(judgments, queries, n), describe, input, out)
+    (EVAL_DATA / "human_audit_v1_summary.json").write_text(summary_json(labels) + "\n", "utf-8")
+    console.print(f"Agreement with the judge: {agreement(labels)}")
