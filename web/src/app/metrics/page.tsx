@@ -34,7 +34,12 @@ interface MetricsData {
   }>
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+const fetcher = async (url: string) => {
+  const res = await fetch(url)
+  const body = await res.json()
+  if (!res.ok) throw new Error(body?.error ?? `Request failed (${res.status})`)
+  return body
+}
 
 const eventTypeIcons: Record<string, React.ReactNode> = {
   product_impression: <Eye className="h-4 w-4" />,
@@ -53,9 +58,17 @@ const eventTypeLabels: Record<string, string> = {
 }
 
 export default function MetricsPage() {
-  const { data, isLoading } = useSWR<MetricsData>('/api/metrics', fetcher, {
+  const { data, isLoading, error } = useSWR<MetricsData>('/api/metrics', fetcher, {
     refreshInterval: 30000, // Refresh every 30 seconds
   })
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-6">
+        <p className="text-muted-foreground">{error.message}</p>
+      </div>
+    )
+  }
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleString('en-US', {

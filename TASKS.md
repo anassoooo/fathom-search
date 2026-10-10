@@ -269,7 +269,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   move `@prisma/client` to dependencies; first migration.
   *Accept:* `npx prisma migrate dev` works against compose Postgres.
 
-- [ ] **T053 · Auth hardening** [P] — Deps: T052
+- [x] **T053 · Auth hardening** [P] — Deps: T052
   bcrypt hashing; random session IDs; auth required on `/metrics` and
   `/api/metrics`; input validation with zod.
   *Accept:* tests or a manual checklist in the PR; no `default-secret` fallback remains.

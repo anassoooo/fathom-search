@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { isAdmin } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 type Meta = {
@@ -20,6 +21,9 @@ function safeParse(meta: string | null): Meta {
 }
 
 export async function GET() {
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: 'Metrics are restricted to admins' }, { status: 403 })
+  }
   try {
     // Keep your global totals (fast counts)
     const [impressions, clicks, addToCarts, assistantOpens, assistantRecommends] =
