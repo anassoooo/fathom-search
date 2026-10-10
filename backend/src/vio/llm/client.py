@@ -45,9 +45,18 @@ class LLMError(RuntimeError):
 
 
 class RateLimitedError(LLMError):
-    def __init__(self, retry_after: float | None) -> None:
-        super().__init__(f"rate limited (retry after {retry_after}s)")
+    def __init__(self, retry_after: float | None, message: str = "") -> None:
+        super().__init__(message or f"rate limited (retry after {retry_after}s)")
         self.retry_after = retry_after
+
+
+class QuotaExhaustedError(LLMError):
+    """A long-window quota (e.g. tokens per day) is used up: retrying now is pointless.
+    Finished calls are cached, so re-running later resumes where this stopped."""
+
+
+# Waits longer than this mean a daily-style quota, not a per-minute one: stop cleanly.
+MAX_RATE_LIMIT_WAIT_S = 120.0
 
 
 @dataclass
@@ -85,7 +94,7 @@ def openai_chat_fn(settings: Settings) -> ChatFn:
             resp = client.chat.completions.create(**kwargs)
         except openai.RateLimitError as e:
             header = e.response.headers.get("retry-after")
-            raise RateLimitedError(float(header) if header else None) from e
+            raise RateLimitedError(float(header) if header else None, str(e)) from e
         except (openai.APIConnectionError, openai.APITimeoutError, openai.InternalServerError) as e:
             raise LLMError(str(e)) from e
         usage = resp.usage
@@ -149,6 +158,10 @@ class LLMClient:
                 result = self._chat(model, messages, temperature, True)
                 break
             except RateLimitedError as e:
+                if e.retry_after is not None and e.retry_after > MAX_RATE_LIMIT_WAIT_S:
+                    raise QuotaExhaustedError(
+                        f"quota exhausted, retry in ~{e.retry_after / 60:.0f} min: {e}"
+                    ) from e
                 wait = e.retry_after if e.retry_after is not None else delay
             except LLMError as e:
                 wait = delay

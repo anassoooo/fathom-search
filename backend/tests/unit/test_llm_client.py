@@ -77,3 +77,13 @@ def test_disk_cache_survives_restarts(tmp_path: Path) -> None:
     second = _client(Scripted(), tmp_path)  # would fail if it called the endpoint
     assert second.structured(MSG, Answer, model="m").label == "a"
     assert second.usage.cache_hits == 1 and second.usage.calls == 0
+
+
+def test_daily_quota_stops_immediately() -> None:
+    from vio.llm.client import QuotaExhaustedError
+
+    waits: list[float] = []
+    c = LLMClient(Scripted(RateLimitedError(367.0, "tokens per day (TPD)")), sleep=waits.append)
+    with pytest.raises(QuotaExhaustedError, match="retry in ~6 min"):
+        c.structured(MSG, Answer, model="m")
+    assert waits == []  # no pointless retries
