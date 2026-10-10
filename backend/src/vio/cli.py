@@ -33,6 +33,28 @@ def config() -> None:
 
 
 @app.command()
+def make_sample(
+    src: Annotated[Path, typer.Option(help="Full processed CSV.")] = REPO_ROOT
+    / "data"
+    / "processed"
+    / "vio_EDA.csv",
+    dst: Annotated[Path, typer.Option(help="Where to write the sample.")] = SAMPLE_CSV,
+    size: Annotated[int, typer.Option(min=10)] = 500,
+    seed: Annotated[int, typer.Option()] = 42,
+) -> None:
+    """Write a reproducible, category-stratified sample of the catalog (T002)."""
+    from vio.ingest.sample import make_sample as build
+
+    if not src.exists():
+        raise typer.BadParameter(f"{src} not found")
+    r = build(src, dst, size=size, seed=seed)
+    console.print(
+        f"Wrote {r.rows} rows across {r.categories} categories "
+        f"({r.duplicate_groups} duplicate-title groups) to {dst}"
+    )
+
+
+@app.command()
 def serve(
     host: Annotated[str, typer.Option()] = "127.0.0.1",
     port: Annotated[int, typer.Option()] = 8000,

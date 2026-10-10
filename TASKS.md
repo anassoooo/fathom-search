@@ -18,9 +18,9 @@ Branch name: `t<id>-<slug>`.
   `package-lock.json`. Commit the pending `.gitignore` change.
   *Accept:* `git ls-files` shows none of these; the app still builds.
 
-- [ ] **T002 · Recover and commit data** — Deps: T001 · **BLOCKED: needs `vio_EDA.csv` exported from Google Drive**
+- [x] **T002 · Recover and commit data** — Deps: T001
   Export `vio_EDA.csv` from Google Drive to `data/processed/` (gitignored).
-  Write `scripts/make_sample.py` to create a stratified ~500-product sample
+  Write a sample generator (built as `vio make-sample`) to create a stratified ~500-product sample
   (by category) in `data/sample/products.csv`. Write `data/README.md` with
   the source, license, columns, and row counts.
   *Accept:* the sample is committed and under 1 MB; every category is represented; the README lists all columns.
