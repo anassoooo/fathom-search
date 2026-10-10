@@ -227,13 +227,17 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
 - [ ] **T036 · ADR-0004, 0005, 0007** [P] — Deps: T034
   Record the fusion, embedding-model, and labeling decisions, citing report numbers.
 
-## M3 — Query understanding + agent
+## M3 — Query understanding
 
-- [ ] **T040 · LLM client** — Deps: T005
+> **Scope (2026-10-10): CV-ready route.** M3 covers LLM query understanding only. The
+> conversational agent (T043–T046) is deferred; see "Deferred" at the end.
+
+- [~] **T040 · LLM client** — Deps: T005
   `vio/llm/client.py`: OpenAI SDK with `base_url`; `structured(prompt, schema)`
   with JSON-schema output, Pydantic validation, ≤ 2 repair retries, timeout,
   token/cost accounting, and a TTL cache.
   *Accept:* unit tests with a fake transport cover retry, failure, and caching.
+  *Note:* client, validation, 429 backoff, quota handling, and disk cache are done; Langfuse tracing is pending.
 
 - [ ] **T041 · Query understanding** — Deps: T040, T015
   `vio/llm/query_understanding.py` plus `prompts/query_understanding.v1.md`,
@@ -246,26 +250,6 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   `vio eval query-understanding` → per-field accuracy plus exact match. Compare
   2 models and 2 prompt versions.
   *Accept:* the report section is added; the best config is set as default.
-
-- [ ] **T043 · Agent tools + loop** — Deps: T041, T018
-  `vio/agent/`: tool schemas, an executor, and a loop with max 4 steps and a
-  20 s budget, with fallback to plain search. Returns `reply, products,
-  clarification?, tool_calls`.
-  *Accept:* unit tests with a scripted fake LLM cover each path (answer, clarify, tool error, budget exceeded).
-
-- [ ] **T044 · Clarification policy** — Deps: T043
-  Decides from `ParsedQuery.is_vague` and `missing`; one question with 2–4
-  quick replies; never asks twice in a row.
-  *Accept:* unit tests; the policy is documented in code.
-
-- [ ] **T045 · `/v1/assistant/chat` endpoint** — Deps: T043, T044, T019
-  Rate-limited, traced.
-  *Accept:* an API test drives a 2-turn conversation (clarify → results).
-
-- [ ] **T046 · Agent eval** — Deps: T045, T030
-  `data/eval/clarification_v1.jsonl` (about 100) plus tool-choice cases;
-  `vio eval agent` → clarification F1, tool accuracy, steps, latency, cost.
-  *Accept:* report section added; ADR-0006 written.
 
 ## M4 — Web migration
 
@@ -337,3 +321,25 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
 
 - [ ] **T072 · Performance work**
   Embedding cache, ONNX/quantized reranker, query-result cache; before/after p95 in the report.
+
+## Deferred (outside the CV-ready route)
+
+- [ ] **T043 · Agent tools + loop** — Deps: T041, T018
+  `vio/agent/`: tool schemas, an executor, and a loop with max 4 steps and a
+  20 s budget, with fallback to plain search. Returns `reply, products,
+  clarification?, tool_calls`.
+  *Accept:* unit tests with a scripted fake LLM cover each path (answer, clarify, tool error, budget exceeded).
+
+- [ ] **T044 · Clarification policy** — Deps: T043
+  Decides from `ParsedQuery.is_vague` and `missing`; one question with 2–4
+  quick replies; never asks twice in a row.
+  *Accept:* unit tests; the policy is documented in code.
+
+- [ ] **T045 · `/v1/assistant/chat` endpoint** — Deps: T043, T044, T019
+  Rate-limited, traced.
+  *Accept:* an API test drives a 2-turn conversation (clarify → results).
+
+- [ ] **T046 · Agent eval** — Deps: T045, T030
+  `data/eval/clarification_v1.jsonl` (about 100) plus tool-choice cases;
+  `vio eval agent` → clarification F1, tool accuracy, steps, latency, cost.
+  *Accept:* report section added; ADR-0006 written.

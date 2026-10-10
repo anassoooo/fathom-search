@@ -272,7 +272,7 @@ writes `eval/reports/<date>-<git-sha>.md` plus `.json`. CI runs a fast subset
 | M1 | Backend + ingestion          | `vio ingest --sample` builds collection v2; `/v1/search` serves `hybrid_rerank` | 1.5 wk |
 | M1.5 | Data quality & trust | Audit report against `data/contract.toml`; derived features verified/recomputed; outliers, label noise, text issues flagged by policy | 1 wk |
 | M2 | Evaluation harness           | Eval sets v1 frozen; ablation report committed; CI gate active        | 1.5 wk |
-| M3 | Query understanding + agent  | Validated parsing ≥ target; assistant with clarification; agent eval  | 1.5 wk |
+| M3 | Query understanding (agent deferred)  | Validated parsing ≥ target; assistant with clarification; agent eval  | 1.5 wk |
 | M4 | Web migration                | Web uses only the backend; events carry the variant; metrics page authed | 1 wk |
 | M5 | Ship                         | Deployed demo, README with ablation table, demo video, ADRs           | 1 wk   |
 | M6 | Stretch (choose one)         | Fine-tuned embeddings **or** personalization **or** perf work, with eval delta | 1–2 wk |
