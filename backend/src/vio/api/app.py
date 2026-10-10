@@ -5,6 +5,7 @@ import time
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
@@ -26,17 +27,30 @@ log = logging.getLogger(__name__)
 _BODY_OVERHEAD = 64 * 1024
 
 
-def build_service(settings: Settings) -> SearchService:
+def build_service(settings: Settings, llm_cache: Path | None = None) -> SearchService:
+    """`llm_cache` (eval runs) persists LLM answers on disk; serving keeps them in memory."""
     from vio.embeddings.fastembed_impl import Runtime, build_encoders
+    from vio.llm.client import LLMClient, openai_chat_fn
+    from vio.llm.query_understanding import QueryUnderstanding
     from vio.search.rerank import FastEmbedReranker
     from vio.store.qdrant import ProductStore, create_client
 
-    return SearchService(
-        ProductStore(create_client(settings), settings.qdrant_collection),
+    store = ProductStore(create_client(settings), settings.qdrant_collection)
+    # Serving must not hang on the LLM: short timeout, one attempt, then degrade.
+    fast = settings.model_copy(update={"llm_timeout_s": min(settings.llm_timeout_s, 8.0)})
+    llm = LLMClient(
+        openai_chat_fn(fast), cache_path=llm_cache, max_attempts=1 if llm_cache is None else 6
+    )
+    service = SearchService(
+        store,
         build_encoders(settings),
         FastEmbedReranker(settings.rerank_model, Runtime.from_settings(settings)),
         settings,
     )
+    service.understander = QueryUnderstanding(
+        llm, settings.llm_model_query, lambda: service.taxonomy().categories
+    )
+    return service
 
 
 def _error(status: int, message: str) -> JSONResponse:

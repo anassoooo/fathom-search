@@ -13,7 +13,6 @@ Lexical overlap with the seed title is measured per query, so a BM25 advantage f
 copied title words would show up in the report rather than hide in the averages.
 """
 
-import importlib.resources
 import io
 import json
 import random
@@ -26,6 +25,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from vio.llm.client import LLMClient
+from vio.llm.prompts import load_prompt
 from vio.models import Filters, Product
 
 Bucket = Literal["specific", "descriptive", "constrained", "noisy", "vague", "image"]
@@ -111,8 +111,7 @@ class _VagueBatch(BaseModel):
 # --- helpers ---------------------------------------------------------------------------
 
 
-def prompt(name: str) -> str:
-    return importlib.resources.files("vio.llm").joinpath(f"prompts/{name}").read_text("utf-8")
+prompt = load_prompt  # kept for callers in vio.eval
 
 
 def content_words(text: str) -> set[str]:

@@ -8,6 +8,7 @@ from concurrent.futures import Executor, ThreadPoolExecutor
 
 from vio.config import Settings
 from vio.embeddings import Encoders, Vector
+from vio.llm.query_understanding import ParsedQuery, QueryUnderstanding, merge_filters
 from vio.models import Filters, Product, SearchHit, SearchRequest, SearchResponse
 from vio.observability.timing import timed
 from vio.search.filters import Taxonomy, sanitize, to_qdrant
@@ -42,7 +43,9 @@ class SearchService:
         reranker: Reranker,
         settings: Settings,
         executor: Executor | None = None,
+        understander: QueryUnderstanding | None = None,
     ) -> None:
+        self.understander = understander
         self.store = store
         self.encoders = encoders
         self.reranker = reranker
@@ -68,6 +71,21 @@ class SearchService:
         return self._taxonomy
 
     # --- search -------------------------------------------------------------
+
+    def _understand(
+        self, text: str, timings: dict[str, float], degraded: list[str]
+    ) -> ParsedQuery | None:
+        """LLM query understanding; any failure degrades to plain retrieval (Art. VI)."""
+        if self.understander is None:
+            degraded.append("llm")
+            return None
+        try:
+            with timed(timings, "understand_ms"):
+                return self.understander.parse(text)
+        except Exception:
+            log.warning("query understanding failed; searching without it", exc_info=True)
+            degraded.append("llm")
+            return None
 
     def _encode(
         self, request: SearchRequest, timings: dict[str, float], degraded: list[str]
@@ -107,12 +125,21 @@ class SearchService:
         cfg = VARIANTS[request.variant]
 
         with timed(timings, "total_ms"):
-            filters, dropped = sanitize(request.filters, self.taxonomy())
+            text = (request.query or "").strip()
+            requested = request.filters
+            parsed = None
+            if cfg.llm and text:
+                parsed = self._understand(text, timings, degraded)
+                if parsed is not None:
+                    requested = merge_filters(request.filters, parsed.to_filters())
+                    text = parsed.search_text.strip() or text
+                    request = request.model_copy(update={"query": text})
+
+            filters, dropped = sanitize(requested, self.taxonomy())
             vectors = self._encode(request, timings, degraded)
             if not vectors.sources():
                 raise SearchInputError("nothing to search with: empty query and no usable image")
 
-            text = (request.query or "").strip()
             use_rerank = cfg.rerank and bool(text)
             limit = max(request.k, self.settings.rerank_top_n) if use_rerank else request.k
 
@@ -159,6 +186,7 @@ class SearchService:
             dropped_filters=dropped,
             timings_ms=timings,
             degraded=degraded,
+            parsed_query=parsed.model_dump() if parsed else None,
             trace_id=trace_id,
         )
 

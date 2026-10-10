@@ -173,4 +173,6 @@ class SearchResponse(BaseModel):
     dropped_filters: list[str] = Field(default_factory=list)
     timings_ms: dict[str, float] = Field(default_factory=dict)
     degraded: list[str] = Field(default_factory=list)
+    # What LLM query understanding inferred (variant `full`), for transparency in the UI.
+    parsed_query: dict[str, Any] | None = None
     trace_id: str | None = None

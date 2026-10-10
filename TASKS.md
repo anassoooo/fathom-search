@@ -239,7 +239,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   *Accept:* unit tests with a fake transport cover retry, failure, and caching.
   *Note:* client, validation, 429 backoff, quota handling, and disk cache are done; Langfuse tracing is pending.
 
-- [ ] **T041 · Query understanding** — Deps: T040, T015
+- [x] **T041 · Query understanding** — Deps: T040, T015
   `vio/llm/query_understanding.py` plus `prompts/query_understanding.v1.md`,
   with the taxonomy injected and user text delimited. Produces `ParsedQuery`.
   Wired into the `full` variant. Falls back to no-parse on failure.

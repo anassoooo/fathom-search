@@ -19,6 +19,6 @@ VARIANTS: dict[Variant, VariantConfig] = {
     "dense": VariantConfig(dense=True, sparse=False, clip_text=False, rerank=False, llm=False),
     "hybrid": VariantConfig(dense=True, sparse=True, clip_text=True, rerank=False, llm=False),
     "hybrid_rerank": VariantConfig(dense=True, sparse=True, clip_text=True, rerank=True, llm=False),
-    # LLM query understanding is wired in by T041; until then `full` == `hybrid_rerank`.
+    # `hybrid_rerank` + LLM query understanding (rewritten text + inferred filters).
     "full": VariantConfig(dense=True, sparse=True, clip_text=True, rerank=True, llm=True),
 }
