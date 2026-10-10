@@ -19,7 +19,9 @@ class Settings(BaseSettings):
     llm_api_key: SecretStr = SecretStr("ollama")
     llm_model_query: str = "qwen2.5:3b-instruct"
     llm_model_agent: str = "qwen2.5:3b-instruct"
-    llm_timeout_s: float = 10.0
+    llm_timeout_s: float = 30.0
+    # Offline eval (query generation, relevance judging): a stronger model than serving needs.
+    llm_model_eval: str = "llama-3.3-70b-versatile"
 
     # Models
     dense_model: str = "BAAI/bge-small-en-v1.5"
