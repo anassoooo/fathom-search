@@ -14,7 +14,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # ---- runtime ----------------------------------------------------------------
 FROM python:3.12-slim
-RUN useradd --create-home --uid 10001 vio
+# Hugging Face Spaces run containers as uid 1000; matching it keeps /models writable.
+RUN useradd --create-home --uid 1000 vio
 COPY --from=builder /app/.venv /app/.venv
 ENV PATH=/app/.venv/bin:$PATH \
     PYTHONUNBUFFERED=1 \

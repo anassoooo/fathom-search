@@ -114,6 +114,7 @@ still enforced.
 | Repo | `anassoooo/vio-shop-organized` (public) |
 | Default branch | `main` |
 | Actions secret | `HF_TOKEN` = Hugging Face `vio-github-deploy` token (step 3) |
+| Actions variable | `HF_SPACE` = `<hf-username>/vio-search-api`. The deploy workflow (`.github/workflows/deploy-backend.yml`) pushes `backend/` there on every change to `main`. |
 
 ## Loading the catalog into Qdrant Cloud
 
@@ -144,7 +145,7 @@ ONNX_DEVICE=cuda uv run vio ingest --csv ../data/processed/vio_EDA.csv --image-d
 
 | Thing | Name |
 |---|---|
-| Qdrant cluster / collection | `vio` / `vio_products_v2` |
+| Qdrant cluster / collection | `vio` (AWS `eu-central-1`) / `vio_products_v2` |
 | HF Space | `vio-search-api` |
 | Neon project / database / branch | `vio` / `neondb` / `production` |
 | Vercel project | `vio-web` |
