@@ -284,7 +284,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   result" chips; add-to-cart as a client action.
   *Accept:* the clarify → results flow works end to end.
 
-- [ ] **T056 · Dependency diet** [P] — Deps: T051
+- [x] **T056 · Dependency diet** [P] — Deps: T051
   Remove unused packages (Radix components, `@xenova/transformers`, `ai`,
   `@neondatabase/serverless` if unused, and others). Rename the package from
   `my-v0-project`.

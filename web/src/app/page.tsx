@@ -4,8 +4,7 @@ import { Suspense } from 'react'
 import { Catalog } from '@/components/catalog'
 import { AssistantButton } from '@/components/assistant-button'
 import { Button } from '@/components/ui/button'
-import { Sparkles, ShoppingBag, ShieldCheck, Zap, ArrowRight } from 'lucide-react'
-import Image from 'next/image'
+import { Sparkles, ShoppingBag, ShieldCheck, Zap } from 'lucide-react'
 
 export default function HomePage() {
   return (

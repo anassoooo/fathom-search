@@ -6,14 +6,12 @@ import { QueryInsight, type QueryInsightData } from '@/components/query-insight'
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
 import useSWR from 'swr'
 import { Header } from '@/components/header'
 import { Send, ImageIcon, X, History, Star, Package, Sparkles, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -33,9 +31,6 @@ interface HistoryItem {
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 function AssistantContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const nextUrl = searchParams.get('next') || '/'
 
   const [prompt, setPrompt] = useState('')
   const [image, setImage] = useState<string | null>(null)
