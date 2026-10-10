@@ -47,6 +47,10 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "N", "PTH", "ASYNC"]
 
+[tool.ruff.lint.per-file-ignores]
+# Statistical notation (σ, τ, μ, θ) in report text is intentional.
+"src/vio/quality/derived.py" = ["RUF001", "RUF002"]
+
 [tool.mypy]
 strict = true
 python_version = "3.12"

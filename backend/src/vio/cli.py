@@ -35,6 +35,7 @@ def config() -> None:
 data_app = typer.Typer(help="Data quality and catalog utilities.", no_args_is_help=True)
 app.add_typer(data_app, name="data")
 CONTRACT = REPO_ROOT / "data" / "contract.toml"
+DERIVED_PARAMS = REPO_ROOT / "data" / "derived_params.json"
 REPORTS = REPO_ROOT / "data" / "reports"
 
 
@@ -47,10 +48,14 @@ def data_audit(
     contract: Annotated[Path, typer.Option(help="Data contract (TOML).")] = CONTRACT,
     out_dir: Annotated[Path, typer.Option(help="Where to write the report.")] = REPORTS,
     name: Annotated[str, typer.Option(help="Report file stem.")] = "quality_report",
+    refit: Annotated[
+        bool, typer.Option(help="Re-estimate the rating prior from this CSV (full catalog only).")
+    ] = False,
 ) -> None:
     """Audit a catalog CSV against the data contract; exit 1 on blocking failures."""
     from vio.quality import load_contract, run_audit
     from vio.quality.checks_basic import load_raw
+    from vio.quality.derived import PriorEstimate, compare_rankings, estimate_prior, report_section
     from vio.quality.report import to_json, to_markdown
 
     if not csv_path.exists():
@@ -62,8 +67,20 @@ def data_audit(
         source = csv_path.name
     report = run_audit(df, load_contract(contract), source=source)
 
+    sections: dict[str, str] = {}
+    if refit or not DERIVED_PARAMS.exists():
+        prior = estimate_prior(df)
+        prior.save(DERIVED_PARAMS)
+        console.print(f"Fitted rating prior m={prior.m} (CI {prior.m_ci95}) -> {DERIVED_PARAMS}")
+        refit = True
+    else:
+        prior = PriorEstimate.load(DERIVED_PARAMS)
+    sections["Derived features: Bayesian rating"] = report_section(
+        prior, compare_rankings(df, prior), refit
+    )
+
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / f"{name}.md").write_text(to_markdown(report), encoding="utf-8")
+    (out_dir / f"{name}.md").write_text(to_markdown(report, sections), encoding="utf-8")
     (out_dir / f"{name}.json").write_text(to_json(report), encoding="utf-8")
 
     for r in report.results:
@@ -131,11 +148,12 @@ def ingest(
     ] = False,
 ) -> None:
     """Load the catalog CSV, embed it, and upsert into Qdrant. Safe to re-run."""
+    from vio.catalog import RatingPrior
     from vio.embeddings.fake import fake_encoders as make_fake
     from vio.embeddings.fastembed_impl import build_encoders
     from vio.ingest.images import ImageSource
     from vio.ingest.loader import load_products
-    from vio.ingest.normalize import normalize
+    from vio.ingest.normalize import apply_rating_prior, normalize
     from vio.ingest.pipeline import ingest as run_ingest
     from vio.store.qdrant import ProductStore, create_client
 
@@ -161,6 +179,13 @@ def ingest(
         f"Normalized to [bold]{norm.output_products}[/] products: merged {norm.merged_rows} "
         f"duplicate listings; {norm.categories_before} -> {norm.categories_after} categories"
     )
+    params = REPO_ROOT / "data" / "derived_params.json"
+    if params.exists():
+        prior = RatingPrior.load(params)
+        products = apply_rating_prior(products, prior)
+        console.print(f"Recomputed bayes_rating/value_score with empirical-Bayes prior m={prior.m}")
+    else:
+        console.print("[yellow]No data/derived_params.json; keeping source bayes_rating[/]")
 
     store = ProductStore(create_client(settings), settings.qdrant_collection)
     encoders = make_fake() if fake_encoders else build_encoders(settings)

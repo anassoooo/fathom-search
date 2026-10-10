@@ -1,0 +1,146 @@
+{
+  "sigma2": 2.0296,
+  "tau2": 0.04704,
+  "m": 43.15,
+  "m_ci95": [
+    38.15,
+    50.54
+  ],
+  "m_without_lowest_bin": 116.91,
+  "category_means": {
+    "Art & Craft": 4.5843,
+    "Art Supplies": 4.5917,
+    "Arts & Crafts": 4.5807,
+    "Automotive": 4.4121,
+    "Baby Products": 4.5718,
+    "Beauty & Personal": 4.5029,
+    "Beauty & Personal Care": 4.4748,
+    "Books": 4.6093,
+    "Camping & Hiking": 4.5266,
+    "Electronics": 4.3525,
+    "Footwear": 4.4124,
+    "Furniture": 4.3452,
+    "Gaming & Accessories": 4.4048,
+    "Gardening & Outdoor": 4.4,
+    "Groceries": 4.5626,
+    "Health & Household": 4.5605,
+    "Healthcare & Wellness": 4.4478,
+    "Home Appliances": 4.3785,
+    "Home Decor": 4.4954,
+    "Industrial & Scientific": 4.5115,
+    "Jewelry": 4.4082,
+    "Kitchenware": 4.5278,
+    "Music": 4.4578,
+    "Music Instruments": 4.4264,
+    "Office Supplies": 4.5099,
+    "Pet Supplies": 4.4153,
+    "Sports & Outdoors": 4.4894,
+    "Tools & Home Improvement": 4.556,
+    "Toys": 4.563,
+    "Travel Accessories": 4.5113
+  },
+  "global_mean": 4.4802,
+  "bins": [
+    {
+      "inv_v": 0.201742,
+      "var": 0.44793,
+      "n": 2135
+    },
+    {
+      "inv_v": 0.024825,
+      "var": 0.14697,
+      "n": 2159
+    },
+    {
+      "inv_v": 0.011315,
+      "var": 0.09736,
+      "n": 2085
+    },
+    {
+      "inv_v": 0.006391,
+      "var": 0.08152,
+      "n": 2115
+    },
+    {
+      "inv_v": 0.003997,
+      "var": 0.06766,
+      "n": 2119
+    },
+    {
+      "inv_v": 0.002678,
+      "var": 0.05919,
+      "n": 2126
+    },
+    {
+      "inv_v": 0.001867,
+      "var": 0.05598,
+      "n": 2115
+    },
+    {
+      "inv_v": 0.001353,
+      "var": 0.04685,
+      "n": 2118
+    },
+    {
+      "inv_v": 0.000993,
+      "var": 0.04429,
+      "n": 2120
+    },
+    {
+      "inv_v": 0.000747,
+      "var": 0.0414,
+      "n": 2126
+    },
+    {
+      "inv_v": 0.000567,
+      "var": 0.04418,
+      "n": 2118
+    },
+    {
+      "inv_v": 0.000437,
+      "var": 0.04035,
+      "n": 2120
+    },
+    {
+      "inv_v": 0.000335,
+      "var": 0.04114,
+      "n": 2121
+    },
+    {
+      "inv_v": 0.000256,
+      "var": 0.03817,
+      "n": 2123
+    },
+    {
+      "inv_v": 0.000191,
+      "var": 0.03651,
+      "n": 2120
+    },
+    {
+      "inv_v": 0.000141,
+      "var": 0.03624,
+      "n": 2122
+    },
+    {
+      "inv_v": 0.000101,
+      "var": 0.03781,
+      "n": 2122
+    },
+    {
+      "inv_v": 7e-05,
+      "var": 0.03535,
+      "n": 2120
+    },
+    {
+      "inv_v": 4.3e-05,
+      "var": 0.03219,
+      "n": 2121
+    },
+    {
+      "inv_v": 1.9e-05,
+      "var": 0.03313,
+      "n": 2122
+    }
+  ],
+  "method": "WLS of binned Var(R - mu_c) on mean(1/v), 20 quantile bins of review count; 95% CI from 200 bootstrap resamples of products"
+}

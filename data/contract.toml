@@ -49,3 +49,18 @@ min = 0.99
 [checks."validity.rows_parse"]
 severity = "blocking"
 max = 0
+
+# --- Consistency: can we explain the source's derived columns? (T081) ---
+# These pass when the column reproduces from its documented formula. That does not
+# make the formula right: the Bayes prior's unit error is documented in ADR-0003.
+[checks."consistency.bayes_rating_source"]
+severity = "warning"
+max = 0.001
+
+[checks."consistency.value_score_source"]
+severity = "warning"
+max = 0.000001
+
+[checks."consistency.price_bucket_source"]
+severity = "warning"
+min = 0.99

@@ -62,6 +62,9 @@ class Product(BaseModel):
     subcategories: list[str] = Field(default_factory=list)
     raw_categories: list[str] = Field(default_factory=list)
     merged_ids: list[str] = Field(default_factory=list)
+    # Source values kept for traceability after recomputation (ADR-0003).
+    bayes_rating_source: float | None = None
+    value_score_source: float | None = None
 
     @model_validator(mode="before")
     @classmethod

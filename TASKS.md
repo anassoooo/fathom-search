@@ -143,7 +143,7 @@ Goal: the catalog becomes a *trusted* source only after its quality is measured
 against an explicit contract. Problems are fixed, flagged, or quarantined by a
 documented policy, never silently. Report: `data/reports/quality_report.md`.
 
-- [ ] **T080 · Quality framework + data contract** — Deps: T002
+- [x] **T080 · Quality framework + data contract** — Deps: T002
   `vio/quality/`: a check registry where each check returns `{name, dimension, severity,
   metric, threshold, passed, n_affected, examples}`. Dimensions: completeness,
   uniqueness, validity, consistency, plausibility, text integrity, label quality.
@@ -151,7 +151,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   Markdown + JSON report and exits non-zero when a *blocking* check fails.
   *Accept:* the audit runs on the full CSV and the sample; unit tests cover each check on crafted rows.
 
-- [ ] **T081 · Verify and recompute derived features** — Deps: T080
+- [x] **T081 · Verify and recompute derived features** — Deps: T080
   Reproduce `bayes_rating`, `value_score`, and `price_bucket` from their notebook
   definitions (verification check). Recompute the Bayesian rating with an
   **empirical-Bayes** prior estimated from the data (per-category mean C, prior

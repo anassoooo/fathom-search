@@ -8,7 +8,7 @@ from collections import Counter, defaultdict
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 
-from vio.catalog import canonical_category
+from vio.catalog import RatingPrior, canonical_category, value_score
 from vio.models import Product
 
 _WS = re.compile(r"\s+")
@@ -95,3 +95,29 @@ def normalize(products: Sequence[Product]) -> tuple[list[Product], NormalizeRepo
         categories_after=len({c for p in merged for c in p.categories}),
     )
     return merged, report
+
+
+def apply_rating_prior(products: Sequence[Product], prior: RatingPrior) -> list[Product]:
+    """Replace source bayes_rating/value_score with the empirical-Bayes versions (ADR-0003).
+
+    The prior is keyed by *raw* category (it was fitted on the raw CSV), so each product
+    uses its primary listing's original category.
+    """
+    out = []
+    for p in products:
+        if p.rating is None or p.total_ratings is None:
+            out.append(p)
+            continue
+        bayes = prior.bayes_rating(p.rating, p.total_ratings, p.raw_categories[0])
+        value = value_score(bayes, p.total_ratings, p.price) if p.price else None
+        out.append(
+            p.model_copy(
+                update={
+                    "bayes_rating": round(bayes, 4),
+                    "value_score": round(value, 4) if value is not None else None,
+                    "bayes_rating_source": p.bayes_rating,
+                    "value_score_source": p.value_score,
+                }
+            )
+        )
+    return out
