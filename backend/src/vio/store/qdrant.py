@@ -15,7 +15,7 @@ DENSE = "text_dense"
 SPARSE = "text_sparse"
 IMAGE = "image_clip"
 
-_KEYWORD_INDEXES = ("categories", "subcategories", "price_bucket", "product_id")
+_KEYWORD_INDEXES = ("categories", "subcategories", "price_bucket", "product_id", "quality_flags")
 _FLOAT_INDEXES = ("price", "rating", "bayes_rating")
 
 

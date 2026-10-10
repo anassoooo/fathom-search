@@ -100,7 +100,9 @@ def _details(rows: list[CheckResult]) -> list[str]:
 def to_json(report: AuditReport) -> str:
     def result(r: CheckResult) -> dict[str, Any]:
         d = asdict(r)
-        d["measurement"].pop("affected_ids")  # row lists live in the flags file, not the report
+        # row-level data lives in data/quality_flags.json, not the report
+        d["measurement"].pop("affected_ids")
+        d["measurement"].pop("annotations")
         d["dimension"], d["severity"] = r.dimension.value, r.severity.value
         return d
 

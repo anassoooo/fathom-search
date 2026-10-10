@@ -65,6 +65,8 @@ class Product(BaseModel):
     # Source values kept for traceability after recomputation (ADR-0003).
     bayes_rating_source: float | None = None
     value_score_source: float | None = None
+    # Row-level findings from `vio data audit` (policy: data/README.md). Filterable in Qdrant.
+    quality_flags: list[str] = Field(default_factory=list)
 
     @model_validator(mode="before")
     @classmethod

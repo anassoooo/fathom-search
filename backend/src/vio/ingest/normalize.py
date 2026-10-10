@@ -5,8 +5,9 @@ Decisions and evidence: docs/adr/0002-dedup-and-category-aliases.md.
 
 import re
 from collections import Counter, defaultdict
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from typing import Any
 
 from vio.catalog import RatingPrior, canonical_category, value_score
 from vio.models import Product
@@ -120,4 +121,27 @@ def apply_rating_prior(products: Sequence[Product], prior: RatingPrior) -> list[
                 }
             )
         )
+    return out
+
+
+def apply_quality_flags(
+    products: Sequence[Product], findings: Mapping[str, Mapping[str, Any]]
+) -> list[Product]:
+    """Attach audit flags (union over merged listings) and, for category disagreements,
+    add the classifier's suggested category without removing the listed ones (T085)."""
+    out = []
+    for p in products:
+        flags: set[str] = set(p.quality_flags)
+        categories = list(p.categories)
+        for pid in p.merged_ids:
+            f = findings.get(pid)
+            if not f:
+                continue
+            flags.update(f.get("flags", []))
+            suggested = f.get("suggested_category")
+            if suggested and canonical_category(suggested) not in categories:
+                categories.append(canonical_category(suggested))
+        if flags or categories != p.categories:
+            p = p.model_copy(update={"quality_flags": sorted(flags), "categories": categories})
+        out.append(p)
     return out

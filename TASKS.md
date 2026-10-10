@@ -177,7 +177,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   anomalies, truncation markers.
   *Accept:* counts and examples are in the report.
 
-- [ ] **T085 · Quality flags + handling policy** — Deps: T081–T084
+- [x] **T085 · Quality flags + handling policy** — Deps: T081–T084
   `Product.quality_flags` stored in the payload; a policy table (fix / flag /
   quarantine) per issue; ingest applies it; eval seed selection (M2) excludes flagged products.
   *Accept:* policy documented in `data/README.md`; flags are queryable in Qdrant.

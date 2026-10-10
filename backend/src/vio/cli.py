@@ -36,6 +36,8 @@ data_app = typer.Typer(help="Data quality and catalog utilities.", no_args_is_he
 app.add_typer(data_app, name="data")
 CONTRACT = REPO_ROOT / "data" / "contract.toml"
 DERIVED_PARAMS = REPO_ROOT / "data" / "derived_params.json"
+QUALITY_FLAGS = REPO_ROOT / "data" / "quality_flags.json"
+FULL_CATALOG_MIN_ROWS = 5_000
 REPORTS = REPO_ROOT / "data" / "reports"
 
 
@@ -86,6 +88,14 @@ def data_audit(
         sections["Label quality: manual audit of flags"] = audit_section(
             label_audit, labels.measurement.n_affected
         )
+
+    if report.n_rows >= FULL_CATALOG_MIN_ROWS:
+        import json
+
+        flags, notes = report.flags(), report.annotations()
+        findings = {pid: {"flags": fl, **notes.get(pid, {})} for pid, fl in flags.items()}
+        QUALITY_FLAGS.write_text(json.dumps(findings, indent=0, sort_keys=True) + "\n", "utf-8")
+        console.print(f"Wrote findings for {len(findings):,} rows -> {QUALITY_FLAGS}")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / f"{name}.md").write_text(to_markdown(report, sections), encoding="utf-8")
@@ -161,7 +171,7 @@ def ingest(
     from vio.embeddings.fastembed_impl import build_encoders
     from vio.ingest.images import ImageSource
     from vio.ingest.loader import load_products
-    from vio.ingest.normalize import apply_rating_prior, normalize
+    from vio.ingest.normalize import apply_quality_flags, apply_rating_prior, normalize
     from vio.ingest.pipeline import ingest as run_ingest
     from vio.store.qdrant import ProductStore, create_client
 
@@ -194,6 +204,15 @@ def ingest(
         console.print(f"Recomputed bayes_rating/value_score with empirical-Bayes prior m={prior.m}")
     else:
         console.print("[yellow]No data/derived_params.json; keeping source bayes_rating[/]")
+    flags_file = REPO_ROOT / "data" / "quality_flags.json"
+    if flags_file.exists():
+        import json
+
+        products = apply_quality_flags(products, json.loads(flags_file.read_text("utf-8")))
+        n_flagged = sum(bool(p.quality_flags) for p in products)
+        console.print(f"Attached quality flags to {n_flagged} products")
+    else:
+        console.print("[yellow]No data/quality_flags.json; run `vio data audit` first[/]")
 
     store = ProductStore(create_client(settings), settings.qdrant_collection)
     encoders = make_fake() if fake_encoders else build_encoders(settings)
