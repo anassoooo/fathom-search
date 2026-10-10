@@ -274,7 +274,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   `/api/metrics`; input validation with zod.
   *Accept:* tests or a manual checklist in the PR; no `default-secret` fallback remains.
 
-- [ ] **T054 · Variant-tagged events** — Deps: T051, T052
+- [x] **T054 · Variant-tagged events** — Deps: T051, T052
   Search responses carry `variant` and `trace_id`; impression, click, and
   add-to-cart events store them. Optional variant assignment per session.
   *Accept:* the metrics page shows CTR per variant.

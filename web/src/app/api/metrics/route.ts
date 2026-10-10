@@ -9,6 +9,7 @@ type Meta = {
   seed_product_id?: string
   rank?: number
   returned_product_ids?: string[]
+  variant?: string
 }
 
 function safeParse(meta: string | null): Meta {
@@ -89,6 +90,23 @@ export async function GET() {
       }
     }
 
+    // Assistant results: CTR per retrieval variant (online counterpart of the offline eval)
+    const assistantByVariant: Record<string, { imp: number; clk: number }> = {}
+    for (const e of recentEvents) {
+      const m = safeParse(e.metadata)
+      if (m.list_type !== 'assistant') continue
+      const variant = m.variant ?? 'unknown'
+      assistantByVariant[variant] ??= { imp: 0, clk: 0 }
+      if (e.eventType === 'product_impression') assistantByVariant[variant].imp++
+      else if (e.eventType === 'product_click') assistantByVariant[variant].clk++
+    }
+    const assistantCtrByVariant = Object.entries(assistantByVariant).map(([variant, v]) => ({
+      variant,
+      impressions: v.imp,
+      clicks: v.clk,
+      ctr: v.imp ? +((100 * v.clk) / v.imp).toFixed(2) : 0,
+    }))
+
     const similarCtr = similarImpressions > 0 ? (similarClicks / similarImpressions) : 0
 
     const similarCtrByQueryType = Object.entries(similarByQuery).map(([query_type, v]) => ({
@@ -132,6 +150,8 @@ export async function GET() {
         ctrByQueryType: similarCtrByQueryType,
         ctrByRankTop5: similarCtrByRankTop5,
       },
+
+      assistant: { ctrByVariant: assistantCtrByVariant },
 
       recentEvents: recentEventsItems.map((e) => ({
         id: e.id,

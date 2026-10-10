@@ -44,6 +44,27 @@ function AssistantContent() {
   const [results, setResults] = useState<Product[]>([])
   const [insight, setInsight] = useState<QueryInsightData | null>(null)
   const [lastPrompt, setLastPrompt] = useState('')
+  const [served, setServed] = useState<{ variant: string; traceId: string | null } | null>(null)
+
+  // Online evaluation: every assistant impression/click carries the retrieval variant and
+  // trace id that served it, so CTR can be compared per variant on /metrics (T054).
+  const logEvent = (eventType: 'product_impression' | 'product_click', productId: string, rank: number, ctx = served) => {
+    fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType,
+        metadata: {
+          product_id: productId,
+          rank,
+          list_type: 'assistant',
+          query_type: image ? (prompt ? 'text+image' : 'image') : 'text',
+          variant: ctx?.variant ?? 'unknown',
+          trace_id: ctx?.traceId ?? null,
+        },
+      }),
+    }).catch(() => {})
+  }
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [showHistory, setShowHistory] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -165,6 +186,9 @@ function AssistantContent() {
         degraded: data.degraded ?? [],
       })
       setLastPrompt(prompt)
+      const ctx = { variant: data.variant ?? 'unknown', traceId: data.traceId ?? null }
+      setServed(ctx)
+      ;(data.products as Product[]).forEach((p, i) => logEvent('product_impression', p.id, i + 1, ctx))
       await mutateHistory()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -294,7 +318,7 @@ function AssistantContent() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {results.map((product, idx) => (
                   <div key={product.id} className="animate-in fade-in zoom-in-95 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
-                    <ProductMiniCard product={product} formatPrice={formatPrice} onClick={() => setSelectedProduct(product)} />
+                    <ProductMiniCard product={product} formatPrice={formatPrice} onClick={() => { logEvent('product_click', product.id, idx + 1); setSelectedProduct(product) }} />
                   </div>
                 ))}
               </div>

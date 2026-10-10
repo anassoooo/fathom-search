@@ -22,6 +22,9 @@ interface MetricsData {
     ctr: string
     addToCartRate: string
   }
+  assistant?: {
+    ctrByVariant: Array<{ variant: string; impressions: number; clicks: number; ctr: number }>
+  }
   recentEvents: Array<{
     id: string
     eventType: string
@@ -157,6 +160,44 @@ export default function MetricsPage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Assistant CTR by retrieval variant */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Assistant CTR by variant</CardTitle>
+              <CardDescription>
+                Online clicks / impressions per retrieval variant (last 7 days)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <Skeleton className="h-12 w-full" />
+              ) : data?.assistant?.ctrByVariant.length ? (
+                <table className="w-full text-sm">
+                  <thead className="text-left text-muted-foreground">
+                    <tr>
+                      <th className="py-1 font-medium">Variant</th>
+                      <th className="py-1 font-medium text-right">Impressions</th>
+                      <th className="py-1 font-medium text-right">Clicks</th>
+                      <th className="py-1 font-medium text-right">CTR</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.assistant.ctrByVariant.map((row) => (
+                      <tr key={row.variant} className="border-t border-border/40">
+                        <td className="py-1 font-mono">{row.variant}</td>
+                        <td className="py-1 text-right tabular-nums">{row.impressions}</td>
+                        <td className="py-1 text-right tabular-nums">{row.clicks}</td>
+                        <td className="py-1 text-right tabular-nums">{row.ctr}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="text-sm text-muted-foreground">No assistant traffic yet.</p>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Recent Events */}
           <Card>
