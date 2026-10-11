@@ -3,3 +3,5 @@
 *.ico binary
 *.pdf binary
 *.ipynb text eol=lf
+# Exploration notebooks: keep them out of GitHub's language stats (the code is Python/TypeScript)
+notebooks/*.ipynb linguist-documentation
