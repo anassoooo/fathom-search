@@ -292,12 +292,12 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
 
 ## M5 — Ship
 
-- [ ] **T060 · Deploy backend** — Deps: T021
+- [x] **T060 · Deploy backend** — Deps: T021
   Render, Fly.io, or Hugging Face Spaces; Qdrant Cloud; full catalog ingested
   from parquet; secrets in platform env vars.
   *Accept:* the public `/health` is green.
 
-- [ ] **T061 · Deploy web** — Deps: T060, T051
+- [x] **T061 · Deploy web** — Deps: T060, T051
   Vercel plus Neon Postgres; CORS locked to the web origin.
   *Accept:* the public demo URL works for search and the assistant.
 
