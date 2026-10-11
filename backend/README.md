@@ -1,6 +1,6 @@
-# vio (backend)
+# Fathom backend (package `vio`)
 
-Python service that owns all AI logic for VIO: ingestion, embeddings, retrieval,
+Python service that owns all AI logic for Fathom: ingestion, embeddings, retrieval,
 reranking, LLM query understanding, the assistant agent, and evaluation.
 See [../PLAN.md](../PLAN.md) and [../CONSTITUTION.md](../CONSTITUTION.md).
 

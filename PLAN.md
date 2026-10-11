@@ -1,4 +1,4 @@
-# VIO — Project Plan
+# Fathom: project plan
 
 > Multimodal, evaluation-driven product search and shopping assistant.
 > Governed by [CONSTITUTION.md](CONSTITUTION.md). Executed via [TASKS.md](TASKS.md).
@@ -8,7 +8,7 @@
 ## 1. Vision
 
 A shopper types *"comfy running shoes for flat feet under $80"* or uploads a
-photo. VIO:
+photo. Fathom (codename `vio`):
 
 1. understands the request (category, price limits, intent);
 2. asks one clarifying question if the request is too vague;
@@ -95,7 +95,7 @@ Python backend. The web app gets product data only from the backend API.
 ## 6. Repository layout (target)
 
 ```
-VIO/
+fathom-search/
 ├── CONSTITUTION.md  PLAN.md  TASKS.md  README.md  LICENSE
 ├── docker-compose.yml           # qdrant, postgres, backend, web
 ├── .github/workflows/ci.yml

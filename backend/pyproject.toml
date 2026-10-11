@@ -1,7 +1,7 @@
 [project]
 name = "vio"
 version = "0.1.0"
-description = "VIO: evaluation-driven multimodal product search and shopping assistant"
+description = "Fathom: evaluation-driven multimodal product search (package codename vio)"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = { text = "MIT" }

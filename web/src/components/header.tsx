@@ -44,13 +44,13 @@ export function Header({ children, onHistoryClick }: { children?: React.ReactNod
             <div className="relative w-12 h-12 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
               <Image
                 src="/logo-original.png"
-                alt="VioStore Logo"
+                alt="Fathom logo"
                 fill
                 className="object-contain mix-blend-multiply brightness-110 contrast-110"
                 priority
               />
             </div>
-            <span className="font-bold text-xs uppercase tracking-[0.2em] bg-clip-text text-transparent bg-linear-to-r from-primary to-accent leading-none">VioStore</span>
+            <span className="font-bold text-xs uppercase tracking-[0.2em] bg-clip-text text-transparent bg-linear-to-r from-primary to-accent leading-none">Fathom</span>
           </Link>
         </div>
 

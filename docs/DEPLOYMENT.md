@@ -56,8 +56,8 @@ Azure for Students ($100 credit, no card) using Container Apps' monthly free gra
 | Container Apps environment | `vio-env` (Consumption, no Log Analytics: log storage is billed per GB) |
 | Container app | `vio-search-api`: 1 vCPU / 2 GiB, min 0 / max 1 replicas, ingress external on port 8000 |
 | URL | https://vio-search-api.icyrock-a72fa589.germanywestcentral.azurecontainerapps.io |
-| Image | `ghcr.io/anassoooo/vio-backend:<git sha>` (public GitHub package) |
-| Deploy identity | Entra app `vio-github-deploy` with a federated credential for `repo:anassoooo/vio-shop-organized:ref:refs/heads/main`, role **Contributor on `vio-rg` only** |
+| Image | `ghcr.io/anassoooo/fathom-api:<git sha>` (public GitHub package) |
+| Deploy identity | Entra app `vio-github-deploy` with a federated credential for `repo:anassoooo/fathom-search:ref:refs/heads/main`, role **Contributor on `vio-rg` only** |
 
 **Container app secrets** (set from `backend/.env.cloud`, never from chat):
 `qdrant-url`, `qdrant-api-key`, `llm-api-key`, exposed as `QDRANT_URL`,
@@ -99,7 +99,7 @@ still enforced.
 |---|---|
 | Account | https://vercel.com (sign in with GitHub) |
 | Project name | `vio-web` → `https://vio-web-coral.vercel.app` (`vio-web.vercel.app` was taken) |
-| Import | GitHub repo `anassoooo/vio-shop-organized`, branch `main` |
+| Import | GitHub repo `anassoooo/fathom-search`, branch `main` |
 | Root directory | `web` |
 | Framework preset | Next.js |
 | Build command | `npx prisma migrate deploy && next build` |
@@ -118,10 +118,10 @@ still enforced.
 
 | Setting | Value |
 |---|---|
-| Repo | `anassoooo/vio-shop-organized` (public) |
+| Repo | `anassoooo/fathom-search` (public) |
 | Default branch | `main` |
 | Actions secrets | `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (identifiers for the OIDC login, not passwords) |
-| Package access | `vio-backend` package → *Manage Actions access* → add this repo with **Write**, so the workflow's `GITHUB_TOKEN` can push images |
+| Package access | `fathom-api` package → *Manage Actions access* → add this repo with **Write**, so the workflow's `GITHUB_TOKEN` can push images |
 
 `.github/workflows/deploy-backend.yml`: on changes to `backend/` on `main`, it builds and
 pushes the image, rolls `vio-search-api` to it, and smoke-tests `/health`.

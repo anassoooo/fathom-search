@@ -1,4 +1,4 @@
-# Data contract for the VIO catalog (processed CSV, vio_EDA.csv format).
+# Data contract for the Fathom catalog (processed CSV, vio_EDA.csv format).
 #
 # Each [checks."<name>"] entry sets the severity and the acceptable range of that
 # check's metric (`min` and/or `max`). Checks not listed here are recorded as `info`.

@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  IMAGE: ghcr.io/anassoooo/vio-backend
+  IMAGE: ghcr.io/anassoooo/fathom-api
   APP: vio-search-api
   RESOURCE_GROUP: vio-rg
 

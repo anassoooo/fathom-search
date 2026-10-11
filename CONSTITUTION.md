@@ -1,6 +1,6 @@
-# VIO Constitution
+# Fathom Constitution
 
-These are the non-negotiable rules for building VIO. They override convenience,
+These are the non-negotiable rules for building Fathom (codename `vio`). They override convenience,
 deadlines, and individual task descriptions. Every task in [TASKS.md](TASKS.md)
 is done only when it satisfies this document. Humans and AI coding agents alike
 follow it.

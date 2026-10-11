@@ -112,7 +112,7 @@ export default function HomePage() {
         <div className="container-premium flex flex-col md:flex-row justify-between items-center gap-12 text-sm text-muted-foreground">
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
-              <span className="font-bold text-xl tracking-tight text-foreground">VioStore</span>
+              <span className="font-bold text-xl tracking-tight text-foreground">Fathom</span>
               <span className="text-premium-label opacity-60">© 2026</span>
             </div>
             <p className="max-w-xs text-center md:text-left text-premium-title !text-[0.7rem] !font-medium leading-relaxed opacity-70 uppercase tracking-wider">

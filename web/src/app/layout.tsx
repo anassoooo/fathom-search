@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VIO: multimodal product search",
+  title: "Fathom: multimodal product search",
   description:
     "Search 35K products by text or photo: hybrid retrieval, reranking, and LLM query understanding.",
 };

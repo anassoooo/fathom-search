@@ -1,7 +1,7 @@
-# VIO: multimodal product search with measured AI
+# Fathom: multimodal product search with measured AI
 
-[![CI](https://github.com/anassoooo/vio-shop-organized/actions/workflows/ci.yml/badge.svg)](https://github.com/anassoooo/vio-shop-organized/actions/workflows/ci.yml)
-[![Deploy backend](https://github.com/anassoooo/vio-shop-organized/actions/workflows/deploy-backend.yml/badge.svg)](https://github.com/anassoooo/vio-shop-organized/actions/workflows/deploy-backend.yml)
+[![CI](https://github.com/anassoooo/fathom-search/actions/workflows/ci.yml/badge.svg)](https://github.com/anassoooo/fathom-search/actions/workflows/ci.yml)
+[![Deploy backend](https://github.com/anassoooo/fathom-search/actions/workflows/deploy-backend.yml/badge.svg)](https://github.com/anassoooo/fathom-search/actions/workflows/deploy-backend.yml)
 
 Search **35,736 Amazon products** by text or photo. Hybrid retrieval (dense +
 BM25 + CLIP) is fused server-side and reranked by a cross-encoder, and an LLM turns
@@ -13,6 +13,8 @@ budget, and a category boost. Every stage is **evaluated offline**, and the data
 - **Live API (Swagger):** https://vio-search-api.icyrock-a72fa589.germanywestcentral.azurecontainerapps.io/docs
   (scales to zero: the first request after idling takes up to a minute)
 
+> Internal codename: `vio` (Python package, CLI, and cloud resource names).
+>
 > Engineering rules: [CONSTITUTION.md](CONSTITUTION.md) · design: [PLAN.md](PLAN.md) ·
 > progress: [TASKS.md](TASKS.md) · decisions: [docs/adr/](docs/adr/) ·
 > deployment: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)

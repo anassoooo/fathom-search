@@ -14,8 +14,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # ---- runtime ----------------------------------------------------------------
 FROM python:3.12-slim
-LABEL org.opencontainers.image.source="https://github.com/anassoooo/vio-shop-organized"
-LABEL org.opencontainers.image.description="VIO search API: hybrid multimodal product search"
+LABEL org.opencontainers.image.source="https://github.com/anassoooo/fathom-search"
+LABEL org.opencontainers.image.description="Fathom search API: hybrid multimodal product search"
 # Non-root user (uid 1000, the common default on hosted container platforms).
 RUN useradd --create-home --uid 1000 vio
 COPY --from=builder /app/.venv /app/.venv
