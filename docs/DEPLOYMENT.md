@@ -57,7 +57,7 @@ Azure for Students ($100 credit, no card) using Container Apps' monthly free gra
 | Container app | `vio-search-api`: 1 vCPU / 2 GiB, min 0 / max 1 replicas, ingress external on port 8000 |
 | URL | https://vio-search-api.icyrock-a72fa589.germanywestcentral.azurecontainerapps.io |
 | Image | `ghcr.io/anassoooo/fathom-api:<git sha>` (public GitHub package) |
-| Deploy identity | Entra app `vio-github-deploy` with a federated credential for `repo:anassoooo/fathom-search:ref:refs/heads/main`, role **Contributor on `vio-rg` only** |
+| Deploy identity | Entra app `vio-github-deploy`, role **Contributor on `vio-rg` only**. Federated credential subject: `repo:anassoooo@186969238/fathom-search@1414515321:ref:refs/heads/main`. Repos created since 2026 present GitHub's **immutable-ID** subject format (owner and repo IDs included), so the plain `repo:owner/name:…` form doesn't match. |
 
 **Container app secrets** (set from `backend/.env.cloud`, never from chat):
 `qdrant-url`, `qdrant-api-key`, `llm-api-key`, exposed as `QDRANT_URL`,
