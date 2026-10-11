@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 from vio import __version__
 from vio.api.deps import FiltersDep, ServiceDep
@@ -9,6 +9,12 @@ from vio.api.schemas import HealthOut, ProductPage, SimilarOut, TaxonomyOut
 from vio.models import Product, SearchRequest, SearchResponse
 
 router = APIRouter()
+
+
+@router.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    """The API has no landing page; send visitors to the interactive docs."""
+    return RedirectResponse(url="/docs")
 
 
 @router.get("/health", response_model=HealthOut, tags=["ops"])

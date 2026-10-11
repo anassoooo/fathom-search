@@ -120,3 +120,8 @@ def test_store_outage_is_503(client: TestClient, monkeypatch: pytest.MonkeyPatch
     r = client.get("/v1/products/3")
     assert r.status_code == 503 and "unavailable" in r.json()["error"]
     assert client.get("/health").status_code == 503
+
+
+def test_root_redirects_to_docs(client: TestClient) -> None:
+    r = client.get("/", follow_redirects=False)
+    assert r.status_code == 307 and r.headers["location"] == "/docs"
