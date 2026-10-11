@@ -14,7 +14,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # ---- runtime ----------------------------------------------------------------
 FROM python:3.12-slim
-# Hugging Face Spaces run containers as uid 1000; matching it keeps /models writable.
+LABEL org.opencontainers.image.source="https://github.com/anassoooo/vio-shop-organized"
+LABEL org.opencontainers.image.description="VIO search API: hybrid multimodal product search"
+# Non-root user (uid 1000, the common default on hosted container platforms).
 RUN useradd --create-home --uid 1000 vio
 COPY --from=builder /app/.venv /app/.venv
 ENV PATH=/app/.venv/bin:$PATH \

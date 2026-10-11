@@ -4,10 +4,10 @@ Single source of truth for every hosted resource: names, regions, and which sett
 goes where. **Secrets never go in git or chat.** They go in the hosting dashboards,
 in your password manager, and (for local scripts only) in gitignored `.env*` files.
 
-## Architecture (all free tiers)
+## Architecture (free tiers + Azure for Students credit)
 
 ```
-Browser ─▶ Vercel  (web/, Next.js)  ── server-side ──▶ Hugging Face Space (backend/, FastAPI, Docker)
+Browser ─▶ Vercel  (web/, Next.js)  ── server-side ──▶ Azure Container Apps (backend/, FastAPI, Docker)
                 │                                              │            │
                 ▼                                              ▼            ▼
            Neon Postgres                               Qdrant Cloud     Groq API
@@ -43,31 +43,38 @@ Free-plan quotas are **per organization and per model**: 200K tokens/day and 8K
 tokens/minute each. Live search uses gpt-oss-20b; the daily eval job uses gpt-oss-120b,
 so they don't compete. If the quota runs out, search still works (`degraded: ["llm"]`).
 
-## 3. Hugging Face Spaces: backend API
+## 3. Azure Container Apps: backend API
+
+Hugging Face moved Docker Spaces to paid plans (mid-2026), so the backend runs on
+Azure for Students ($100 credit, no card) using Container Apps' monthly free grant
+(180K vCPU-s, 360K GiB-s, 2M requests). The app scales to zero when idle.
 
 | Setting | Value |
 |---|---|
-| Account | https://huggingface.co (username: `<hf-username>`) |
-| Space name | `vio-search-api` → `https://<hf-username>-vio-search-api.hf.space` |
-| SDK | **Docker** (blank template) |
-| Hardware | CPU basic (free: 2 vCPU, 16 GB RAM). It sleeps after ~48 h idle; the first request wakes it in ~1–2 min. |
-| Visibility | Public (the API holds no secrets in code; keys are Space secrets) |
-| Access token for CI | Settings → Access Tokens → name `vio-github-deploy`, role **Write**. Stored as the GitHub repo secret `HF_TOKEN`. |
+| Subscription | Azure for Students. Allowed regions: `germanywestcentral`, `polandcentral`, `austriaeast`, `spaincentral`, `denmarkeast` |
+| Resource group | `vio-rg` (`germanywestcentral`, Frankfurt) |
+| Container Apps environment | `vio-env` (Consumption, no Log Analytics: log storage is billed per GB) |
+| Container app | `vio-search-api`: 1 vCPU / 2 GiB, min 0 / max 1 replicas, ingress external on port 8000 |
+| URL | https://vio-search-api.icyrock-a72fa589.germanywestcentral.azurecontainerapps.io |
+| Image | `ghcr.io/anassoooo/vio-backend:<git sha>` (public GitHub package) |
+| Deploy identity | Entra app `vio-github-deploy` with a federated credential for `repo:anassoooo/vio-shop-organized:ref:refs/heads/main`, role **Contributor on `vio-rg` only** |
 
-**Space → Settings → Variables and secrets:**
+**Container app secrets** (set from `backend/.env.cloud`, never from chat):
+`qdrant-url`, `qdrant-api-key`, `llm-api-key`, exposed as `QDRANT_URL`,
+`QDRANT_API_KEY`, `LLM_API_KEY` via `secretref:`.
 
-| Kind | Name | Value |
-|---|---|---|
-| Secret | `QDRANT_URL` | Qdrant cluster URL (step 1) |
-| Secret | `QDRANT_API_KEY` | Qdrant `vio-backend` key |
-| Secret | `LLM_API_KEY` | Groq `vio-prod` key |
-| Variable | `QDRANT_COLLECTION` | `vio_products_v2` |
-| Variable | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` |
-| Variable | `LLM_MODEL_QUERY` | `openai/gpt-oss-20b` |
-| Variable | `LLM_REASONING_EFFORT` | `low` |
-| Variable | `ONNX_DEVICE` | `cpu` |
-| Variable | `ONNX_THREADS` | `2` (the free Space has 2 vCPUs) |
-| Variable | `CORS_ORIGINS` | `["https://vio-web.vercel.app"]` |
+**Environment variables:** `QDRANT_COLLECTION=vio_products_v2`,
+`LLM_BASE_URL=https://api.groq.com/openai/v1`, `LLM_MODEL_QUERY=openai/gpt-oss-20b`,
+`LLM_REASONING_EFFORT=low`, `ONNX_DEVICE=cpu`, `ONNX_THREADS=1`,
+`CORS_ORIGINS=["https://vio-web.vercel.app"]`.
+
+Rotate a secret:
+
+```bash
+az containerapp secret set -n vio-search-api -g vio-rg --secrets llm-api-key=<new value>
+az containerapp revision restart -n vio-search-api -g vio-rg \
+  --revision $(az containerapp show -n vio-search-api -g vio-rg --query properties.latestRevisionName -o tsv)
+```
 
 ## 4. Neon: Postgres for the web app
 
@@ -103,7 +110,7 @@ still enforced.
 |---|---|
 | `DATABASE_URL` | Neon **pooled** string |
 | `DIRECT_URL` | Neon **direct** string |
-| `BACKEND_URL` | `https://<hf-username>-vio-search-api.hf.space` |
+| `BACKEND_URL` | `https://vio-search-api.icyrock-a72fa589.germanywestcentral.azurecontainerapps.io` |
 | `AUTH_SECRET` | a new random value: `openssl rand -hex 32` (not the local one) |
 | `ADMIN_EMAILS` | `admin@vio.test` (or your real email) |
 
@@ -113,8 +120,11 @@ still enforced.
 |---|---|
 | Repo | `anassoooo/vio-shop-organized` (public) |
 | Default branch | `main` |
-| Actions secret | `HF_TOKEN` = Hugging Face `vio-github-deploy` token (step 3) |
-| Actions variable | `HF_SPACE` = `<hf-username>/vio-search-api`. The deploy workflow (`.github/workflows/deploy-backend.yml`) pushes `backend/` there on every change to `main`. |
+| Actions secrets | `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (identifiers for the OIDC login, not passwords) |
+| Package access | `vio-backend` package → *Manage Actions access* → add this repo with **Write**, so the workflow's `GITHUB_TOKEN` can push images |
+
+`.github/workflows/deploy-backend.yml`: on changes to `backend/` on `main`, it builds and
+pushes the image, rolls `vio-search-api` to it, and smoke-tests `/health`.
 
 ## Loading the catalog into Qdrant Cloud
 
@@ -134,21 +144,14 @@ set -a && source .env.cloud && set +a
 ONNX_DEVICE=cuda uv run vio ingest --csv ../data/processed/vio_EDA.csv --image-dir ../data/images
 ```
 
-## What to tell Claude (no secrets)
-
-1. Your Hugging Face username
-2. The Qdrant cluster URL's region part (e.g. `eu-central-1-0.aws`), only to confirm the region
-3. The final Vercel URL, if it isn't `vio-web.vercel.app`
-4. "Done" once `backend/.env.cloud` exists and the dashboard secrets are filled in
-
 ## Naming conventions
 
 | Thing | Name |
 |---|---|
 | Qdrant cluster / collection | `vio` (AWS `eu-central-1`) / `vio_products_v2` |
-| HF Space | `vio-search-api` |
+| Azure resource group / environment / app | `vio-rg` / `vio-env` / `vio-search-api` |
 | Neon project / database / branch | `vio` / `neondb` / `production` |
 | Vercel project | `vio-web` |
-| Groq keys | `vio-local` (laptop), `vio-prod` (Space) |
-| HF token | `vio-github-deploy` |
+| Groq keys | laptop key (`backend/.env`), `vio-prod` (Azure, `backend/.env.cloud`) |
+| Entra app (deploy identity) | `vio-github-deploy` |
 | Local-only env files | `backend/.env`, `backend/.env.cloud`, `web/.env` (all gitignored) |
