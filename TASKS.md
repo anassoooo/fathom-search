@@ -301,7 +301,7 @@ documented policy, never silently. Report: `data/reports/quality_report.md`.
   Vercel plus Neon Postgres; CORS locked to the web origin.
   *Accept:* the public demo URL works for search and the assistant.
 
-- [ ] **T062 · Final README** — Deps: T034, T046, T061
+- [x] **T062 · Final README** — Deps: T034, T046, T061
   Demo GIF, live link, architecture diagram, **ablation table from the latest
   report**, κ, limitations, quickstart (`docker compose up` + `vio ingest
   --sample`).
