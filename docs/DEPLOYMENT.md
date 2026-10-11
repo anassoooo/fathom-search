@@ -66,7 +66,7 @@ Azure for Students ($100 credit, no card) using Container Apps' monthly free gra
 **Environment variables:** `QDRANT_COLLECTION=vio_products_v2`,
 `LLM_BASE_URL=https://api.groq.com/openai/v1`, `LLM_MODEL_QUERY=openai/gpt-oss-20b`,
 `LLM_REASONING_EFFORT=low`, `ONNX_DEVICE=cpu`, `ONNX_THREADS=1`,
-`CORS_ORIGINS=["https://vio-web-coral.vercel.app"]`.
+`CORS_ORIGINS=["https://fathom-search.vercel.app"]`.
 
 Rotate a secret:
 
@@ -98,7 +98,7 @@ still enforced.
 | Setting | Value |
 |---|---|
 | Account | https://vercel.com (sign in with GitHub) |
-| Project name | `vio-web` → `https://vio-web-coral.vercel.app` (`vio-web.vercel.app` was taken) |
+| Project name | `fathom` → `https://fathom-search.vercel.app` |
 | Import | GitHub repo `anassoooo/fathom-search`, branch `main` |
 | Root directory | `web` |
 | Framework preset | Next.js |
