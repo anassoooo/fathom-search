@@ -8,7 +8,8 @@ import useSWR from 'swr'
 import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft, Package } from 'lucide-react'
 import { useAuth } from '@/components/auth-provider'
 import { Header } from '@/components/header'
-import { AssistantButton } from '@/components/assistant-button'
+import { SiteFooter } from '@/components/site-footer'
+import { formatPrice } from '@/components/product-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -60,7 +61,7 @@ function CartContent() {
       if (!res.ok) throw new Error('Failed to update')
       await mutate()
     } catch {
-      toast.error('Failed to update quantity')
+      toast.error('Could not change the quantity. Try again.')
     } finally {
       setUpdatingItems((prev) => {
         const next = new Set(prev)
@@ -76,9 +77,9 @@ function CartContent() {
       const res = await fetch(`/api/cart/${itemId}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Failed to remove')
       await mutate()
-      toast.success('Item removed from cart')
+      toast.success('Removed from cart')
     } catch {
-      toast.error('Failed to remove item')
+      toast.error('Could not remove the item. Try again.')
     } finally {
       setUpdatingItems((prev) => {
         const next = new Set(prev)
@@ -93,17 +94,10 @@ function CartContent() {
       const res = await fetch('/api/cart/clear', { method: 'POST' })
       if (!res.ok) throw new Error('Failed to clear')
       await mutate()
-      toast.success('Cart cleared')
+      toast.success('Cart emptied')
     } catch {
-      toast.error('Failed to clear cart')
+      toast.error('Could not empty the cart. Try again.')
     }
-  }
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
   }
 
   if (isAuthLoading || !user) {
@@ -144,17 +138,15 @@ function CartContent() {
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
-        <ShoppingBag className="w-16 h-16 mx-auto text-muted-foreground/40 mb-4" />
-        <h2 className="text-xl font-semibold mb-2">Your cart is empty</h2>
-        <p className="text-muted-foreground mb-6">
-          Start shopping to add items to your cart
-        </p>
-        <Link href="/">
-          <Button>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Continue Shopping
-          </Button>
-        </Link>
+        <ShoppingBag className="mx-auto mb-4 size-12 text-ink-soft/50" aria-hidden />
+        <h1 className="display mb-2 text-[2rem]">Your cart is empty</h1>
+        <p className="mb-6 text-ink-soft">Products you add from a search or the catalog show up here.</p>
+        <Button asChild>
+          <Link href="/#catalog">
+            <ArrowLeft className="size-4" />
+            Browse the catalog
+          </Link>
+        </Button>
       </div>
     )
   }
@@ -162,11 +154,11 @@ function CartContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          Shopping Cart ({items.length} {items.length === 1 ? 'item' : 'items'})
+        <h1 className="display text-[2.25rem]">
+          Cart <span className="numerals font-sans text-lg not-italic text-ink-soft">{items.length} {items.length === 1 ? 'item' : 'items'}</span>
         </h1>
         <Button variant="outline" size="sm" onClick={clearCart}>
-          Clear Cart
+          Empty cart
         </Button>
       </div>
 
@@ -179,13 +171,13 @@ function CartContent() {
                 <div className="flex gap-4">
                   {/* Image */}
                   <Link href={`/product/${item.productId}`} className="shrink-0">
-                    <div className="relative w-24 h-24 bg-muted rounded-lg overflow-hidden">
+                    <div className="relative size-24 overflow-hidden rounded-lg border border-rule bg-white">
                       {item.product?.image_url ? (
                         <Image
                           src={item.product.image_url || "/placeholder.svg"}
                           alt={item.product.name}
                           fill
-                          className="object-cover"
+                          className="object-contain p-1.5"
                           sizes="96px"
                         />
                       ) : (
@@ -262,29 +254,26 @@ function CartContent() {
         <div className="lg:col-span-1">
           <Card>
             <CardContent className="p-6 space-y-4">
-              <h2 className="text-lg font-semibold">Order Summary</h2>
+              <h2 className="font-serif text-xl italic">Summary</h2>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
                   <span>{formatPrice(total)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span>Free</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between font-semibold">
                   <span>Total</span>
                   <span>{formatPrice(total)}</span>
                 </div>
               </div>
-              <Button className="w-full" size="lg">
-                Proceed to Checkout
+              <Button className="w-full" size="lg" disabled>
+                Checkout
               </Button>
-              <Link href="/">
-                <Button variant="outline" className="w-full bg-transparent">
-                  Continue Shopping
-                </Button>
-              </Link>
+              <p className="text-xs leading-relaxed text-ink-soft">
+                Checkout is turned off: Fathom is a search demo, and nothing here is for sale.
+              </p>
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/#catalog">Keep browsing</Link>
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -296,13 +285,11 @@ function CartContent() {
 export default function CartPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header>
-        <h1 className="font-bold text-sm tracking-[0.15em] text-foreground/90 uppercase">Shopping Cart</h1>
-      </Header>
-      <main className="flex-1 container py-8">
+      <Header />
+      <main className="shell flex-1 py-10">
         <CartContent />
       </main>
-      <AssistantButton />
+      <SiteFooter />
     </div>
   )
 }

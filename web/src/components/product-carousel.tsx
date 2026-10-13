@@ -50,25 +50,25 @@ export function ProductCarousel({ products, className, title, analytics }: Produ
         <div className={cn("group/carousel relative", className)}>
             {title && (
                 <div className="flex items-center justify-between mb-6 px-1">
-                    <h2 className="text-2xl font-bold tracking-[0.05em] uppercase text-muted-foreground/60">
-                        {title}
-                    </h2>
-                    <div className="hidden md:flex items-center gap-2 opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300">
+                    <h2 className="display text-[1.75rem]">{title}</h2>
+                    <div className="hidden md:flex items-center gap-2 ">
                         <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm"
+                            className="size-8 rounded-full"
                             disabled={!prevBtnEnabled}
                             onClick={scrollPrev}
+                            aria-label="Scroll back"
                         >
                             <ChevronLeft className="h-4 w-4" />
                         </Button>
                         <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm"
+                            className="size-8 rounded-full"
                             disabled={!nextBtnEnabled}
                             onClick={scrollNext}
+                            aria-label="Scroll forward"
                         >
                             <ChevronRight className="h-4 w-4" />
                         </Button>
@@ -81,9 +81,9 @@ export function ProductCarousel({ products, className, title, analytics }: Produ
                     {products.map((product, idx) => (
                         <div
                             key={product.id}
-                            className="flex-[0_0_85%] min-w-0 pl-4 sm:flex-[0_0_45%] md:flex-[0_0_33.333%] lg:flex-[0_0_25%]"
+                            className="flex-[0_0_62%] min-w-0 pl-4 sm:flex-[0_0_40%] md:flex-[0_0_28%] lg:flex-[0_0_20%]"
                         >
-                            <div className="h-full transform transition-transform duration-300 hover:-translate-y-1">
+                            <div className="h-full">
                                 <ProductCard
                                     product={product}
                                     rank={idx + 1}

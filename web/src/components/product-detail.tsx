@@ -8,7 +8,7 @@ import useSWR from 'swr'
 import { useAuth } from './auth-provider'
 import { ProductCarousel } from './product-carousel'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { formatPrice } from './product-card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import type { Product } from '@/lib/types'
@@ -83,18 +83,11 @@ export function ProductDetail({ productId }: ProductDetailProps) {
     }
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
-  }
-
   if (isLoading) {
     return (
       <div className="space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Skeleton className="aspect-square rounded-lg" />
+        <div className="grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+          <Skeleton className="aspect-square rounded-xl" />
           <div className="space-y-4">
             <Skeleton className="h-6 w-24" />
             <Skeleton className="h-10 w-3/4" />
@@ -109,127 +102,104 @@ export function ProductDetail({ productId }: ProductDetailProps) {
 
   if (!product) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Product not found</p>
-        <Button variant="link" onClick={() => router.push('/')}>
-          Go back to products
+      <div className="py-16 text-center">
+        <p className="text-ink-soft">This product is not in the catalog any more.</p>
+        <Button variant="link" onClick={() => router.push('/#catalog')}>
+          Browse the catalog
         </Button>
       </div>
     )
   }
 
   return (
-    <div className="space-y-24 pt-4">
-      {/* Product Details Section - Smaller and Left Aligned */}
-      <div className="max-w-4xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Image - Smaller Footprint */}
-          <div className="aspect-square relative bg-muted rounded-2xl overflow-hidden shadow-xl border border-border/20 max-w-sm w-full">
-            {!imageError && product.image_url ? (
-              <Image
-                src={product.image_url || "/placeholder.svg"}
-                alt={product.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-                onError={() => setImageError(true)}
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Package className="w-24 h-24 text-muted-foreground/40" />
-              </div>
-            )}
-            {product.value_score && product.value_score > 0.8 && (
-              <Badge variant="premium" className="absolute top-4 left-4 scale-110">
-                Great Value
-              </Badge>
+    <div className="space-y-16">
+      <div className="grid items-start gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
+        <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-rule bg-white">
+          {!imageError && product.image_url ? (
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              className="object-contain p-6"
+              sizes="(max-width: 768px) 100vw, 45vw"
+              priority
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-shoal/50">
+              <Package className="size-16 text-ink-soft/40" aria-hidden />
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <div className="space-y-3">
+            <p className="text-sm text-ink-soft">
+              {product.category}
+              {product.subcategory && <span> / {product.subcategory}</span>}
+            </p>
+            <h1 className="text-[1.5rem] font-semibold leading-snug text-balance sm:text-[1.75rem]">{product.name}</h1>
+          </div>
+
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+            <span className="numerals text-[2rem] font-semibold">{formatPrice(product.price)}</span>
+            {product.price_bucket && (
+              <span className="rounded-md bg-shoal px-2 py-0.5 text-sm text-ink">{priceLabel(product.price_bucket)}</span>
             )}
           </div>
 
-          {/* Info */}
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <p className="text-premium-label">
-                {product.category}
-                {product.subcategory && ` / ${product.subcategory}`}
-              </p>
-              <h1 className="text-2xl font-bold tracking-tight text-balance leading-tight">{product.name}</h1>
+          {product.rating > 0 && (
+            <div className="numerals flex flex-wrap items-center gap-2 text-sm">
+              <span className="flex" aria-hidden>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`size-4 ${i < Math.round(product.rating) ? 'fill-ink text-ink' : 'text-rule'}`}
+                  />
+                ))}
+              </span>
+              <span className="font-medium">{product.rating.toFixed(1)} out of 5</span>
+              {product.total_ratings ? (
+                <span className="text-ink-soft">from {product.total_ratings.toLocaleString()} ratings</span>
+              ) : null}
             </div>
+          )}
 
-            <div className="flex items-center gap-4">
-              <span className="text-3xl font-bold">{formatPrice(product.price)}</span>
-              {product.price_bucket && (
-                <Badge variant="secondary">{product.price_bucket}</Badge>
-              )}
-            </div>
+          {product.bayes_rating ? (
+            <p className="text-sm leading-relaxed text-ink-soft">
+              Adjusted rating {product.bayes_rating.toFixed(2)}: the rating pulled toward its
+              category&apos;s average when there are few ratings, so two five-star reviews count for
+              less than two thousand.
+            </p>
+          ) : null}
 
-            {product.rating > 0 && (
-              <div className="flex items-center gap-2">
-                <div className="flex items-center">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-5 h-5 ${i < Math.round(product.rating)
-                        ? 'fill-amber-400 text-amber-400'
-                        : 'text-muted-foreground/30'
-                        }`}
-                    />
-                  ))}
-                </div>
-                <span className="font-medium">{product.rating.toFixed(1)}</span>
-                {product.total_ratings && (
-                  <span className="text-muted-foreground">
-                    ({product.total_ratings.toLocaleString()} reviews)
-                  </span>
-                )}
-              </div>
-            )}
-
-            {product.bayes_rating && (
-              <p className="text-sm text-muted-foreground">
-                Bayesian Rating: {product.bayes_rating.toFixed(2)}
-              </p>
-            )}
-
-            <Button
-              size="lg"
-              variant="glow"
-              className="w-full sm:w-80 rounded-2xl h-14 text-md font-semibold transition-all hover:scale-[1.02]"
-              onClick={handleAddToCart}
-              disabled={isAddingToCart}
-            >
-              <ShoppingCart className="mr-2 h-5 w-5" />
-              {isAddingToCart ? 'Adding to Cart...' : 'Add to Cart'}
+          <div className="space-y-2 pt-2">
+            <Button size="lg" className="w-full sm:w-auto sm:min-w-64" onClick={handleAddToCart} disabled={isAddingToCart}>
+              <ShoppingCart className="size-4" />
+              {isAddingToCart ? 'Adding to cart' : 'Add to cart'}
             </Button>
-
-            {!user && (
-              <p className="text-sm text-muted-foreground">
-                Please sign in to add items to your cart.
-              </p>
-            )}
+            {!user && <p className="text-sm text-ink-soft">You will be asked to sign in first.</p>}
           </div>
         </div>
       </div>
 
-      {/* Similar Products - Horizontal Carousel */}
-      <div className="space-y-4">
+      <div>
         {isSimilarLoading ? (
-          <div className="space-y-8">
-            <h2 className="text-2xl font-bold tracking-[0.05em] uppercase text-muted-foreground/60 px-1">Similar Products</h2>
-            <div className="flex gap-4 overflow-hidden mask-fade-right">
+          <div className="space-y-6">
+            <h2 className="display text-[1.75rem]">Similar products</h2>
+            <div className="flex gap-4 overflow-hidden">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_33.333%] lg:flex-[0_0_25%] space-y-3">
+                <div key={i} className="flex-[0_0_62%] space-y-3 sm:flex-[0_0_40%] md:flex-[0_0_28%] lg:flex-[0_0_20%]">
                   <Skeleton className="aspect-square w-full rounded-lg" />
                   <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-6 w-1/3" />
+                  <Skeleton className="h-5 w-1/3" />
                 </div>
               ))}
             </div>
           </div>
         ) : (
           <ProductCarousel
-            title="Similar Products"
+            title="Similar products"
             products={similarData?.items || []}
             analytics={{ list_type: 'similar', query_type: mode, seed_product_id: productId }}
           />
@@ -237,4 +207,9 @@ export function ProductDetail({ productId }: ProductDetailProps) {
       </div>
     </div>
   )
+}
+
+function priceLabel(bucket: string) {
+  const labels: Record<string, string> = { cheap: 'Budget', mid: 'Mid-range', premium: 'Premium' }
+  return labels[bucket] ?? bucket.charAt(0).toUpperCase() + bucket.slice(1)
 }

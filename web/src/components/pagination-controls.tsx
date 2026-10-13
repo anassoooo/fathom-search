@@ -30,58 +30,41 @@ export function PaginationControls({
   const totalPages = total ? Math.ceil(total / limit) : undefined
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
-      <div className="flex items-center gap-3">
-        <span className="text-premium-label">Show</span>
-        <Select
-          value={String(limit)}
-          onValueChange={(value) => onLimitChange(Number(value))}
-        >
-          <SelectTrigger className="w-24 bg-background border border-border/10 shadow-sm h-8 rounded-xl text-premium-label font-bold focus:ring-accent/30 transition-all">
+    <div className="flex flex-col items-center justify-between gap-4 border-t border-rule pt-6 sm:flex-row">
+      <div className="flex items-center gap-2 text-sm text-ink-soft">
+        <label htmlFor="per-page">Show</label>
+        <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
+          <SelectTrigger id="per-page" className="h-8 w-20 bg-surface">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="rounded-xl border-border/40">
+          <SelectContent>
             <SelectItem value="12">12</SelectItem>
             <SelectItem value="24">24</SelectItem>
             <SelectItem value="48">48</SelectItem>
           </SelectContent>
         </Select>
-        <span className="text-premium-label">per page</span>
+        <span>per page</span>
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(page - 1)}
-          disabled={page <= 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
+        <Button variant="outline" size="sm" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+          <ChevronLeft className="size-4" />
           Previous
         </Button>
-
-        <div className="flex items-center gap-2 px-2">
-          <span className="text-premium-title text-sm">Page {page}</span>
-          {totalPages && (
-            <span className="text-premium-label">of {totalPages}</span>
-          )}
-        </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(page + 1)}
-          disabled={!hasMore}
-        >
+        <span className="numerals px-2 text-sm text-ink-soft">
+          Page <span className="font-medium text-ink">{page}</span>
+          {totalPages ? ` of ${totalPages.toLocaleString()}` : null}
+        </span>
+        <Button variant="outline" size="sm" onClick={() => onPageChange(page + 1)} disabled={!hasMore}>
           Next
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="size-4" />
         </Button>
       </div>
 
-      {total && (
-        <div className="text-premium-label">
-          {total.toLocaleString()} products total
-        </div>
+      {total ? (
+        <p className="numerals text-sm text-ink-soft">{total.toLocaleString()} products</p>
+      ) : (
+        <span className="hidden sm:block" />
       )}
     </div>
   )

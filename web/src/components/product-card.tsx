@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Package, Star } from 'lucide-react'
 import type { Product } from '@/lib/types'
 
 type AnalyticsContext = { list_type: string; query_type: string; seed_product_id?: string }
@@ -14,15 +12,21 @@ interface ProductCardProps {
   product: Product
   rank?: number
   analytics?: AnalyticsContext
+  /** Show the rank as a chart sounding (search results, where order is the point). */
+  showRank?: boolean
+  /** Lets a page open the product in place (e.g. a dialog) instead of navigating. */
+  onSelect?: (e: React.MouseEvent<HTMLAnchorElement>) => void
+  /** Set false when the page logs its own impressions and clicks (the search page does). */
+  track?: boolean
 }
 
-export function ProductCard({ product, rank, analytics }: ProductCardProps) {
+export function ProductCard({ product, rank, analytics, showRank, onSelect, track = true }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
   const [impressed, setImpressed] = useState(false)
   const linkRef = useRef<HTMLAnchorElement | null>(null)
 
   useEffect(() => {
-    if (!linkRef.current || impressed) return
+    if (!track || !linkRef.current || impressed) return
 
     const el = linkRef.current
     const obs = new IntersectionObserver(
@@ -51,7 +55,7 @@ export function ProductCard({ product, rank, analytics }: ProductCardProps) {
 
     obs.observe(el)
     return () => obs.disconnect()
-  }, [impressed, product.id, product.name, rank, analytics])
+  }, [track, impressed, product.id, product.name, rank, analytics])
 
   const handleClick = () => {
     fetch('/api/events', {
@@ -71,83 +75,68 @@ export function ProductCard({ product, rank, analytics }: ProductCardProps) {
     }).catch(() => { })
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
-  }
-
-  const renderRating = (rating: number) => {
-    return (
-      <div className="flex items-center gap-1">
-        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-        <span className="text-sm font-medium">{rating.toFixed(1)}</span>
-        {product.total_ratings && (
-          <span className="text-xs text-muted-foreground">
-            ({product.total_ratings.toLocaleString()})
-          </span>
-        )}
-      </div>
-    )
-  }
-
   return (
     <Link
       ref={linkRef}
       href={`/product/${product.id}`}
-      onClick={handleClick}
-      className="block group h-full"
+      onClick={(e) => {
+        if (track) handleClick()
+        onSelect?.(e)
+      }}
+      className="group block h-full rounded-lg"
     >
-      <Card className="overflow-hidden border-border/10 group card-hover bg-background/50 backdrop-blur-sm h-full flex flex-col">
-        <div className="aspect-square relative bg-muted">
+      <article className="flex h-full flex-col">
+        <div className="relative aspect-square overflow-hidden rounded-lg border border-rule bg-white">
           {!imageError && product.image_url ? (
             <Image
-              src={product.image_url || "/placeholder.svg"}
+              src={product.image_url}
               alt={product.name}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              className="object-contain p-3 transition-transform duration-500 group-hover:scale-[1.03]"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               onError={() => setImageError(true)}
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-muted">
-              <svg
-                className="w-16 h-16 text-muted-foreground/40"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+            <div className="absolute inset-0 flex items-center justify-center bg-shoal/50">
+              <Package className="size-10 text-ink-soft/40" aria-hidden />
             </div>
           )}
-          {product.value_score && product.value_score > 0.8 && (
-            <Badge variant="premium" className="absolute top-2 left-2">
-              Great Value
-            </Badge>
+          {rank !== undefined && showRank && (
+            <span
+              className="absolute left-2 top-1.5 font-serif text-lg italic text-contour"
+              aria-label={`Rank ${rank}`}
+            >
+              {rank}
+            </span>
           )}
         </div>
-        <CardContent className="p-5">
-          <div className="space-y-3">
-            <p className="text-premium-label">
-              {product.category}
-            </p>
-            <h3 className="text-premium-title line-clamp-2 group-hover:text-primary transition-colors min-h-[2.7rem]">
-              {product.name}
-            </h3>
-            <div className="flex items-center justify-between pt-1">
-              <span className="text-lg font-bold tracking-tight">{formatPrice(product.price)}</span>
-              {product.rating > 0 && renderRating(product.rating)}
-            </div>
+        <div className="flex flex-1 flex-col gap-1 pt-3">
+          <h3 className="line-clamp-2 text-[0.9375rem] font-medium leading-snug text-ink group-hover:underline group-hover:decoration-rule group-hover:underline-offset-4">
+            {product.name}
+          </h3>
+          <p className="text-[0.8125rem] text-ink-soft">{product.category}</p>
+          <div className="mt-auto flex items-baseline justify-between gap-2 pt-1.5">
+            <span className="numerals text-base font-semibold">{formatPrice(product.price)}</span>
+            {product.rating > 0 && (
+              <span className="numerals flex items-center gap-1 text-[0.8125rem] text-ink-soft">
+                <Star className="size-3.5 fill-ink-soft/70 text-ink-soft/70" aria-hidden />
+                {product.rating.toFixed(1)}
+                {product.total_ratings ? (
+                  <span className="sr-only sm:not-sr-only">({compact(product.total_ratings)})</span>
+                ) : null}
+              </span>
+            )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </article>
     </Link>
   )
+}
+
+export function formatPrice(price: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+}
+
+function compact(n: number) {
+  return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(n)
 }

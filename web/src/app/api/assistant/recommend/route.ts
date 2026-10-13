@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
       boostedCategory: res.boosted_category ?? null,
       appliedFilters: res.applied_filters,
       degraded: res.degraded ?? [],
+      timings: res.timings_ms ?? {},
     })
   } catch (error) {
     return backendErrorResponse(error, 'Recommendations')

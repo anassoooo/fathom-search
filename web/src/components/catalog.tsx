@@ -5,13 +5,6 @@ import useSWR from 'swr'
 import { ProductGrid } from './product-grid'
 import { PaginationControls } from './pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import type { ProductsResponse } from '@/lib/types'
 
@@ -111,29 +104,35 @@ export function Catalog() {
   }
 
   return (
-    <div ref={containerRef} className="space-y-6 scroll-mt-24">
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex items-center gap-3 p-1 rounded-2xl bg-muted/30 border border-border/40 w-fit">
-          <span className="text-premium-label ml-3">Category:</span>
-          {categoriesData?.categories ? (
-            <Select value={category || 'all'} onValueChange={handleCategoryChange}>
-              <SelectTrigger className="w-48 bg-background border-none shadow-sm h-8 rounded-xl font-medium">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl border-border/40">
-                <SelectItem value="all">All Categories</SelectItem>
-                {categoriesData.categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ) : (
-            <Skeleton className="h-8 w-48 rounded-xl" />
-          )}
-        </div>
+    <div ref={containerRef} className="space-y-8 scroll-mt-24">
+      <div
+        role="group"
+        aria-label="Filter by category"
+        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 lg:flex-wrap"
+      >
+        {categoriesData?.categories ? (
+          ['all', ...categoriesData.categories].map((cat) => {
+            const active = (category || 'all') === cat
+            return (
+              <button
+                key={cat}
+                type="button"
+                aria-pressed={active}
+                onClick={() => handleCategoryChange(cat)}
+                className={
+                  'shrink-0 rounded-full border px-3.5 py-1.5 text-sm transition-colors ' +
+                  (active
+                    ? 'border-ink bg-ink text-paper'
+                    : 'border-rule bg-surface text-ink-soft hover:border-contour hover:text-ink')
+                }
+              >
+                {cat === 'all' ? 'All categories' : cat}
+              </button>
+            )
+          })
+        ) : (
+          Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-8 w-28 shrink-0 rounded-full" />)
+        )}
       </div>
 
       {/* Product Grid */}

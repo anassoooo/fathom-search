@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { ShoppingCart, User, LogOut, ArrowLeft, History } from 'lucide-react'
+import { ShoppingCart, LogOut, History, UserRound } from 'lucide-react'
 import { useAuth } from '@/components/auth-provider'
-import Image from 'next/image'
+import { Wordmark } from '@/components/brand'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -13,93 +13,94 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
-export function Header({ children, onHistoryClick }: { children?: React.ReactNode, onHistoryClick?: () => void }) {
+/** Search sits behind sign-in; send signed-out visitors through login and back. */
+export function searchHref(signedIn: boolean, query?: string) {
+  const target = query ? `/assistant?q=${encodeURIComponent(query)}` : '/assistant'
+  return signedIn ? target : `/login?next=${encodeURIComponent(target)}`
+}
+
+export function Header({ onHistoryClick }: { onHistoryClick?: () => void }) {
   const { user, logout, isLoading } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
-  const isHomePage = pathname === '/'
 
   const handleLogout = async () => {
     await logout()
     router.refresh()
   }
 
+  const trackOpen = () => {
+    fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventType: 'assistant_open', metadata: { fromPage: pathname } }),
+    }).catch(() => {})
+  }
+
+  const navLink = (active: boolean) =>
+    cn(
+      'rounded-md px-3 py-1.5 text-[0.9375rem] transition-colors',
+      active ? 'text-ink font-medium' : 'text-ink-soft hover:text-ink',
+    )
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-linear-to-b from-background via-background 85% to-transparent border-none">
-      <div className="container-premium flex h-36 items-start pt-5 justify-between gap-4 [mask-image:linear-gradient(to_right,transparent,black_40px,black_calc(100%-40px),transparent)]">
-        <div className="flex items-start gap-4 flex-1 -mt-3">
-          {!isHomePage && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => router.back()}
-              className="h-10 w-10 rounded-full hover:bg-muted transition-all text-muted-foreground hover:text-foreground shrink-0 mt-1"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          )}
-          <Link href="/" className="flex flex-col items-center gap-1 group">
-            <div className="relative w-12 h-12 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-              <Image
-                src="/logo-original.png"
-                alt="Fathom logo"
-                fill
-                className="object-contain mix-blend-multiply brightness-110 contrast-110"
-                priority
-              />
-            </div>
-            <span className="font-bold text-xs uppercase tracking-[0.2em] bg-clip-text text-transparent bg-linear-to-r from-primary to-accent leading-none">Fathom</span>
+    <header className="sticky top-0 z-40 border-b border-rule bg-paper/85 backdrop-blur-md supports-[backdrop-filter]:bg-paper/75">
+      <div className="shell flex h-16 items-center gap-2">
+        <Link href="/" aria-label="Fathom home" className="mr-3 rounded-md">
+          <Wordmark />
+        </Link>
+
+        <nav className="flex items-center" aria-label="Main">
+          <Link
+            href={searchHref(!!user)}
+            onClick={user ? trackOpen : undefined}
+            className={navLink(pathname === '/assistant')}
+          >
+            Search
           </Link>
-        </div>
+          <Link href="/#catalog" className={cn(navLink(false), 'hidden sm:inline-block')}>
+            Browse
+          </Link>
+        </nav>
 
-        <div className="flex-1 flex justify-center items-start mt-2">
-          {children}
-        </div>
-
-        <nav className="flex items-start gap-2 flex-1 justify-end mt-1">
+        <div className="ml-auto flex items-center gap-1">
           {isLoading ? (
-            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+            <div className="size-8 rounded-full bg-shoal animate-pulse" />
           ) : user ? (
             <>
               {onHistoryClick && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onHistoryClick}
-                  aria-label="Search history"
-                  className="hover:text-accent transition-colors"
-                >
-                  <History className="h-5 w-5" />
+                <Button variant="ghost" size="icon" onClick={onHistoryClick} aria-label="Recent searches">
+                  <History className="size-[1.15rem]" />
                 </Button>
               )}
-              <Link href="/cart">
-                <Button variant="ghost" size="icon" aria-label="Shopping cart">
-                  <ShoppingCart className="h-5 w-5" />
-                </Button>
-              </Link>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/cart" aria-label="Cart">
+                  <ShoppingCart className="size-[1.15rem]" />
+                </Link>
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="User menu">
-                    <User className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" aria-label="Account">
+                    <UserRound className="size-[1.15rem]" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-medium">{user.name || user.email}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="text-xs text-ink-soft">{user.email}</p>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/cart" className="cursor-pointer">
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      My Cart
+                      <ShoppingCart className="mr-2 size-4" />
+                      Cart
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive">
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 size-4" />
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -107,15 +108,15 @@ export function Header({ children, onHistoryClick }: { children?: React.ReactNod
             </>
           ) : (
             <>
-              <Link href="/login">
-                <Button variant="ghost">Sign in</Button>
-              </Link>
-              <Link href="/register">
-                <Button variant="glow" className="shadow-lg">Sign up</Button>
-              </Link>
+              <Button variant="ghost" asChild>
+                <Link href="/login">Sign in</Link>
+              </Button>
+              <Button asChild className="hidden sm:inline-flex">
+                <Link href="/register">Create account</Link>
+              </Button>
             </>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   )

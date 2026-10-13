@@ -67,7 +67,7 @@ export default function MetricsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-6">
+      <div className="min-h-screen flex items-center justify-center p-6">
         <p className="text-muted-foreground">{error.message}</p>
       </div>
     )
@@ -84,16 +84,14 @@ export default function MetricsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
-      <Header>
-        <h1 className="font-bold text-sm tracking-[0.15em] text-foreground/90 uppercase">Analytics Dashboard</h1>
-      </Header>
-      <main className="flex-1 container py-8">
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="shell flex-1 py-10">
         <div className="space-y-6">
-          <div className="hidden">
-            <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
-            <p className="text-muted-foreground mt-1">
-              Monitor user engagement and conversion metrics
+          <div>
+            <h1 className="display text-[2.25rem]">Usage</h1>
+            <p className="mt-1 text-ink-soft">
+              Impressions, clicks and carts logged by this site, with click-through per retrieval variant.
             </p>
           </div>
 
@@ -142,7 +140,7 @@ export default function MetricsPage() {
                 {isLoading ? (
                   <Skeleton className="h-12 w-24" />
                 ) : (
-                  <p className="text-4xl font-bold">{data?.rates.ctr || '0%'}</p>
+                  <p className="numerals text-4xl font-semibold">{data?.rates.ctr || '0%'}</p>
                 )}
               </CardContent>
             </Card>
@@ -155,7 +153,7 @@ export default function MetricsPage() {
                 {isLoading ? (
                   <Skeleton className="h-12 w-24" />
                 ) : (
-                  <p className="text-4xl font-bold">{data?.rates.addToCartRate || '0%'}</p>
+                  <p className="numerals text-4xl font-semibold">{data?.rates.addToCartRate || '0%'}</p>
                 )}
               </CardContent>
             </Card>
@@ -185,7 +183,7 @@ export default function MetricsPage() {
                   <tbody>
                     {data.assistant.ctrByVariant.map((row) => (
                       <tr key={row.variant} className="border-t border-border/40">
-                        <td className="py-1 font-mono">{row.variant}</td>
+                        <td className="py-1 font-medium">{row.variant}</td>
                         <td className="py-1 text-right tabular-nums">{row.impressions}</td>
                         <td className="py-1 text-right tabular-nums">{row.clicks}</td>
                         <td className="py-1 text-right tabular-nums">{row.ctr}%</td>
@@ -218,10 +216,10 @@ export default function MetricsPage() {
                     {data?.recentEvents.map((event) => (
                       <div
                         key={event.id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                        className="flex items-center justify-between rounded-lg bg-shoal/50 p-3"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-full bg-background">
+                          <div className="rounded-full bg-surface p-2">
                             {eventTypeIcons[event.eventType] || <Eye className="h-4 w-4" />}
                           </div>
                           <div>
@@ -269,10 +267,10 @@ function MetricCard({
             {isLoading ? (
               <Skeleton className="h-8 w-16 mt-1" />
             ) : (
-              <p className="text-2xl font-bold">{value?.toLocaleString() || 0}</p>
+              <p className="numerals text-2xl font-semibold">{value?.toLocaleString() || 0}</p>
             )}
           </div>
-          <div className="p-3 rounded-full bg-primary/10 text-primary">{icon}</div>
+          <div className="rounded-full bg-shoal p-3 text-contour">{icon}</div>
         </div>
       </CardContent>
     </Card>
