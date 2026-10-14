@@ -6,7 +6,8 @@
    matters (the sounding, i.e. the result). Headlines use an italic serif, the way
    charts label water features. */
 
-/* Light is the default; visitors switch with the header toggle (next-themes sets data-theme). */
+/* Follows the OS colour scheme until the visitor picks one with the header toggle;
+   next-themes sets data-theme to the resolved theme before paint. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme inline {
