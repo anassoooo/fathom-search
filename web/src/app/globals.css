@@ -6,7 +6,8 @@
    matters (the sounding, i.e. the result). Headlines use an italic serif, the way
    charts label water features. */
 
-@custom-variant dark (@media (prefers-color-scheme: dark));
+/* Light is the default; visitors switch with the header toggle (next-themes sets data-theme). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme inline {
   --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
@@ -60,19 +61,17 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0b1b27;
-    --surface: #0f2433;
-    --ink: #e6eef2;
-    --ink-soft: #9db1bf;
-    --contour: #6fa8cf;
-    --shoal: #16334a;
-    --rule: #21405a;
-    --signal: #f25aae;
-    --danger: #f97066;
-    color-scheme: dark;
-  }
+:root[data-theme="dark"] {
+  --paper: #0b1b27;
+  --surface: #0f2433;
+  --ink: #e6eef2;
+  --ink-soft: #9db1bf;
+  --contour: #6fa8cf;
+  --shoal: #16334a;
+  --rule: #21405a;
+  --signal: #f25aae;
+  --danger: #f97066;
+  color-scheme: dark;
 }
 
 @layer base {

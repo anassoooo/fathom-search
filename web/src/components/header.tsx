@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { ShoppingCart, LogOut, History, UserRound } from 'lucide-react'
+import { ShoppingCart, LogOut, History, UserRound, Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { useAuth } from '@/components/auth-provider'
 import { Wordmark } from '@/components/brand'
 import { Button } from '@/components/ui/button'
@@ -66,6 +67,7 @@ export function Header({ onHistoryClick }: { onHistoryClick?: () => void }) {
         </nav>
 
         <div className="ml-auto flex items-center gap-1">
+          <ThemeToggle />
           {isLoading ? (
             <div className="size-8 rounded-full bg-shoal animate-pulse" />
           ) : user ? (
@@ -119,5 +121,23 @@ export function Header({ onHistoryClick }: { onHistoryClick?: () => void }) {
         </div>
       </div>
     </header>
+  )
+}
+
+/** Both icons render and CSS picks one, so server and client markup always match. */
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme()
+  const dark = resolvedTheme === 'dark'
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(dark ? 'light' : 'dark')}
+      aria-label="Switch between light and dark theme"
+      title="Switch between light and dark theme"
+    >
+      <Moon className="size-[1.15rem] dark:hidden" />
+      <Sun className="hidden size-[1.15rem] dark:block" />
+    </Button>
   )
 }

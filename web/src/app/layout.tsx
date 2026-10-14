@@ -4,6 +4,7 @@ import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 
 import { AuthProvider } from "@/components/auth-provider";
+import { ThemeProvider } from "next-themes";
 
 const plex = IBM_Plex_Sans({
   variable: "--font-plex",
@@ -25,20 +26,19 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f8f7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1b27" },
-  ],
+  themeColor: "#f5f8f7",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${plex.variable} ${newsreader.variable}`}>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
+        <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
