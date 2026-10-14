@@ -9,6 +9,8 @@ requests like *"comfy runing shoes for flat feet under $80"* into a clean query,
 budget, and a category boost. Every stage is **evaluated offline**, and the data was
 **audited before it was trusted**.
 
+[![Fathom search results for "comfy runing shoes for flat feet under $80": the LLM fixes the typo and extracts an $80 budget, and a panel shows each pipeline step with its server time](docs/images/search.webp)](https://fathom-search.vercel.app)
+
 - **Live app:** https://fathom-search.vercel.app
 - **Live API (Swagger):** https://vio-search-api.icyrock-a72fa589.germanywestcentral.azurecontainerapps.io/docs
   (scales to zero: the first request after idling takes up to a minute)
