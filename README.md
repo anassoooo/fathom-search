@@ -47,6 +47,22 @@ What the table shows:
   numbers are a lower bound; and generated "specific" queries reuse 95% of title words,
   which flatters BM25 (per-bucket overlap is in the report).
 
+**How many results to show** ([report](eval/reports/2026-10-30-c130a73-gate.md),
+[ADR-0008](docs/adr/0008-relevance-gate.md)): instead of a fixed 12, a logistic-regression
+**relevance gate** on query-relative reranker features decides per query. Out-of-fold, on
+275 judged queries:
+
+| | Fixed top-12 | Relevance gate |
+|---|---|---|
+| Precision of what is shown | 0.616 | **0.757** (+0.141, 95% CI +0.105 to +0.178) |
+| Recall within the top 30 | 0.568 | 0.616 (+0.049, CI −0.002 to +0.093) |
+| Products shown | always 12 | 10.6 on average, 1 to 30 |
+| 137 requests the catalog can't serve ("plumber", "live kitten", "zzzz") | 12 products each | 70% answered "no close match" |
+
+The raw cross-encoder score can't be thresholded: it orders well within a query
+(AUC 0.83) but means different things across queries (AUC 0.76). The gate's strongest
+feature is a product's score *minus the query's best*.
+
 **Query understanding** ([report](eval/reports/understanding-2026-10-10-16aa3ba.md)), `gpt-oss-20b` on 275 queries:
 
 | Metric | Result |
@@ -92,7 +108,9 @@ flowchart LR
 3. **Retrieve**: each source is a prefetch with filters applied inside it, fused with **RRF**.
    The category boost adds extra in-category prefetches, so nothing is excluded.
 4. **Rerank** the top 30 with a MiniLM cross-encoder, with a timeout fallback.
-5. **Degrade, don't fail**: an LLM, reranker, or image failure falls back and reports
+5. **Gate**: label each reranked product a *match* or *related* (shown on request), or
+   answer "no close match" when even the best one is weak ([ADR-0008](docs/adr/0008-relevance-gate.md)).
+6. **Degrade, don't fail**: an LLM, reranker, or image failure falls back and reports
    `degraded: [...]`.
 
 ## Engineering
@@ -147,6 +165,8 @@ scripts/   daily evaluation job (Windows Task Scheduler)
 - **The evaluation is partial and LLM-judged:** 49/325 queries so far. The judge seems sane
   (it rated every seed product relevant in 49/49 queries), but agreement with human labels
   (Cohen's κ) isn't measured yet.
+- **The relevance gate costs vague queries recall** ("gift for my dad": many products are
+  partly relevant), and photo-only search is not gated yet.
 - **Product text is title-only**, and 12% of titles are just a brand (97% of Footwear), so
   those products depend on image vectors.
 - **When a request gives both a budget and "luxury", the luxury intent is dropped**
