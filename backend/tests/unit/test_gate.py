@@ -1,6 +1,7 @@
 import base64
 import math
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -19,7 +20,7 @@ SETTINGS = Settings(_env_file=None, rerank_top_n=10, rerank_timeout_s=0.5)
 def gap_gate(tau: float = 0.45, floor: float = 0.4, **kw: object) -> RelevanceGate:
     """P = sigmoid(score - best score): the best candidate gets 0.5, the rest less."""
     coef = [1.0 if f == "ce_gap" else 0.0 for f in FEATURES]
-    args: dict = dict(
+    args: dict[str, Any] = dict(
         version="test",
         mean=[0.0] * len(FEATURES),
         scale=[1.0] * len(FEATURES),
