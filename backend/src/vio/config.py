@@ -41,6 +41,8 @@ class Settings(BaseSettings):
     onnx_device: Literal["cpu", "cuda"] = "cpu"
     rerank_top_n: int = Field(default=30, ge=1, le=200)  # revisit with M2 eval data
     rerank_timeout_s: float = 2.0
+    # Load the packaged relevance gate (ADR-0008); requests still opt in with `gate: true`.
+    relevance_gate: bool = True
 
     # Observability
     langfuse_public_key: str | None = None

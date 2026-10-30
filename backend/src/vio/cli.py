@@ -254,6 +254,7 @@ EVAL_DATA = REPO_ROOT / "data" / "eval"
 EVAL_REPORTS = REPO_ROOT / "eval" / "reports"
 QUERIES_V1 = EVAL_DATA / "queries_v1.jsonl"
 QRELS_V1 = EVAL_DATA / "qrels_v1.jsonl"
+NOANSWER_V1 = EVAL_DATA / "noanswer_v1.jsonl"
 LLM_CACHE = EVAL_DATA / ".llm_cache.sqlite"
 
 
@@ -410,6 +411,65 @@ def eval_retrieval(
             "n_points": str(service.store.count()),
         },
     )
+    console.print(f"Report: {md}")
+
+
+@eval_app.command("gate")
+def eval_gate(
+    tau: Annotated[float, typer.Option(help="P(relevant) a product needs to be a match.")] = 0.6,
+    floor: Annotated[
+        float, typer.Option(help="Best P below this means the query has no close match.")
+    ] = 0.7,
+    write: Annotated[
+        bool, typer.Option(help="Overwrite the packaged gate weights (src/vio/search).")
+    ] = True,
+) -> None:
+    """Fit the relevance gate on judged pairs, report it, and package its weights (ADR-0008)."""
+    from vio.api.app import build_service
+    from vio.eval import gate as g
+    from vio.eval.judge import load_qrels
+    from vio.eval.queries import load
+    from vio.eval.retrieval import _git_sha
+    from vio.search.gate import DEFAULT_PATH
+
+    # The reranker's scores are the features: never let a timeout swap in fused order.
+    settings = get_settings().model_copy(update={"rerank_timeout_s": 60.0})
+    service = build_service(settings, llm_cache=LLM_CACHE)
+    service.warmup()
+    qrels = load_qrels(QRELS_V1)
+    answerable = g.text_queries(load(QUERIES_V1))
+    noanswer = g.load_noanswer(NOANSWER_V1)
+    with Progress(
+        "[progress.description]{task.description}",
+        BarColumn(),
+        MofNCompleteColumn(),
+        TimeElapsedColumn(),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Reranking", total=len(answerable) + len(noanswer))
+        step = lambda: progress.advance(task)  # noqa: E731
+        ans = g.collect(answerable, qrels, service, settings.rerank_top_n, step)
+        na = g.collect(noanswer, {}, service, settings.rerank_top_n, step)
+    sha = _git_sha()
+    result = g.fit(
+        ans, tau, floor, settings.rerank_model, settings.rerank_top_n, version=f"gate-{sha}"
+    )
+    first = QRELS_V1.read_text("utf-8").splitlines()[0]
+    md = g.write_report(
+        ans,
+        na,
+        result,
+        EVAL_REPORTS,
+        {
+            "sha": sha,
+            "queries": QUERIES_V1.relative_to(REPO_ROOT).as_posix(),
+            "noanswer": NOANSWER_V1.relative_to(REPO_ROOT).as_posix(),
+            "judge_model": str(json.loads(first).get("judge_model", "?")),
+        },
+    )
+    if write:
+        result.gate.save(DEFAULT_PATH)
+        console.print(f"Gate weights: {DEFAULT_PATH}")
     console.print(f"Report: {md}")
 
 

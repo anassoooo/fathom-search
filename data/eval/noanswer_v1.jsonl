@@ -1,0 +1,137 @@
+{"qid": "n0001", "bucket": "noanswer", "kind": "service", "query": "plumber to fix a leaking pipe tomorrow"}
+{"qid": "n0002", "bucket": "noanswer", "kind": "service", "query": "book a haircut appointment near me"}
+{"qid": "n0003", "bucket": "noanswer", "kind": "service", "query": "wedding photographer"}
+{"qid": "n0004", "bucket": "noanswer", "kind": "service", "query": "private tutor for calculus"}
+{"qid": "n0005", "bucket": "noanswer", "kind": "service", "query": "lawyer for a divorce"}
+{"qid": "n0006", "bucket": "noanswer", "kind": "service", "query": "dentist appointment for a cleaning"}
+{"qid": "n0007", "bucket": "noanswer", "kind": "service", "query": "electrician to install ceiling lights"}
+{"qid": "n0008", "bucket": "noanswer", "kind": "service", "query": "house cleaning service every week"}
+{"qid": "n0009", "bucket": "noanswer", "kind": "service", "query": "dog walker in my area"}
+{"qid": "n0010", "bucket": "noanswer", "kind": "service", "query": "personal trainer sessions"}
+{"qid": "n0011", "bucket": "noanswer", "kind": "service", "query": "car mechanic for brake repair"}
+{"qid": "n0012", "bucket": "noanswer", "kind": "service", "query": "babysitter for saturday night"}
+{"qid": "n0013", "bucket": "noanswer", "kind": "service", "query": "moving company for a 2 bedroom flat"}
+{"qid": "n0014", "bucket": "noanswer", "kind": "service", "query": "massage therapist home visit"}
+{"qid": "n0015", "bucket": "noanswer", "kind": "service", "query": "translator for legal documents"}
+{"qid": "n0016", "bucket": "noanswer", "kind": "service", "query": "accountant to file my taxes"}
+{"qid": "n0017", "bucket": "noanswer", "kind": "service", "query": "locksmith locked out of my house"}
+{"qid": "n0018", "bucket": "noanswer", "kind": "service", "query": "roof repair after storm"}
+{"qid": "n0019", "bucket": "noanswer", "kind": "service", "query": "piano teacher for beginners"}
+{"qid": "n0020", "bucket": "noanswer", "kind": "service", "query": "laundry pickup and delivery"}
+{"qid": "n0021", "bucket": "noanswer", "kind": "service", "query": "pest control for cockroaches"}
+{"qid": "n0022", "bucket": "noanswer", "kind": "service", "query": "web developer to build my website"}
+{"qid": "n0023", "bucket": "noanswer", "kind": "service", "query": "therapist for anxiety"}
+{"qid": "n0024", "bucket": "noanswer", "kind": "service", "query": "driving lessons"}
+{"qid": "n0025", "bucket": "noanswer", "kind": "service", "query": "tailor to hem my pants"}
+{"qid": "n0026", "bucket": "noanswer", "kind": "travel_booking", "query": "cheap flight from casablanca to paris"}
+{"qid": "n0027", "bucket": "noanswer", "kind": "travel_booking", "query": "hotel room for two nights in barcelona"}
+{"qid": "n0028", "bucket": "noanswer", "kind": "travel_booking", "query": "car rental at the airport"}
+{"qid": "n0029", "bucket": "noanswer", "kind": "travel_booking", "query": "train ticket madrid to seville"}
+{"qid": "n0030", "bucket": "noanswer", "kind": "travel_booking", "query": "all inclusive holiday package in turkey"}
+{"qid": "n0031", "bucket": "noanswer", "kind": "travel_booking", "query": "taxi to the train station"}
+{"qid": "n0032", "bucket": "noanswer", "kind": "travel_booking", "query": "airbnb near the beach in agadir"}
+{"qid": "n0033", "bucket": "noanswer", "kind": "travel_booking", "query": "cruise to the caribbean in december"}
+{"qid": "n0034", "bucket": "noanswer", "kind": "travel_booking", "query": "bus ticket to marrakech"}
+{"qid": "n0035", "bucket": "noanswer", "kind": "travel_booking", "query": "visa appointment for schengen"}
+{"qid": "n0036", "bucket": "noanswer", "kind": "travel_booking", "query": "guided tour of the pyramids"}
+{"qid": "n0037", "bucket": "noanswer", "kind": "travel_booking", "query": "ferry from tangier to tarifa"}
+{"qid": "n0038", "bucket": "noanswer", "kind": "tickets_events", "query": "tickets for the champions league final"}
+{"qid": "n0039", "bucket": "noanswer", "kind": "tickets_events", "query": "concert tickets for coldplay"}
+{"qid": "n0040", "bucket": "noanswer", "kind": "tickets_events", "query": "cinema tickets for tonight"}
+{"qid": "n0041", "bucket": "noanswer", "kind": "tickets_events", "query": "theme park day pass"}
+{"qid": "n0042", "bucket": "noanswer", "kind": "tickets_events", "query": "museum entrance ticket louvre"}
+{"qid": "n0043", "bucket": "noanswer", "kind": "tickets_events", "query": "stand up comedy show this weekend"}
+{"qid": "n0044", "bucket": "noanswer", "kind": "tickets_events", "query": "football match tickets real madrid"}
+{"qid": "n0045", "bucket": "noanswer", "kind": "tickets_events", "query": "escape room booking for 6 people"}
+{"qid": "n0046", "bucket": "noanswer", "kind": "digital_subscription", "query": "netflix premium subscription"}
+{"qid": "n0047", "bucket": "noanswer", "kind": "digital_subscription", "query": "spotify family plan"}
+{"qid": "n0048", "bucket": "noanswer", "kind": "digital_subscription", "query": "online python course with certificate"}
+{"qid": "n0049", "bucket": "noanswer", "kind": "digital_subscription", "query": "microsoft 365 license key"}
+{"qid": "n0050", "bucket": "noanswer", "kind": "digital_subscription", "query": "vpn subscription 1 year"}
+{"qid": "n0051", "bucket": "noanswer", "kind": "digital_subscription", "query": "chatgpt plus account"}
+{"qid": "n0052", "bucket": "noanswer", "kind": "digital_subscription", "query": "domain name registration"}
+{"qid": "n0053", "bucket": "noanswer", "kind": "digital_subscription", "query": "cloud storage 2tb plan"}
+{"qid": "n0054", "bucket": "noanswer", "kind": "digital_subscription", "query": "steam gift code for a game download"}
+{"qid": "n0055", "bucket": "noanswer", "kind": "digital_subscription", "query": "mobile data plan 50gb"}
+{"qid": "n0056", "bucket": "noanswer", "kind": "digital_subscription", "query": "duolingo super subscription"}
+{"qid": "n0057", "bucket": "noanswer", "kind": "digital_subscription", "query": "web hosting for wordpress"}
+{"qid": "n0058", "bucket": "noanswer", "kind": "finance_legal", "query": "health insurance plan for students"}
+{"qid": "n0059", "bucket": "noanswer", "kind": "finance_legal", "query": "mortgage calculator"}
+{"qid": "n0060", "bucket": "noanswer", "kind": "finance_legal", "query": "car insurance quote"}
+{"qid": "n0061", "bucket": "noanswer", "kind": "finance_legal", "query": "open a bank account online"}
+{"qid": "n0062", "bucket": "noanswer", "kind": "finance_legal", "query": "personal loan with low interest"}
+{"qid": "n0063", "bucket": "noanswer", "kind": "finance_legal", "query": "bitcoin to buy"}
+{"qid": "n0064", "bucket": "noanswer", "kind": "finance_legal", "query": "stock trading app"}
+{"qid": "n0065", "bucket": "noanswer", "kind": "finance_legal", "query": "credit card with cashback"}
+{"qid": "n0066", "bucket": "noanswer", "kind": "finance_legal", "query": "life insurance for parents"}
+{"qid": "n0067", "bucket": "noanswer", "kind": "finance_legal", "query": "apply for a student loan"}
+{"qid": "n0068", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "two bedroom apartment for rent"}
+{"qid": "n0069", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "used toyota corolla 2015"}
+{"qid": "n0070", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "house for sale with garden"}
+{"qid": "n0071", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "office space to rent downtown"}
+{"qid": "n0072", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "new tesla model 3"}
+{"qid": "n0073", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "second hand motorbike yamaha"}
+{"qid": "n0074", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "parking spot to rent monthly"}
+{"qid": "n0075", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "land plot for building a villa"}
+{"qid": "n0076", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "used boat for fishing"}
+{"qid": "n0077", "bucket": "noanswer", "kind": "real_estate_vehicles", "query": "electric scooter rental by the minute"}
+{"qid": "n0078", "bucket": "noanswer", "kind": "live_animals", "query": "golden retriever puppy for adoption"}
+{"qid": "n0079", "bucket": "noanswer", "kind": "live_animals", "query": "live kitten"}
+{"qid": "n0080", "bucket": "noanswer", "kind": "live_animals", "query": "pet rabbit to adopt"}
+{"qid": "n0081", "bucket": "noanswer", "kind": "live_animals", "query": "baby parrot that talks"}
+{"qid": "n0082", "bucket": "noanswer", "kind": "live_animals", "query": "goldfish live delivery"}
+{"qid": "n0083", "bucket": "noanswer", "kind": "live_animals", "query": "horse for sale"}
+{"qid": "n0084", "bucket": "noanswer", "kind": "live_animals", "query": "chickens for my backyard"}
+{"qid": "n0085", "bucket": "noanswer", "kind": "live_animals", "query": "pet snake ball python"}
+{"qid": "n0086", "bucket": "noanswer", "kind": "fresh_perishables", "query": "fresh atlantic salmon fillet"}
+{"qid": "n0087", "bucket": "noanswer", "kind": "fresh_perishables", "query": "raw chicken breast 1kg"}
+{"qid": "n0088", "bucket": "noanswer", "kind": "fresh_perishables", "query": "fresh strawberries 500g"}
+{"qid": "n0089", "bucket": "noanswer", "kind": "fresh_perishables", "query": "live lobster"}
+{"qid": "n0090", "bucket": "noanswer", "kind": "fresh_perishables", "query": "fresh baguette from the bakery"}
+{"qid": "n0091", "bucket": "noanswer", "kind": "fresh_perishables", "query": "pizza delivery tonight"}
+{"qid": "n0092", "bucket": "noanswer", "kind": "fresh_perishables", "query": "sushi takeaway"}
+{"qid": "n0093", "bucket": "noanswer", "kind": "fresh_perishables", "query": "fresh flowers bouquet delivery today"}
+{"qid": "n0094", "bucket": "noanswer", "kind": "fresh_perishables", "query": "birthday cake delivery with name"}
+{"qid": "n0095", "bucket": "noanswer", "kind": "fresh_perishables", "query": "fresh oysters dozen"}
+{"qid": "n0096", "bucket": "noanswer", "kind": "fresh_perishables", "query": "hot coffee to go"}
+{"qid": "n0097", "bucket": "noanswer", "kind": "fresh_perishables", "query": "restaurant reservation for two"}
+{"qid": "n0098", "bucket": "noanswer", "kind": "restricted", "query": "disposable vape mango flavor"}
+{"qid": "n0099", "bucket": "noanswer", "kind": "restricted", "query": "9mm ammunition box"}
+{"qid": "n0100", "bucket": "noanswer", "kind": "restricted", "query": "prescription antibiotics without prescription"}
+{"qid": "n0101", "bucket": "noanswer", "kind": "restricted", "query": "cigarettes carton marlboro"}
+{"qid": "n0102", "bucket": "noanswer", "kind": "restricted", "query": "contact lenses for astigmatism"}
+{"qid": "n0103", "bucket": "noanswer", "kind": "restricted", "query": "insulin pen refills"}
+{"qid": "n0104", "bucket": "noanswer", "kind": "restricted", "query": "fireworks for new year"}
+{"qid": "n0105", "bucket": "noanswer", "kind": "restricted", "query": "sleeping pills strong"}
+{"qid": "n0106", "bucket": "noanswer", "kind": "information", "query": "how to cook couscous"}
+{"qid": "n0107", "bucket": "noanswer", "kind": "information", "query": "weather in rabat tomorrow"}
+{"qid": "n0108", "bucket": "noanswer", "kind": "information", "query": "who won the world cup 2022"}
+{"qid": "n0109", "bucket": "noanswer", "kind": "information", "query": "what is the capital of australia"}
+{"qid": "n0110", "bucket": "noanswer", "kind": "information", "query": "how many calories in a banana"}
+{"qid": "n0111", "bucket": "noanswer", "kind": "information", "query": "translate hello to japanese"}
+{"qid": "n0112", "bucket": "noanswer", "kind": "information", "query": "news today"}
+{"qid": "n0113", "bucket": "noanswer", "kind": "information", "query": "how to change a car tire"}
+{"qid": "n0114", "bucket": "noanswer", "kind": "information", "query": "best time to visit morocco"}
+{"qid": "n0115", "bucket": "noanswer", "kind": "information", "query": "convert 100 dollars to dirhams"}
+{"qid": "n0116", "bucket": "noanswer", "kind": "information", "query": "how old is the eiffel tower"}
+{"qid": "n0117", "bucket": "noanswer", "kind": "information", "query": "symptoms of the flu"}
+{"qid": "n0118", "bucket": "noanswer", "kind": "information", "query": "how to write a cover letter"}
+{"qid": "n0119", "bucket": "noanswer", "kind": "information", "query": "football scores live"}
+{"qid": "n0120", "bucket": "noanswer", "kind": "information", "query": "meaning of life"}
+{"qid": "n0121", "bucket": "noanswer", "kind": "information", "query": "how to tie a tie"}
+{"qid": "n0122", "bucket": "noanswer", "kind": "information", "query": "distance from earth to the moon"}
+{"qid": "n0123", "bucket": "noanswer", "kind": "information", "query": "what time is it in tokyo"}
+{"qid": "n0124", "bucket": "noanswer", "kind": "information", "query": "recipe for chocolate cake"}
+{"qid": "n0125", "bucket": "noanswer", "kind": "information", "query": "how to fix wifi not connecting"}
+{"qid": "n0126", "bucket": "noanswer", "kind": "gibberish", "query": "qzxv plorbnik trandle"}
+{"qid": "n0127", "bucket": "noanswer", "kind": "gibberish", "query": "asdf jkl qwerty uiop"}
+{"qid": "n0128", "bucket": "noanswer", "kind": "gibberish", "query": "zzzz"}
+{"qid": "n0129", "bucket": "noanswer", "kind": "gibberish", "query": "lorem ipsum dolor sit amet"}
+{"qid": "n0130", "bucket": "noanswer", "kind": "gibberish", "query": "xkcd 927 vbnm"}
+{"qid": "n0131", "bucket": "noanswer", "kind": "gibberish", "query": "hjkl hjkl hjkl"}
+{"qid": "n0132", "bucket": "noanswer", "kind": "gibberish", "query": "blorft wimbo snazzle"}
+{"qid": "n0133", "bucket": "noanswer", "kind": "gibberish", "query": "aaaaaaaa bbbbbb"}
+{"qid": "n0134", "bucket": "noanswer", "kind": "gibberish", "query": "1234567890"}
+{"qid": "n0135", "bucket": "noanswer", "kind": "gibberish", "query": "!!! ??? ..."}
+{"qid": "n0136", "bucket": "noanswer", "kind": "gibberish", "query": "fhqwhgads"}
+{"qid": "n0137", "bucket": "noanswer", "kind": "gibberish", "query": "mnbvcx lkjhg poiuy"}

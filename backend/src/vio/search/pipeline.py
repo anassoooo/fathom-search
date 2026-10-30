@@ -1,4 +1,4 @@
-"""The search pipeline: sanitize filters -> encode -> retrieve (RRF) -> rerank -> top k."""
+"""The search pipeline: sanitize filters -> encode -> retrieve (RRF) -> rerank -> gate -> top k."""
 
 import base64
 import binascii
@@ -12,6 +12,7 @@ from vio.llm.query_understanding import ParsedQuery, QueryUnderstanding, merge_f
 from vio.models import Filters, Product, SearchHit, SearchRequest, SearchResponse
 from vio.observability.timing import timed
 from vio.search.filters import Taxonomy, sanitize, to_qdrant
+from vio.search.gate import Answer, RelevanceGate
 from vio.search.rerank import Reranker, rerank
 from vio.search.retrieve import Candidate, QueryVectors, retrieve, similar
 from vio.search.variants import VARIANTS
@@ -44,8 +45,10 @@ class SearchService:
         settings: Settings,
         executor: Executor | None = None,
         understander: QueryUnderstanding | None = None,
+        gate: RelevanceGate | None = None,
     ) -> None:
         self.understander = understander
+        self.gate = gate
         self.store = store
         self.encoders = encoders
         self.reranker = reranker
@@ -167,6 +170,7 @@ class SearchService:
                     boost_filter=to_qdrant(Filters(category=boost)) if boost else None,
                 )
 
+            fused_rank = {c.product.product_id: i for i, c in enumerate(candidates, start=1)}
             if use_rerank:
                 with timed(timings, "rerank_ms"):
                     outcome = rerank(
@@ -181,6 +185,13 @@ class SearchService:
                 if outcome.degraded:
                     degraded.append("reranker")
 
+            hits = _to_hits(candidates, fused_rank if use_rerank else None)
+            answer: Answer | None = None
+            # The gate reads cross-encoder scores: skip it when they are absent.
+            scored = use_rerank and "reranker" not in degraded and len(candidates) >= 2
+            if request.gate and self.gate is not None and scored:
+                hits, answer = _apply_gate(self.gate, hits[: self.settings.rerank_top_n])
+
         log.info(
             "search",
             extra={
@@ -190,7 +201,9 @@ class SearchService:
                     "query": text[:200],
                     "has_image": request.image_b64 is not None,
                     "k": request.k,
-                    "n_results": min(len(candidates), request.k),
+                    "n_results": min(len(hits), request.k),
+                    "answer": answer,
+                    "n_match": sum(h.tier == "match" for h in hits[: request.k]),
                     "filters": filters.model_dump(exclude_none=True),
                     "dropped_filters": dropped,
                     "degraded": degraded,
@@ -199,7 +212,7 @@ class SearchService:
             },
         )
         return SearchResponse(
-            results=_to_hits(candidates[: request.k]),
+            results=hits[: request.k],
             variant=request.variant,
             applied_filters=filters,
             dropped_filters=dropped,
@@ -207,6 +220,7 @@ class SearchService:
             degraded=degraded,
             parsed_query=parsed.model_dump() if parsed else None,
             boosted_category=boost,
+            answer=answer,
             trace_id=trace_id,
         )
 
@@ -226,8 +240,28 @@ class SearchService:
         return self.store.browse(to_qdrant(clean), limit, page)
 
 
-def _to_hits(candidates: list[Candidate]) -> list[SearchHit]:
+def _to_hits(
+    candidates: list[Candidate], fused_rank: dict[str, int] | None = None
+) -> list[SearchHit]:
     return [
-        SearchHit(product=c.product, score=c.score, rank=i)
+        SearchHit(
+            product=c.product,
+            score=c.score,
+            rank=i,
+            fused_rank=fused_rank.get(c.product.product_id) if fused_rank else None,
+        )
         for i, c in enumerate(candidates, start=1)
     ]
+
+
+def _apply_gate(gate: RelevanceGate, head: list[SearchHit]) -> tuple[list[SearchHit], Answer]:
+    """Label the reranked head, list matches first (reranked order kept within each tier)."""
+    decision = gate.decide([h.score for h in head], [h.fused_rank or h.rank for h in head])
+    labelled = [
+        h.model_copy(update={"p_relevant": p, "tier": t})
+        for h, p, t in zip(head, decision.p, decision.tiers, strict=True)
+    ]
+    ordered = sorted(labelled, key=lambda h: h.tier != "match")
+    return [
+        h.model_copy(update={"rank": i}) for i, h in enumerate(ordered, start=1)
+    ], decision.answer

@@ -152,6 +152,9 @@ class SearchRequest(BaseModel):
     filters: Filters = Field(default_factory=Filters)
     k: int = Field(default=12, ge=1, le=100)
     variant: Variant = "hybrid_rerank"
+    # Relevance gate (ADR-0008): label each reranked result a "match" or "related" and
+    # list matches first. Off by default so offline evaluation sees the plain ranking.
+    gate: bool = False
 
     @model_validator(mode="after")
     def _needs_input(self) -> "SearchRequest":
@@ -164,6 +167,11 @@ class SearchHit(BaseModel):
     product: Product
     score: float
     rank: int
+    # Position before reranking (hybrid RRF order); set when the result was reranked.
+    fused_rank: int | None = None
+    # Set when the relevance gate ran (ADR-0008).
+    p_relevant: float | None = None
+    tier: Literal["match", "related"] | None = None
 
 
 class SearchResponse(BaseModel):
@@ -177,4 +185,6 @@ class SearchResponse(BaseModel):
     parsed_query: dict[str, Any] | None = None
     # Inferred category used as a soft ranking boost, not a filter (full variant).
     boosted_category: str | None = None
+    # Relevance gate outcome; None when it did not run (gate off, image-only, reranker down).
+    answer: Literal["matches", "no_close_match"] | None = None
     trace_id: str | None = None

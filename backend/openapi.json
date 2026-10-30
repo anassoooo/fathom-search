@@ -347,6 +347,28 @@
       },
       "SearchHit": {
         "properties": {
+          "fused_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fused Rank"
+          },
+          "p_relevant": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P Relevant"
+          },
           "product": {
             "$ref": "#/components/schemas/Product"
           },
@@ -357,6 +379,21 @@
           "score": {
             "title": "Score",
             "type": "number"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "enum": [
+                  "match",
+                  "related"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
           }
         },
         "required": [
@@ -371,6 +408,11 @@
         "properties": {
           "filters": {
             "$ref": "#/components/schemas/Filters"
+          },
+          "gate": {
+            "default": false,
+            "title": "Gate",
+            "type": "boolean"
           },
           "image_b64": {
             "anyOf": [
@@ -420,6 +462,21 @@
       },
       "SearchResponse": {
         "properties": {
+          "answer": {
+            "anyOf": [
+              {
+                "enum": [
+                  "matches",
+                  "no_close_match"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
           "applied_filters": {
             "$ref": "#/components/schemas/Filters"
           },

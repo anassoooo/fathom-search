@@ -32,6 +32,7 @@ def build_service(settings: Settings, llm_cache: Path | None = None) -> SearchSe
     from vio.embeddings.fastembed_impl import Runtime, build_encoders
     from vio.llm.client import LLMClient, openai_chat_fn
     from vio.llm.query_understanding import QueryUnderstanding
+    from vio.search.gate import load_for
     from vio.search.rerank import FastEmbedReranker
     from vio.store.qdrant import ProductStore, create_client
 
@@ -46,6 +47,9 @@ def build_service(settings: Settings, llm_cache: Path | None = None) -> SearchSe
         build_encoders(settings),
         FastEmbedReranker(settings.rerank_model, Runtime.from_settings(settings)),
         settings,
+        gate=load_for(settings.rerank_model, settings.rerank_top_n)
+        if settings.relevance_gate
+        else None,
     )
     service.understander = QueryUnderstanding(
         llm, settings.llm_model_query, lambda: service.taxonomy().categories
