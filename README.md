@@ -63,6 +63,8 @@ The raw cross-encoder score can't be thresholded: it orders well within a query
 (AUC 0.83) but means different things across queries (AUC 0.76). The gate's strongest
 feature is a product's score *minus the query's best*.
 
+![The relevance gate on the live app: "cast iron skillet" shows 7 close matches with 23 related products behind a button, "wireless noise cancelling headphones" shows 25, and "how tall is the eiffel tower" says there is no close match before showing the nearest products](docs/images/relevance-gate.webp)
+
 **Query understanding** ([report](eval/reports/understanding-2026-10-10-16aa3ba.md)), `gpt-oss-20b` on 275 queries:
 
 | Metric | Result |
