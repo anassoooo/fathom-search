@@ -89,6 +89,7 @@ export function SoundingLine({
   original,
   hasImage,
   resultCount,
+  answer = null,
   runId,
 }: {
   timings: Record<string, number>
@@ -96,6 +97,8 @@ export function SoundingLine({
   original: string
   hasImage: boolean
   resultCount: number
+  /** Relevance gate outcome; null when the search was not gated. */
+  answer?: 'matches' | 'no_close_match' | null
   /** Changes on every search so the drop animation replays. */
   runId: string
 }) {
@@ -158,7 +161,11 @@ export function SoundingLine({
         >
           <span aria-hidden className="absolute left-[1px] top-[4px] size-3 rotate-45 rounded-[2px] bg-signal" />
           <p className="text-[0.9375rem] font-semibold text-signal">
-            {resultCount} {resultCount === 1 ? 'result' : 'results'}, best match first
+            {answer === 'no_close_match'
+              ? 'No close match, nearest products shown'
+              : answer === 'matches'
+                ? `${resultCount} close ${resultCount === 1 ? 'match' : 'matches'}, best first`
+                : `${resultCount} ${resultCount === 1 ? 'result' : 'results'}, best match first`}
           </p>
         </li>
       </ol>

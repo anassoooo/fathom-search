@@ -33,6 +33,8 @@ interface RunInfo {
   prompt: string
   hasImage: boolean
   runId: string
+  /** Relevance gate outcome (ADR-0008); null when the search was not gated. */
+  answer: 'matches' | 'no_close_match' | null
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
@@ -49,6 +51,9 @@ function AssistantContent() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [results, setResults] = useState<Product[]>([])
+  // Weaker candidates, shown on request: below the gate, or past the first page when ungated.
+  const [related, setRelated] = useState<Product[]>([])
+  const [showRelated, setShowRelated] = useState(false)
   const [run, setRun] = useState<RunInfo | null>(null)
   const [served, setServed] = useState<{ variant: string; traceId: string | null } | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -127,6 +132,8 @@ function AssistantContent() {
         if (!res.ok) throw new Error(data.error || `Search failed (${res.status}). Try again in a moment.`)
 
         setResults(data.products)
+        setRelated(data.related ?? [])
+        setShowRelated(false)
         const info: RunInfo = {
           insight: {
             understood: data.understood ?? null,
@@ -138,6 +145,7 @@ function AssistantContent() {
           prompt: text,
           hasImage: !!img,
           runId: data.traceId ?? String(Date.now()),
+          answer: data.answer ?? null,
         }
         setRun(info)
         const ctx = { variant: data.variant ?? 'unknown', traceId: data.traceId ?? null }
@@ -161,12 +169,14 @@ function AssistantContent() {
 
     // sessionStorage is client-only, so restoring must happen after mount.
     const savedResults = sessionStorage.getItem('assistant_results')
+    const savedRelated = sessionStorage.getItem('assistant_related')
     const savedRun = sessionStorage.getItem('assistant_run')
     const savedPrompt = sessionStorage.getItem('assistant_prompt')
     const savedImage = sessionStorage.getItem('assistant_image')
     const savedImagePreview = sessionStorage.getItem('assistant_image_preview')
     /* eslint-disable react-hooks/set-state-in-effect */
     if (savedResults) setResults(JSON.parse(savedResults))
+    if (savedRelated) setRelated(JSON.parse(savedRelated))
     if (savedRun) setRun(JSON.parse(savedRun))
     if (savedPrompt) setPrompt(savedPrompt)
     if (savedImage) setImage(savedImage)
@@ -194,11 +204,17 @@ function AssistantContent() {
       else sessionStorage.removeItem(key)
     }
     persist('assistant_results', results.length ? JSON.stringify(results) : null)
+    persist('assistant_related', related.length ? JSON.stringify(related) : null)
     persist('assistant_run', run ? JSON.stringify(run) : null)
     persist('assistant_prompt', prompt || null)
     persist('assistant_image', image)
     persist('assistant_image_preview', imagePreview)
-  }, [results, run, prompt, image, imagePreview])
+  }, [results, related, run, prompt, image, imagePreview])
+
+  const revealRelated = () => {
+    setShowRelated(true)
+    related.forEach((p, i) => logEvent('product_impression', p.id, results.length + i + 1))
+  }
 
   const clearImage = () => {
     setImage(null)
@@ -335,8 +351,17 @@ function AssistantContent() {
           <div className="mt-10 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
             <section aria-labelledby="results-heading">
               <h2 id="results-heading" className="display text-[1.75rem] sm:text-[2rem]">
-                {run.prompt ? `Results for “${run.prompt}”` : 'Results for your photo'}
+                {run.answer === 'no_close_match'
+                  ? `No close matches for “${run.prompt}”`
+                  : run.prompt
+                    ? `Results for “${run.prompt}”`
+                    : 'Results for your photo'}
               </h2>
+              {run.answer === 'no_close_match' && (
+                <p className="mt-2 max-w-prose text-ink-soft">
+                  Nothing in the catalog fits this closely. These are the nearest products we have.
+                </p>
+              )}
               <a
                 href="#sounding-heading"
                 className="numerals mt-2 inline-block text-sm text-ink underline decoration-rule underline-offset-4 hover:decoration-contour lg:hidden"
@@ -361,6 +386,38 @@ function AssistantContent() {
                   />
                 ))}
               </div>
+
+              {related.length > 0 &&
+                (showRelated ? (
+                  <section aria-labelledby="related-heading" className="mt-14 border-t border-rule pt-8">
+                    <h3 id="related-heading" className="font-serif text-xl italic">
+                      Related products
+                    </h3>
+                    <p className="mt-1 text-sm text-ink-soft">Less likely to be what you asked for.</p>
+                    <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3">
+                      {related.map((product, idx) => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          rank={results.length + idx + 1}
+                          showRank
+                          track={false}
+                          onSelect={(e) => {
+                            e.preventDefault()
+                            logEvent('product_click', product.id, results.length + idx + 1)
+                            setSelectedProduct(product)
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                ) : (
+                  <div className="mt-10 flex justify-center">
+                    <Button type="button" variant="outline" onClick={revealRelated}>
+                      Show {related.length} related {related.length === 1 ? 'product' : 'products'}
+                    </Button>
+                  </div>
+                ))}
             </section>
             <aside className="lg:sticky lg:top-24">
               <SoundingLine
@@ -369,6 +426,7 @@ function AssistantContent() {
                 original={run.prompt}
                 hasImage={run.hasImage}
                 resultCount={results.length}
+                answer={run.answer ?? null}
                 runId={run.runId}
               />
             </aside>

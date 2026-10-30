@@ -201,15 +201,26 @@ export interface components {
         };
         /** SearchHit */
         SearchHit: {
+            /** Fused Rank */
+            fused_rank?: number | null;
+            /** P Relevant */
+            p_relevant?: number | null;
             product: components["schemas"]["Product"];
             /** Rank */
             rank: number;
             /** Score */
             score: number;
+            /** Tier */
+            tier?: ("match" | "related") | null;
         };
         /** SearchRequest */
         SearchRequest: {
             filters?: components["schemas"]["Filters"];
+            /**
+             * Gate
+             * @default false
+             */
+            gate: boolean;
             /** Image B64 */
             image_b64?: string | null;
             /**
@@ -228,6 +239,8 @@ export interface components {
         };
         /** SearchResponse */
         SearchResponse: {
+            /** Answer */
+            answer?: ("matches" | "no_close_match") | null;
             applied_filters: components["schemas"]["Filters"];
             /** Boosted Category */
             boosted_category?: string | null;

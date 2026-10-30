@@ -8,6 +8,11 @@ import { backend, toProduct } from '@/lib/backend'
 import { prisma } from '@/lib/prisma'
 
 const MAX_PROMPT = 500
+// The relevance gate labels up to the reranked top-30 (ADR-0008). Without it (photo-only
+// search, reranker down) the first UNGATED_SHOWN results are shown and the rest are related.
+const GATED_K = 30
+const UNGATED_SHOWN = 12
+const NEAREST_SHOWN = 3
 
 export async function POST(request: NextRequest) {
   const session = await getSession()
@@ -32,10 +37,20 @@ export async function POST(request: NextRequest) {
     const res = await backend.search({
       query: prompt || null,
       image_b64: image,
-      k: 12,
+      k: GATED_K,
       variant: 'full',
+      gate: true,
     })
-    const products = res.results.map((hit) => toProduct(hit.product))
+    const answer = res.answer ?? null
+    const all = res.results.map((hit) => toProduct(hit.product))
+    const shown =
+      answer === 'matches'
+        ? res.results.filter((hit) => hit.tier === 'match').length
+        : answer === 'no_close_match'
+          ? NEAREST_SHOWN
+          : UNGATED_SHOWN
+    const products = all.slice(0, shown)
+    const related = all.slice(shown)
     const productIds = products.map((p) => p.id)
 
     // History and analytics must never break the response.
@@ -58,6 +73,8 @@ export async function POST(request: NextRequest) {
             query_type: image ? (prompt ? 'text+image' : 'image') : 'text',
             list_type: 'assistant',
             returned_product_ids: productIds,
+            related_count: related.length,
+            answer,
             degraded: res.degraded,
           }),
         },
@@ -66,6 +83,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       products,
+      related,
+      answer,
       variant: res.variant,
       traceId: res.trace_id,
       understood: res.parsed_query ?? null,
