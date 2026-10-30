@@ -6,10 +6,11 @@
 Search **35,736 Amazon products** by text or photo. Hybrid retrieval (dense +
 BM25 + CLIP) is fused server-side and reranked by a cross-encoder, and an LLM turns
 requests like *"comfy runing shoes for flat feet under $80"* into a clean query, a hard
-budget, and a category boost. Every stage is **evaluated offline**, and the data was
+budget, and a category boost. A learned **relevance gate** then decides how many products
+to show, and says so when nothing in the catalog fits. Every stage is **evaluated offline**, and the data was
 **audited before it was trusted**.
 
-[![Fathom search results for "comfy runing shoes for flat feet under $80": the LLM fixes the typo and extracts an $80 budget, and a panel shows each pipeline step with its server time](docs/images/search.webp)](https://fathom-search.vercel.app)
+[![The relevance gate on the live app: "cast iron skillet" shows 7 close matches with 23 related products behind a button, "wireless noise cancelling headphones" shows 25, and "how tall is the eiffel tower" says there is no close match before showing the nearest products](docs/images/relevance-gate.webp)](https://fathom-search.vercel.app)
 
 - **Live app:** https://fathom-search.vercel.app
 - **Live API (Swagger):** https://vio-search-api.icyrock-a72fa589.germanywestcentral.azurecontainerapps.io/docs
@@ -63,8 +64,6 @@ The raw cross-encoder score can't be thresholded: it orders well within a query
 (AUC 0.83) but means different things across queries (AUC 0.76). The gate's strongest
 feature is a product's score *minus the query's best*.
 
-![The relevance gate on the live app: "cast iron skillet" shows 7 close matches with 23 related products behind a button, "wireless noise cancelling headphones" shows 25, and "how tall is the eiffel tower" says there is no close match before showing the nearest products](docs/images/relevance-gate.webp)
-
 **Query understanding** ([report](eval/reports/understanding-2026-10-10-16aa3ba.md)), `gpt-oss-20b` on 275 queries:
 
 | Metric | Result |
@@ -74,6 +73,8 @@ feature is a product's score *minus the query's best*.
 | Invented a price filter when none was stated | 0/225 |
 | Typo repair (similarity to the clean query) | 0.971 → 0.991 |
 | Category correct when it commits | 79.7%, which led to treating it as a **soft boost, not a filter** (the "errors" are the catalog's overlapping departments) |
+
+[![Fathom search results for "comfy runing shoes for flat feet under $80": the LLM fixes the typo and extracts an $80 budget, and a panel shows each pipeline step with its server time](docs/images/search.webp)](https://fathom-search.vercel.app)
 
 **Data quality** ([report](data/reports/quality_report.md)): the catalog passes a
 23-check contract before ingestion.
