@@ -121,7 +121,7 @@ flowchart LR
 | Area | What's there |
 |---|---|
 | Stack | Python 3.12, FastAPI, Qdrant, fastembed (ONNX; CPU or CUDA), Groq (OpenAI-compatible), Next.js 16, Prisma, Postgres |
-| Tests | 183 unit tests (in-memory Qdrant, fake encoders/LLM) + 9 integration tests (real Qdrant, real ONNX models); ruff + strict mypy |
+| Tests | 190 unit tests (in-memory Qdrant, fake encoders/LLM) + 9 integration tests (real Qdrant, real ONNX models); ruff + strict mypy |
 | CI/CD | GitHub Actions: lint, types, tests, the data contract on the committed sample, web build; backend auto-deploys to Azure via **OIDC** (no stored cloud credentials) and smoke-tests `/health` |
 | Evaluation | Query generation in 6 buckets from unflagged seeds, LLM judge with resumable incremental judging under a free-tier quota, bootstrap CIs, paired significance tests, a human-audit tool with Cohen's κ |
 | Data | Contract-driven audit (`data/contract.toml`), empirical-Bayes ratings, robust outliers, confident learning, quality flags stored in Qdrant |
